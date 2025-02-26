@@ -198,12 +198,12 @@ function LoginPage() {
               duration: 0.5,
               ease: [0.22, 1, 0.36, 1]
             }}
-            className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 mb-6 sm:mb-8"
+            className="w-[140px] sm:w-[160px] md:w-[180px] mb-6 sm:mb-8"
           >
             <img
-              src="/linear-logo.svg"
+              src="https://trie.network/images/logo.png"
               alt="TRIE AI Logo"
-              className="w-full h-full"
+              className="w-full h-auto object-contain"
             />
           </motion.div>}
         

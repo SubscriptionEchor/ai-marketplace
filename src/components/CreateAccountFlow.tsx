@@ -62,9 +62,9 @@ export function CreateAccountFlow({
           className="mb-6 lg:mb-8"
         >
           <img
-            src="/linear-logo.svg"
+            src="https://trie.network/images/logo.png"
             alt="TRIE AI Logo"
-            className="w-12 h-12 lg:w-16 lg:h-16"
+            className="w-[140px] h-auto lg:w-[180px] object-contain"
           />
         </motion.div>
 

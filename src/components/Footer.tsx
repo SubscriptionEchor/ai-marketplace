@@ -14,11 +14,10 @@ export function Footer() {
     >
       <div className="flex items-center justify-center sm:justify-start w-full sm:w-auto">
         <img
-          src="/linear-logo-white.svg"
+          src="https://trie.network/images/logo.png"
           alt="TRIE AI"
-          className="w-5 h-5 sm:w-6 sm:h-6 mr-1.5 sm:mr-2"
+          className="w-10 h-auto sm:w-12 object-contain"
         />
-        <span className="font-medium text-sm sm:text-base">TRIE AI</span>
       </div>
       <div className="flex items-center justify-center sm:justify-end w-full sm:w-auto">
         <span className="text-gray-400 mr-2 text-sm sm:text-base">curated by</span>
