@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Adobe Fonts Integration */
+@layer base {
+  body {
+    font-family: acumin-pro, sans-serif;
+    font-weight: 450;
+    font-style: normal;
+    font-size: 15px;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: neue-haas-grotesk-display, sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+  }
+
+  .font-display {
+    font-family: neue-haas-grotesk-display, sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  .font-body {
+    font-family: acumin-pro, sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  /* Typography Scale */
+  .text-display {
+    @apply text-4xl lg:text-5xl font-display font-semibold tracking-tight;
+    line-height: 1.1;
+  }
+
+  .text-title {
+    @apply text-2xl lg:text-3xl font-display font-semibold tracking-tight;
+    line-height: 1.2;
+  }
+
+  .text-subtitle {
+    @apply text-lg lg:text-xl font-display font-medium tracking-tight;
+    line-height: 1.3;
+  }
+
+  .text-body-lg {
+    @apply text-lg font-body leading-relaxed;
+  }
+
+  .text-body {
+    @apply text-base font-body leading-relaxed;
+  }
+
+  .text-body-sm {
+    @apply text-sm font-body leading-relaxed;
+  }
+
+  .text-caption {
+    @apply text-sm font-body text-gray-600;
+  }
+
+  .text-overline {
+    @apply text-xs font-body uppercase tracking-wider font-medium;
+  }
+}
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 252, 252, 252;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
