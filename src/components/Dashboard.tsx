@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Button } from './ui/Button';
+import { LazyImage } from './ui/LazyImage';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('marketplace');
@@ -13,7 +15,7 @@ export default function Dashboard() {
             <div className="flex">
               {/* Logo */}
               <div className="flex-shrink-0 flex items-center">
-                <img
+                <LazyImage
                   src="https://trie.network/images/logo.png"
                   alt="TRIE AI"
                   className="h-8 w-auto"
@@ -57,12 +59,12 @@ export default function Dashboard() {
 
             {/* Right side buttons */}
             <div className="flex items-center space-x-4">
-              <button className="bg-[#6366F1]/10 text-[#6366F1] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#6366F1]/20 transition-colors">
+              <Button variant="secondary">
                 Connect Wallet
-              </button>
-              <button className="bg-[#6366F1] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#5558E6] transition-colors">
+              </Button>
+              <Button variant="primary">
                 Upload Model
-              </button>
+              </Button>
             </div>
           </div>
         </div>
