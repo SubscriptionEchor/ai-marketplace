@@ -1,25 +1,9 @@
-// Common types used across components
-export interface ProfileData {
-  name: string;
-  email: string;
-  phone: string;
-}
+// Domain types
+export * from './auth';
+export * from './feed';
 
-export interface Preferences {
-  aiModels: boolean;
-  dataScience: boolean;
-  blockchain: boolean;
-  automation: boolean;
-  nlp: boolean;
-  computerVision: boolean;
-  robotics: boolean;
-}
+// UI Types
+export * from './modal';
 
-export interface ModalProps {
-  show: boolean;
-  onClose: () => void;
-  onContinue?: () => void;
-  preventOutsideClick?: boolean;
-  title: string;
-  children: React.ReactNode;
-}
+// Common Types
+// Will be added as needed

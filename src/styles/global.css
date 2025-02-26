@@ -2,10 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Adobe Fonts Integration */
 @layer base {
   body {
-    font-family: acumin-pro, sans-serif;
+    font-family: system-ui, -apple-system, sans-serif;
     font-weight: 450;
     font-style: normal;
     font-size: 15px;
@@ -14,7 +13,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: neue-haas-grotesk-display, sans-serif;
+    font-family: system-ui, -apple-system, sans-serif;
     font-weight: 600;
     font-style: normal;
     letter-spacing: -0.03em;
@@ -22,12 +21,12 @@
   }
 
   .font-display {
-    font-family: neue-haas-grotesk-display, sans-serif;
+    font-family: system-ui, -apple-system, sans-serif;
     letter-spacing: -0.02em;
   }
 
   .font-body {
-    font-family: acumin-pro, sans-serif;
+    font-family: system-ui, -apple-system, sans-serif;
     letter-spacing: -0.01em;
   }
 

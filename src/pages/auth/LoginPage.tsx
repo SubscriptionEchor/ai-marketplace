@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import type { ProfileData, Preferences } from '../lib/types';
+import type { ProfileData, Preferences } from '@/lib/types';
 import { Modal } from '@/features/ui/components/Modal';
 import { CreateAccountFlow } from '@/features/auth/components/CreateAccountFlow';
 import { WalletModal } from '@/features/auth/components/WalletModal';
@@ -11,7 +11,7 @@ function LoginPage() {
   const termsModal = useModal();
   const privacyModal = useModal();
   const walletModal = useModal();
-
+  
   const { values: profileData, handleChange } = useForm<ProfileData>({
     name: '',
     username: '',
@@ -19,7 +19,7 @@ function LoginPage() {
     phone: ''
   });
   
-  const { values: preferences, handleChange: handlePrefsChange } = useForm({
+  const { values: preferences, handleChange: handlePrefsChange } = useForm<Preferences>({
     aiModels: false,
     dataScience: false,
     blockchain: false,
@@ -129,6 +129,7 @@ function LoginPage() {
               profileData={profileData}
               onProfileChange={(data: ProfileData) => {
                 handleChange('name', data.name);
+                handleChange('username', data.username);
                 handleChange('email', data.email);
                 handleChange('phone', data.phone);
               }}

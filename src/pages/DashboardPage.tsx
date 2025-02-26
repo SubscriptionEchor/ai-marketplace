@@ -1,8 +1,10 @@
-import { DashboardLayout } from '../components/dashboard/DashboardLayout';
-import { MarketplaceView } from '../components/dashboard/MarketplaceView';
-import { ModelsView } from '../components/dashboard/ModelsView';
-import { DatasetsView } from '../components/dashboard/DatasetsView';
-import { HomeView } from '../components/dashboard/HomeView';
+import { 
+  DashboardLayout,
+  HomeView,
+  MarketplaceView,
+  ModelsView,
+  DatasetsView
+} from '@/features/dashboard';
 import { useLocation } from 'react-router-dom';
 
 export default function DashboardPage() {

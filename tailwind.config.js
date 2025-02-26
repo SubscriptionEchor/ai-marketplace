@@ -7,8 +7,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['acumin-pro', 'sans-serif'],
-        display: ['neue-haas-grotesk-display', 'sans-serif'],
+        sans: ['system-ui', '-apple-system', 'sans-serif'],
+        display: ['system-ui', '-apple-system', 'sans-serif'],
       },
       fontSize: {
         '2xl': ['1.5rem', {
