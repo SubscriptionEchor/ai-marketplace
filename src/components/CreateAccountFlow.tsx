@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
 
 interface CreateAccountFlowProps {
   currentStep: number;
@@ -20,12 +19,18 @@ interface CreateAccountFlowProps {
     dataScience: boolean;
     blockchain: boolean;
     automation: boolean;
+    nlp: boolean;
+    computerVision: boolean;
+    robotics: boolean;
   };
   onPreferencesChange: (prefs: {
     aiModels: boolean;
     dataScience: boolean;
     blockchain: boolean;
     automation: boolean;
+    nlp: boolean;
+    computerVision: boolean;
+    robotics: boolean;
   }) => void;
 }
 
