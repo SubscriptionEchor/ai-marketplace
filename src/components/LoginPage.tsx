@@ -1,17 +1,17 @@
-import { motion } from 'framer-motion';
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Modal } from './Modal';
-import { Footer } from './Footer';
-import { LoginFlow } from './LoginFlow';
 import { CreateAccountFlow } from './CreateAccountFlow';
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [isCreateAccount, setIsCreateAccount] = useState(false);
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const [profileData, setProfileData] = useState({
     name: '',
     email: '',
@@ -30,13 +30,30 @@ function LoginPage() {
   const handleCreateAccount = () => {
     setIsCreateAccount(true);
     setShowWalletModal(true);
-  }
+  };
+
+  const handleContinueToCreateAccount = () => {
+    setShowWalletModal(false);
+    setIsCreateAccount(true);
+  };
+
+  const handleNextStep = useCallback(async () => {
+    if (currentStep === 3) {
+      setIsLoading(true);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      navigate('/dashboard');
+    } else {
+      setCurrentStep(currentStep + 1);
+    }
+  }, [currentStep, navigate]);
 
   return (
     <Fragment>
       <Modal
         show={showTerms}
         onClose={() => setShowTerms(false)}
+        preventOutsideClick={true}
         title="Terms & Conditions"
       >
         <div className="space-y-4 text-gray-600">
@@ -60,6 +77,7 @@ function LoginPage() {
       <Modal
         show={showPrivacy}
         onClose={() => setShowPrivacy(false)}
+        preventOutsideClick={true}
         title="Privacy Policy"
       >
         <div className="space-y-4 text-gray-600">
@@ -83,6 +101,8 @@ function LoginPage() {
       <Modal
         show={showWalletModal}
         onClose={() => setShowWalletModal(false)}
+        onContinue={handleContinueToCreateAccount}
+        preventOutsideClick={true}
         title="Set Up Your XELL Wallet"
       >
         <div className="space-y-10 text-gray-600">
@@ -172,52 +192,9 @@ function LoginPage() {
         </div>
       </Modal>
       
-      <motion.main
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ 
-          duration: 0.6,
-          ease: [0.22, 1, 0.36, 1]
-        }}
-        className="flex min-h-screen flex-col items-center justify-between"
-      >
-        {/* Top Section */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ 
-            duration: 0.8,
-            ease: "easeOut"
-          }}
-          className={`flex-1 flex flex-col items-center ${isCreateAccount ? 'justify-start max-w-[56rem] py-12' : 'justify-center max-w-md'} w-full px-4`}
-        >
-          {!isCreateAccount && <motion.div 
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ 
-              duration: 0.5,
-              ease: [0.22, 1, 0.36, 1]
-            }}
-            className="w-[140px] sm:w-[160px] md:w-[180px] mb-6 sm:mb-8"
-          >
-            <img
-              src="https://trie.network/images/logo.png"
-              alt="TRIE AI Logo"
-              className="w-full h-auto object-contain"
-            />
-          </motion.div>}
-        
-          <motion.h1 
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="text-title mb-6 sm:mb-8 text-center px-4"
-          >
-            {!isCreateAccount && 'Log in to TRIE AI Marketplace'}
-          </motion.h1>
-        
-          {/* Login Options */}
-          {isCreateAccount ? (
+      {isCreateAccount ? (
+        <main className="flex min-h-screen flex-col items-center justify-between">
+          <div className="flex-1 flex flex-col items-center justify-start max-w-[56rem] py-12 w-full px-4">
             <CreateAccountFlow
               currentStep={currentStep}
               termsAccepted={termsAccepted}
@@ -225,22 +202,91 @@ function LoginPage() {
               onShowTerms={() => setShowTerms(true)}
               onShowPrivacy={() => setShowPrivacy(true)}
               onLogin={() => setIsCreateAccount(false)}
-              onNextStep={() => setCurrentStep(currentStep + 1)}
+              onNextStep={handleNextStep}
+              isLoading={isLoading}
               profileData={profileData}
               onProfileChange={setProfileData}
               preferences={preferences}
               onPreferencesChange={setPreferences}
             />
-          ) : (
-            <LoginFlow
-              onShowTerms={() => setShowTerms(true)}
-              onShowPrivacy={() => setShowPrivacy(true)}
-              onCreateAccount={handleCreateAccount}
+          </div>
+        </main>
+      ) : (
+        <main className="flex min-h-screen">
+          {/* Left Side - Image */}
+          <div className="hidden lg:block w-[55%] relative">
+            <img
+              src="https://cdn.midjourney.com/d8fdb597-0d88-467d-8637-8022fb31dc1e/0_0.png"
+              alt="AI Illustration"
+              className="absolute inset-0 w-full h-full object-cover"
             />
-          )}
-        </motion.div>
-        <Footer />
-      </motion.main>
+          </div>
+
+          {/* Right Side - Login Form */}
+          <div className="w-full lg:w-[45%] flex flex-col justify-center px-8 lg:px-24">
+            <div className="max-w-[360px] w-full mx-auto space-y-12">
+              {/* Logo */}
+              <div>
+                <img
+                  src="https://trie.network/images/logo.png"
+                  alt="TRIE AI Logo"
+                  className="h-7"
+                />
+              </div>
+
+              {/* Title */}
+              <div className="space-y-2">
+                <h1 className="text-2xl font-semibold text-gray-900">
+                  Log in to TRIE AI
+                </h1>
+                <p className="text-sm text-gray-500">
+                  Connect your wallet to access the marketplace
+                </p>
+              </div>
+
+              {/* Connect Wallet Button */}
+              <div>
+                <button
+                  onClick={() => setShowWalletModal(true)}
+                  className="w-full bg-[#6366F1] text-white py-3.5 px-4 rounded-lg font-medium hover:bg-[#5558E6] transition-colors flex items-center justify-center space-x-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  <span>Connect Wallet</span>
+                </button>
+              </div>
+
+              {/* Create Account Link */}
+              <div className="text-center">
+                <span className="text-gray-600">Don't have an account?</span>{' '}
+                <button
+                  onClick={handleCreateAccount}
+                  className="text-[#6366F1] hover:text-[#5558E6] font-medium"
+                >
+                  Create one now
+                </button>
+              </div>
+
+              {/* Footer Links */}
+              <div className="flex justify-between items-center text-sm pt-4">
+                <button
+                  onClick={() => setShowTerms(true)}
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  Terms & Conditions
+                </button>
+                <button
+                  onClick={() => setShowPrivacy(true)}
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  Privacy Policy
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+      )}
     </Fragment>
   );
 }
