@@ -1,4 +1,5 @@
 import { TopNavbar } from './TopNavbar';
+import { TopProviders } from './TopProviders';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -12,36 +13,24 @@ const NAVIGATION_ITEMS = [
   { label: 'Write', icon: 'M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z' }
 ];
 
-const TOPICS = [
-  'Staff Picks',
-  'Following',
-  'Technology',
-  'Money',
-  'Business',
-  'Productivity',
-  'Psychology',
-  'Mindfulness',
-  'Art',
-  'Science'
-];
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <div className="min-h-screen bg-white overflow-hidden">
-      <div className="flex-1 flex flex-col">
+    <div className="h-screen bg-white overflow-hidden">
+      <div className="h-full flex flex-col">
         <TopNavbar />
         
-        <main className="flex-1 pt-[120px] relative">
-          <div className="max-w-[1504px] mx-auto px-4 lg:px-8 pt-6">
+        <main className="flex-1 pt-[120px] relative bg-white">
+          <div className="max-w-[1504px] mx-auto px-6 lg:px-12 pt-8">
             <div className="flex gap-6">
               {/* Left Sidebar - Navigation */}
-              <div className="w-[240px] hidden lg:block flex-shrink-0 fixed left-[max(0px,calc(50%-752px))] top-[120px] h-[calc(100vh-120px)] overflow-y-auto border-r border-gray-200 pt-6">
-                <div className="space-y-6 pr-6 h-full">
+              <div className="w-[280px] hidden lg:block flex-shrink-0 fixed left-[max(0px,calc(50%-752px))] top-[120px] bottom-0 overflow-y-auto border-r border-gray-100 pt-8 bg-white">
+                <div className="space-y-4 px-8 h-full">
                   {NAVIGATION_ITEMS.map((item) => (
                     <button
                       key={item.label}
-                      className="flex items-center w-full px-4 py-3 text-gray-500 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors group"
+                      className="flex items-center w-full px-5 py-3.5 text-gray-500 hover:text-gray-900 rounded-xl hover:bg-gray-50 hover:shadow-sm transition-all duration-200 group"
                     >
-                      <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={item.icon} />
                       </svg>
                       <span className="text-sm font-medium">
@@ -53,27 +42,36 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </div>
 
               {/* Main Content Area */}
-              <div className="flex-1 min-w-0 lg:ml-[256px] lg:mr-[336px] overflow-y-auto scrollbar-hide">
+              <div className="flex-1 min-w-0 lg:ml-[296px] lg:mr-[376px] overflow-y-auto scrollbar-hide">
                 {children}
               </div>
 
               {/* Right Sidebar */}
-              <div className="w-[320px] hidden xl:block flex-shrink-0 fixed right-[max(0px,calc(50%-752px))] top-[120px] h-[calc(100vh-120px)] overflow-y-auto border-l border-gray-200 pt-6">
-                <div className="pl-6 h-full">
-                  <div className="mb-8">
-                    <h3 className="text-sm font-medium text-gray-900 mb-4">Recommended topics</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {TOPICS.map((topic) => (
-                        <button
-                          key={topic}
-                          className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-full text-[13px] text-gray-700 transition-colors"
-                        >
-                          {topic}
-                        </button>
-                      ))}
-                    </div>
+              <div className="w-[340px] hidden xl:block flex-shrink-0 fixed right-[max(0px,calc(50%-752px))] top-[120px] bottom-0 overflow-y-auto border-l border-gray-100 pt-8 bg-white">
+                <div className="px-8 h-full">
+                  <TopProviders />
+                  <div className="mt-8 pt-8 border-t border-gray-100">
+                    <nav className="flex flex-col space-y-4">
+                      <div className="flex flex-wrap gap-x-6 gap-y-2">
+                        <a href="/about" className="text-sm text-gray-500 hover:text-gray-700">About</a>
+                        <a href="/accessibility" className="text-sm text-gray-500 hover:text-gray-700">Accessibility</a>
+                        <a href="/help" className="text-sm text-gray-500 hover:text-gray-700">Help Center</a>
+                        <a href="/privacy" className="text-sm text-gray-500 hover:text-gray-700">Privacy Policy</a>
+                        <a href="/terms" className="text-sm text-gray-500 hover:text-gray-700">Terms of Service</a>
+                      </div>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <img
+                          src="https://trie.network/images/logo.png"
+                          alt="Trie Logo"
+                          className="h-4 w-auto object-contain"
+                          onError={(e) => {
+                            e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnoiIGZpbGw9IiM2MzY2RjEiLz48L3N2Zz4=';
+                          }}
+                        />
+                        <span className="text-sm text-gray-500">Trie Corporation © 2024</span>
+                      </div>
+                    </nav>
                   </div>
-                  
                 </div>
               </div>
             </div>
