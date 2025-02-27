@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
-import LoginPage from '@/pages/auth/LoginPage';
-import DashboardPage from '@/features/dashboard/pages/DashboardPage';
-import RootLayout from '@/layouts/RootLayout';
+import { LoginContainer } from '@/containers';
+import { DashboardContainer } from '@/containers';
+import { RootLayout } from '@/components/layouts';
 
 export const router = createBrowserRouter([
   {
@@ -10,11 +10,20 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <LoginPage />,
+        element: <LoginContainer />,
       },
       {
-        path: '/dashboard/*',
-        element: <DashboardPage />,
+        path: '/dashboard',
+        children: [
+          {
+            index: true,
+            element: <DashboardContainer />,
+          },
+          {
+            path: ':view',
+            element: <DashboardContainer />,
+          }
+        ]
       }
     ],
   },

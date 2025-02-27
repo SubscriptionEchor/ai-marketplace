@@ -1,0 +1,48 @@
+/* Base Styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 450;
+    font-style: normal;
+    font-size: 15px;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+  }
+}
+
+/* Typography */
+.font-display {
+  font-family: system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.font-body {
+  font-family: system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* Theme */
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 252, 252, 252;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
