@@ -3,14 +3,24 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base Theme */
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-rgb: 255, 245, 237;
+}
+
 @layer base {
   body {
     font-family: system-ui, -apple-system, sans-serif;
-    font-weight: 450;
+    font-weight: 400;
     font-style: normal;
     font-size: 15px;
     line-height: 1.6;
     letter-spacing: -0.01em;
+    color: rgb(var(--foreground-rgb));
+    background: rgb(var(--background-rgb));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -33,16 +43,31 @@
   letter-spacing: -0.01em;
 }
 
-/* Theme */
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 252, 252, 252;
+/* Hide scrollbar but maintain functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari and Opera */
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-[#fff5ed];
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-border;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary/50;
 }

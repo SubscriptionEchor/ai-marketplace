@@ -58,8 +58,8 @@ export function MarketplaceView() {
             <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="h-12 w-12 bg-[#6366F1]/10 rounded-lg flex items-center justify-center">
-                    <svg className="h-6 w-6 text-[#6366F1]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="h-12 w-12 bg-[#06b6d4]/10 rounded-lg flex items-center justify-center">
+                    <svg className="h-6 w-6 text-[#06b6d4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </div>
@@ -81,7 +81,7 @@ export function MarketplaceView() {
                   <span className="text-sm font-medium text-gray-900">{item.price.eth} ETH</span>
                   <span className="text-xs text-gray-500">(${item.price.usd})</span>
                 </div>
-                <button className="bg-[#6366F1] text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-[#5558E6] transition-colors">
+                <button className="bg-[#0284a5] text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-[#026d8a] transition-colors">
                   View Details
                 </button>
               </div>

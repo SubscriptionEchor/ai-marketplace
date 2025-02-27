@@ -6,9 +6,45 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        background: {
+          DEFAULT: '#fff5ed',
+          secondary: '#111315',
+          tertiary: '#141414'
+        },
+        primary: {
+          DEFAULT: '#0284a5',
+          hover: '#026d8a',
+          light: 'rgba(6, 182, 212, 0.1)'
+        },
+        border: {
+          DEFAULT: '#1F1F1F',
+          light: '#2D2D2D'
+        },
+        text: {
+          primary: '#FFFFFF',
+          secondary: '#A1A1AA',
+          tertiary: '#71717A'
+        },
+        accent: {
+          blue: '#3B82F6',
+          purple: '#8B5CF6',
+          pink: '#EC4899'
+        },
+        success: '#22C55E',
+        warning: '#F59E0B',
+        error: '#EF4444'
+      },
       fontFamily: {
         sans: ['system-ui', '-apple-system', 'sans-serif'],
         display: ['system-ui', '-apple-system', 'sans-serif'],
+      },
+      boxShadow: {
+        card: '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
+        popup: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
+        glow: '0 0 20px rgba(6, 182, 212, 0.15)',
+        'focus-light': '0 0 0 2px rgba(6, 182, 212, 0.15)',
+        'focus-dark': '0 0 0 2px rgba(6, 182, 212, 0.25)'
       },
       fontSize: {
         '2xl': ['1.5rem', {
@@ -22,6 +58,13 @@ export default {
           fontWeight: '600',
         }],
       },
+      backdropBlur: {
+        xs: '2px'
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(var(--tw-gradient-stops))'
+      }
     },
   },
   plugins: [],

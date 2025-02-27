@@ -32,9 +32,9 @@ export const FeedItem = memo(function FeedItem({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.1 }}
       {...motionProps}
-      className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
+      className="bg-background-secondary rounded-xl shadow-card border border-border overflow-hidden"
     >
-      <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0">
+      <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0 border-b border-border">
         <div className="flex items-center space-x-3">
           <img
             src={item.author.avatar}
@@ -42,8 +42,8 @@ export const FeedItem = memo(function FeedItem({
             className="w-10 h-10 rounded-full"
           />
           <div>
-            <h3 className="font-medium text-gray-900">{item.author.name}</h3>
-            <p className="text-sm text-gray-500">{item.author.handle}</p>
+            <h3 className="font-medium text-text-primary">{item.author.name}</h3>
+            <p className="text-sm text-text-secondary">{item.author.handle}</p>
           </div>
         </div>
         <PostOptionsMenu
@@ -61,19 +61,19 @@ export const FeedItem = memo(function FeedItem({
       )}
       {item.content.type === 'text' && (
         <div className="px-4 py-3">
-          <p className="text-gray-900">{item.content.text}</p>
+          <p className="text-text-primary">{item.content.text}</p>
         </div>
       )}
 
-      <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-gray-100 space-y-4 sm:space-y-0">
+      <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-border space-y-4 sm:space-y-0">
         <div className="flex items-center space-x-4">
-          <button className="flex items-center space-x-1 text-gray-500 hover:text-[#6366F1]">
+          <button className="flex items-center space-x-1 text-text-secondary hover:text-primary transition-colors">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
             <span className="text-sm font-medium">{item.stats.upvotes}</span>
           </button>
-          <button className="flex items-center space-x-1 text-gray-500 hover:text-[#6366F1]">
+          <button className="flex items-center space-x-1 text-text-secondary hover:text-primary transition-colors">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
@@ -81,7 +81,7 @@ export const FeedItem = memo(function FeedItem({
           </button>
           <div className="relative">
             <button 
-              className="flex items-center space-x-1 text-gray-500 hover:text-[#6366F1] relative"
+              className="flex items-center space-x-1 text-text-secondary hover:text-primary transition-colors relative"
               onClick={onShare}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,8 +92,8 @@ export const FeedItem = memo(function FeedItem({
           </div>
         </div>
         <div className="text-left sm:text-right w-full sm:w-auto">
-          <span className="text-sm text-gray-500 block">{item.timestamp}</span>
-          <span className="text-xs text-gray-400 block">
+          <span className="text-sm text-text-secondary block">{item.timestamp}</span>
+          <span className="text-xs text-text-tertiary block">
             Updated {new Date(item.stats.lastUpdated).toLocaleDateString()}
           </span>
         </div>

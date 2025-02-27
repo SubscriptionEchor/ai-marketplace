@@ -1,7 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { LoginContainer } from '@/containers';
-import { DashboardContainer } from '@/containers';
-import { RootLayout } from '@/components/layouts';
+import { DashboardContainer } from '../containers';
+import { RootLayout } from '../components/layouts';
 
 export const router = createBrowserRouter([
   {
@@ -10,7 +9,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <LoginContainer />,
+        element: <DashboardContainer />,
       },
       {
         path: '/dashboard',
