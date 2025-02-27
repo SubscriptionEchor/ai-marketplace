@@ -1,7 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { DashboardContainer } from '../containers';
 import { RootLayout } from '../components/layouts';
-import { PrivacyView, TermsView, AccessibilityView } from '../components/legal';
 
 export const router = createBrowserRouter([
   {
@@ -11,18 +10,6 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <DashboardContainer />,
-      },
-      {
-        path: 'privacy',
-        element: <PrivacyView />,
-      },
-      {
-        path: 'terms',
-        element: <TermsView />,
-      },
-      {
-        path: 'accessibility',
-        element: <AccessibilityView />,
       },
       {
         path: '/dashboard',
