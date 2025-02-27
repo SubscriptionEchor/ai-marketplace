@@ -24,8 +24,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="h-full flex flex-col">
         <TopNavbar />
         
-        <main className="flex-1 pt-[120px] relative bg-white overflow-y-auto">
-          <div className="max-w-[1504px] mx-auto px-6 lg:px-12 pt-8">
+        <main className="flex-1 pt-[120px] relative bg-white overflow-y-auto flex justify-center">
+          <div className="w-full max-w-[1504px] px-6 lg:px-12 pt-8">
             <div className="flex gap-6">
               {/* Left Sidebar - Navigation */}
               <div className="w-[280px] hidden lg:block flex-shrink-0 fixed left-[max(0px,calc(50%-752px))] top-[120px] bottom-0 overflow-y-auto border-r border-gray-100 pt-8 bg-white">
