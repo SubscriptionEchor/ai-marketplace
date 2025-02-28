@@ -9,14 +9,14 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <DashboardContainer />,
+        element: <DashboardContainer />, // This will now show HomeView by default
       },
       {
         path: '/dashboard',
         children: [
           {
             index: true,
-            element: <DashboardContainer />,
+            element: <DashboardContainer />, // This will now show HomeView by default
           },
           {
             path: ':view',

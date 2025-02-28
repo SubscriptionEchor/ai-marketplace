@@ -1,5 +1,4 @@
 import { TopNavbar } from './TopNavbar';
-import { TopProviders } from './TopProviders';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -40,8 +39,8 @@ function NavItem({ item, isActive }: NavItemProps) {
 
 const MAIN_NAVIGATION = [
   { 
-    id: 'all', 
-    label: 'All Items', 
+    id: 'all',
+    label: 'Home',
     icon: 'M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 018.25 20.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z'
   },
   { 
@@ -85,18 +84,17 @@ const SETTINGS = [
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const currentPath = location.pathname.split('/').pop() || 'all';
+  const currentPath = location.pathname.split('/').pop() || 'home';
 
   return (
     <div className="h-screen bg-[#fafafa] overflow-hidden">
       <div className="h-full flex flex-col">
         <TopNavbar />
         
-        <main className="flex-1 pt-[120px] relative bg-[#fafafa] overflow-y-auto flex justify-center">
-          <div className="w-full max-w-[1504px] px-6 lg:px-12 pt-8">
-            <div className="flex gap-6">
-              {/* Left Sidebar - Navigation */}
-              <div className="w-[280px] hidden lg:block flex-shrink-0 fixed left-[max(0px,calc(50%-752px))] top-[120px] bottom-0 overflow-y-auto border-r border-gray-100 pt-8 bg-[#fafafa]">
+        <main className="flex-1 pt-[120px] relative bg-[#fafafa] overflow-y-auto">
+          <div className="flex">
+            {/* Left Sidebar - Navigation */}
+            <div className="w-[280px] hidden lg:block flex-shrink-0 fixed left-0 top-[120px] bottom-0 overflow-y-auto border-r border-gray-100 pt-8 bg-[#fafafa]">
                 <div className="flex flex-col h-full px-6">
                   {/* Main Navigation */}
                   <div className="space-y-2.5 mb-8">
@@ -128,39 +126,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </div>
 
               {/* Main Content Area */}
-              <div className="flex-1 min-w-0 lg:ml-[296px] lg:mr-[376px] overflow-y-auto scrollbar-hide bg-white rounded-xl p-8 shadow-sm border border-gray-100">
-                {children}
-              </div>
-              
-              {/* Right Sidebar */}
-              <div className="w-[340px] hidden xl:block flex-shrink-0 fixed right-[max(0px,calc(50%-752px))] top-[120px] bottom-0 overflow-y-auto border-l border-gray-100 pt-8 bg-[#fafafa]">
-                <div className="px-8 h-full">
-                  <TopProviders />
-                  <div className="mt-8 pt-8 border-t border-gray-100">
-                    <nav className="flex flex-col space-y-4">
-                      <div className="flex flex-wrap gap-x-6 gap-y-2">
-                        <a href="/about" className="text-body-sm text-gray-500 hover:text-gray-700">About</a>
-                        <a href="/accessibility" className="text-body-sm text-gray-500 hover:text-gray-700">Accessibility</a>
-                        <a href="/help" className="text-body-sm text-gray-500 hover:text-gray-700">Help Center</a>
-                        <a href="/privacy" className="text-body-sm text-gray-500 hover:text-gray-700">Privacy Policy</a>
-                        <a href="/terms" className="text-body-sm text-gray-500 hover:text-gray-700">Terms of Service</a>
-                      </div>
-                      <div className="flex items-center space-x-2 mt-2">
-                        <img
-                          src="https://trie.network/images/logo.png"
-                          alt="Trie Logo"
-                          className="h-4 w-auto object-contain"
-                          onError={(e) => {
-                            e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnoiIGZpbGw9IiM2MzY2RjEiLz48L3N2Zz4=';
-                          }}
-                        />
-                        <span className="text-body-sm text-gray-500">Trie Corporation © 2024</span>
-                      </div>
-                    </nav>
-                  </div>
-                </div>
-              </div>
-            </div>
+              {children}
           </div>
         </main>
       </div>
