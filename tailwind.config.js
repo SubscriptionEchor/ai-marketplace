@@ -23,7 +23,7 @@ export default {
       },
       colors: {
         background: {
-          DEFAULT: '#fff5ed',
+          DEFAULT: '#f6f6f7',
           secondary: '#111315',
           tertiary: '#141414'
         },

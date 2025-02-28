@@ -23,13 +23,13 @@ function NavItem({ item, isActive }: NavItemProps) {
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={() => navigate(`/dashboard/${item.id}`)}
-      className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 group ${
+      className={`flex items-center w-full px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group ${
         isActive
           ? 'text-[#0284a5] bg-white shadow-sm border border-gray-100'
           : 'text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm hover:border hover:border-gray-100'
       }`}
     >
-      <svg className="w-5 h-5 mr-3 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-5 h-5 mr-2.5 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={item.icon} />
       </svg>
       {item.label}
@@ -87,46 +87,48 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const currentPath = location.pathname.split('/').pop() || 'home';
 
   return (
-    <div className="h-screen bg-[#fafafa] overflow-hidden">
+    <div className="h-screen bg-[#f6f6f7] overflow-hidden">
       <div className="h-full flex flex-col">
         <TopNavbar />
         
-        <main className="flex-1 pt-[120px] relative bg-[#fafafa] overflow-y-auto">
+        <main className="flex-1 pt-[120px] relative bg-[#f6f6f7]">
           <div className="flex">
             {/* Left Sidebar - Navigation */}
-            <div className="w-[280px] hidden lg:block flex-shrink-0 fixed left-0 top-[120px] bottom-0 overflow-y-auto border-r border-gray-100 pt-8 bg-[#fafafa]">
-                <div className="flex flex-col h-full px-6">
-                  {/* Main Navigation */}
-                  <div className="space-y-2.5 mb-8">
-                    <div className="px-3 mb-4">
-                      <h2 className="font-display text-label text-gray-400 uppercase tracking-wider">Main</h2>
-                    </div>
-                    {MAIN_NAVIGATION.map((item) => (
-                      <NavItem key={item.id} item={item} isActive={currentPath === item.id} />
-                    ))}
+            <div className="w-[280px] hidden lg:block flex-shrink-0 fixed left-0 top-[120px] bottom-0 overflow-y-auto border-r border-[#e1e3e5] pt-8 bg-[#f6f6f7]">
+              <div className="flex flex-col h-full px-6">
+                {/* Main Navigation */}
+                <div className="space-y-1.5 mb-6">
+                  <div className="px-3 mb-2">
+                    <h2 className="font-display text-label text-gray-400 uppercase tracking-wider">Main</h2>
                   </div>
+                  {MAIN_NAVIGATION.map((item) => (
+                    <NavItem key={item.id} item={item} isActive={currentPath === item.id} />
+                  ))}
+                </div>
 
-                  {/* Additional Navigation */}
-                  <div className="space-y-2.5 mb-8">
-                    <div className="px-3 mb-4">
-                      <h2 className="font-display text-label text-gray-400 uppercase tracking-wider">Additional</h2>
-                    </div>
-                    {ADDITIONAL_NAVIGATION.map((item) => (
-                      <NavItem key={item.id} item={item} isActive={currentPath === item.id} />
-                    ))}
+                {/* Additional Navigation */}
+                <div className="space-y-1.5 mb-6">
+                  <div className="px-3 mb-2">
+                    <h2 className="font-display text-label text-gray-400 uppercase tracking-wider">Additional</h2>
                   </div>
+                  {ADDITIONAL_NAVIGATION.map((item) => (
+                    <NavItem key={item.id} item={item} isActive={currentPath === item.id} />
+                  ))}
+                </div>
 
-                  {/* Settings - Fixed at Bottom */}
-                  <div className="mt-auto pt-8 border-t border-gray-100 space-y-1.5">
-                    {SETTINGS.map((item) => (
-                      <NavItem key={item.id} item={item} isActive={currentPath === item.id} />
-                    ))}
-                  </div>
+                {/* Settings - Fixed at Bottom */}
+                <div className="mt-auto pt-4 pb-6 border-t border-[#e1e3e5] flex flex-col items-center">
+                  {SETTINGS.map((item) => (
+                    <NavItem key={item.id} item={item} isActive={currentPath === item.id} />
+                  ))}
                 </div>
               </div>
+            </div>
 
-              {/* Main Content Area */}
+            {/* Main Content Area */}
+            <div className="flex-1 min-w-0 lg:ml-[276px] lg:mr-[24px]">
               {children}
+            </div>
           </div>
         </main>
       </div>

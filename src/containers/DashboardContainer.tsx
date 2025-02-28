@@ -10,9 +10,9 @@ const VIEWS = {
 };
 
 export function DashboardContainer() {
-  const { view } = useParams();
+  const { view = 'all' } = useParams();
   const View = VIEWS[view as keyof typeof VIEWS] || HomeView;
-  
+
   return (
     <DashboardLayout>
       <View />
