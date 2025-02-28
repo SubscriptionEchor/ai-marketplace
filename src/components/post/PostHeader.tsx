@@ -13,8 +13,8 @@ export function PostHeader({ author, avatar, timestamp }: PostHeaderProps) {
         <Avatar src={avatar} alt={author} />
       </div>
       <div>
-        <h3 className="font-medium text-gray-900">{author}</h3>
-        <p className="text-xs text-gray-500 uppercase">{timestamp}</p>
+        <h3 className="font-display text-body-base font-medium text-gray-900">{author}</h3>
+        <p className="text-label text-gray-500 uppercase">{timestamp}</p>
       </div>
     </div>
   );

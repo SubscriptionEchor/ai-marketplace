@@ -6,6 +6,21 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        display: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        body: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+      },
+      fontSize: {
+        'display-xl': ['2.25rem', { lineHeight: '2.5rem', letterSpacing: '-0.02em', fontWeight: '700' }],
+        'display-lg': ['2rem', { lineHeight: '2.25rem', letterSpacing: '-0.02em', fontWeight: '700' }],
+        'display-md': ['1.5rem', { lineHeight: '2rem', letterSpacing: '-0.02em', fontWeight: '600' }],
+        'display-sm': ['1.25rem', { lineHeight: '1.75rem', letterSpacing: '-0.02em', fontWeight: '600' }],
+        'body-lg': ['1.125rem', { lineHeight: '1.75rem', letterSpacing: '-0.01em' }],
+        'body-base': ['1rem', { lineHeight: '1.5rem', letterSpacing: '-0.01em' }],
+        'body-sm': ['0.875rem', { lineHeight: '1.25rem', letterSpacing: '-0.01em' }],
+        'body-xs': ['0.75rem', { lineHeight: '1rem', letterSpacing: '0em' }],
+        'label': ['0.75rem', { lineHeight: '1rem', letterSpacing: '0.05em', fontWeight: '600' }],
+      },
       colors: {
         background: {
           DEFAULT: '#fff5ed',
@@ -35,28 +50,12 @@ export default {
         warning: '#F59E0B',
         error: '#EF4444'
       },
-      fontFamily: {
-        sans: ['system-ui', '-apple-system', 'sans-serif'],
-        display: ['system-ui', '-apple-system', 'sans-serif'],
-      },
       boxShadow: {
         card: '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
         popup: '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
         glow: '0 0 20px rgba(6, 182, 212, 0.15)',
         'focus-light': '0 0 0 2px rgba(6, 182, 212, 0.15)',
         'focus-dark': '0 0 0 2px rgba(6, 182, 212, 0.25)'
-      },
-      fontSize: {
-        '2xl': ['1.5rem', {
-          lineHeight: '2rem',
-          letterSpacing: '-0.01em',
-          fontWeight: '600',
-        }],
-        '3xl': ['1.875rem', {
-          lineHeight: '2.25rem',
-          letterSpacing: '-0.02em',
-          fontWeight: '600',
-        }],
       },
       backdropBlur: {
         xs: '2px'

@@ -7,11 +7,4 @@ export interface MarketplaceItem {
   avatar: string;
   likes: number;
   downloads: number;
-  images?: string[];
-  creator: string;
-  description: string;
-  price: {
-    eth: number;
-    usd: number;
-  };
 }
