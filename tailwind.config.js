@@ -7,14 +7,15 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        body: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['IBM Plex Sans', 'sans-serif'],
+        body: ['IBM Plex Sans', 'sans-serif'],
+        mono: ['IBM Plex Mono', 'monospace']
       },
       fontSize: {
-        'display-xl': ['2.25rem', { lineHeight: '2.5rem', letterSpacing: '-0.02em', fontWeight: '700' }],
-        'display-lg': ['2rem', { lineHeight: '2.25rem', letterSpacing: '-0.02em', fontWeight: '700' }],
-        'display-md': ['1.5rem', { lineHeight: '2rem', letterSpacing: '-0.02em', fontWeight: '600' }],
-        'display-sm': ['1.25rem', { lineHeight: '1.75rem', letterSpacing: '-0.02em', fontWeight: '600' }],
+        'display-xl': ['2.25rem', { lineHeight: '2.5rem', letterSpacing: '-0.01em', fontWeight: '700' }],
+        'display-lg': ['2rem', { lineHeight: '2.25rem', letterSpacing: '-0.01em', fontWeight: '700' }],
+        'display-md': ['1.5rem', { lineHeight: '2rem', letterSpacing: '-0.01em', fontWeight: '600' }],
+        'display-sm': ['1.25rem', { lineHeight: '1.75rem', letterSpacing: '-0.01em', fontWeight: '600' }],
         'body-lg': ['1.125rem', { lineHeight: '1.75rem', letterSpacing: '-0.01em' }],
         'body-base': ['1rem', { lineHeight: '1.5rem', letterSpacing: '-0.01em' }],
         'body-sm': ['0.875rem', { lineHeight: '1.25rem', letterSpacing: '-0.01em' }],

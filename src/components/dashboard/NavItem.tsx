@@ -1,17 +1,19 @@
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-interface NavItemProps {
+export interface NavItemProps {
   item: {
     id: string;
     label: string;
     icon: string;
   };
-  isActive: boolean;
 }
 
-export function NavItem({ item, isActive }: NavItemProps) {
+export function NavItem({ item }: NavItemProps) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname.split('/').pop() || 'all';
+  const isActive = currentPath === item.id;
   
   return (
     <motion.button

@@ -3,107 +3,97 @@ import { ModelCard } from '@/components/ui';
 
 const ITEMS_PER_PAGE = 12;
 
-const CATEGORY_ICONS = {
-  '3D': {
-    icon: 'M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 018.25 20.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z',
-    color: 'bg-gradient-to-br from-blue-500 to-indigo-500'
-  },
-  'Audio': {
-    icon: 'M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z',
+const PROVIDER_ICONS = {
+  'GPU': {
+    icon: 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z',
     color: 'bg-gradient-to-br from-purple-500 to-pink-500'
   },
-  'Geospatial': {
-    icon: 'M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z',
-    color: 'bg-gradient-to-br from-amber-500 to-orange-500'
+  'CPU': {
+    icon: 'M8 16a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2m-6 0a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2M8 8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2m-6 0a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2m-3 6h2m-2-4h2M8 12h8',
+    color: 'bg-gradient-to-br from-blue-500 to-cyan-500'
   },
-  'Image': {
-    icon: 'M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z',
+  'TPU': {
+    icon: 'M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25',
     color: 'bg-gradient-to-br from-green-500 to-emerald-500'
   },
-  'Tabular': {
-    icon: 'M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5c-.621 0-1.125-.504-1.125-1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125-.504-1.125-1.125v-1.5c0-.621.504-1.125 1.125-1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5M12 14.625v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 14.625c0 .621.504 1.125 1.125 1.125M10.875 16.5h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M18.375 16.5c.621 0 1.125.504 1.125 1.125M3.375 5.625c0-.621.504-1.125 1.125-1.125h1.5c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125h-1.5A1.125 1.125 0 013.375 7.125v-1.5zm17.25 0c0-.621-.504-1.125-1.125-1.125h-1.5c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125h1.5c.621 0 1.125-.504 1.125-1.125v-1.5zm-17.25 12c0-.621.504-1.125 1.125-1.125h1.5c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5zm17.25 0c0-.621-.504-1.125-1.125-1.125h-1.5c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125h1.5c.621 0 1.125-.504 1.125-1.125v-1.5z',
-    color: 'bg-gradient-to-br from-red-500 to-rose-500'
+  'Memory': {
+    icon: 'M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125',
+    color: 'bg-gradient-to-br from-orange-500 to-red-500'
   },
-  'Text': {
-    icon: 'M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z',
-    color: 'bg-gradient-to-br from-cyan-500 to-blue-500'
-  },
-  'Time-series': {
-    icon: 'M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z',
-    color: 'bg-gradient-to-br from-violet-500 to-purple-500'
-  },
-  'Video': {
-    icon: 'M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z',
-    color: 'bg-gradient-to-br from-fuchsia-500 to-pink-500'
+  'Storage': {
+    icon: 'M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776',
+    color: 'bg-gradient-to-br from-indigo-500 to-purple-500'
   }
 };
 
-const DATASET_MODALITIES = {
-  'Modalities': [
-    '3D',
-    'Audio',
-    'Geospatial',
-    'Image',
-    'Tabular',
-    'Text',
-    'Time-series',
-    'Video'
-  ]
-};
-
-const FORMAT_CATEGORIES = {
-  'File Formats': [
-    'json',
-    'csv',
-    'parquet',
-    'arrow'
+const HARDWARE_TYPES = {
+  'Compute': [
+    'GPU',
+    'CPU',
+    'TPU'
   ],
-  'Folder Types': [
-    'imagefolder',
-    'soundfolder',
-    'webdataset',
-    'text'
+  'Infrastructure': [
+    'Memory',
+    'Storage'
   ]
 };
 
-export function DatasetsView() {
+const REGIONS = {
+  'North America': [
+    'US East (N. Virginia)',
+    'US West (Oregon)',
+    'Canada (Central)'
+  ],
+  'Europe': [
+    'Ireland',
+    'Frankfurt',
+    'London'
+  ],
+  'Asia Pacific': [
+    'Tokyo',
+    'Singapore',
+    'Sydney'
+  ]
+};
+
+export function InfraProvidersView() {
   const [likedItems, setLikedItems] = useState<Record<string, boolean>>({});
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
-  const DATASETS = [
+  const PROVIDERS = [
     {
-      id: 'common-voice',
+      id: 'aws-p4d',
       creator: {
-        name: 'Mozilla',
-        avatar: 'M'
+        name: 'AWS',
+        avatar: 'A'
       },
       image: 'https://cdn.midjourney.com/d8fdb597-0d88-467d-8637-8022fb31dc1e/0_0.png',
-      name: 'Common Voice',
-      categories: ['Audio', 'Text', 'Multilingual'],
-      description: 'Multi-language speech dataset with over 9,000 hours of recorded voice data.',
-      updatedAt: '2 days ago',
-      downloads: '2.3M',
-      likes: '450'
+      name: 'P4d Instance',
+      categories: ['GPU', 'Memory'],
+      description: 'High-performance computing instance with NVIDIA A100 Tensor Core GPUs.',
+      updatedAt: '1 day ago',
+      downloads: '15.2k',
+      likes: '890'
     },
     ...Array.from({ length: 24 }, (_, i) => ({
-      id: `dataset-${i + 2}`,
+      id: `provider-${i + 2}`,
       creator: {
-        name: `Creator ${i + 2}`,
-        avatar: `C${i + 2}`
+        name: `Provider ${i + 2}`,
+        avatar: `P${i + 2}`
       },
       image: 'https://cdn.midjourney.com/d8fdb597-0d88-467d-8637-8022fb31dc1e/0_0.png',
-      name: `Dataset ${i + 2}`,
-      categories: Object.keys(CATEGORY_ICONS).slice(0, Math.floor(Math.random() * 2) + 2),
-      description: 'A comprehensive dataset for AI training and research.',
+      name: `Infrastructure ${i + 2}`,
+      categories: Object.keys(PROVIDER_ICONS).slice(0, Math.floor(Math.random() * 2) + 2),
+      description: 'High-performance computing infrastructure for AI workloads.',
       updatedAt: `${Math.floor(Math.random() * 30) + 1} days ago`,
       downloads: `${(Math.random() * 1000000).toFixed(0)}`,
       likes: `${(Math.random() * 10000).toFixed(0)}`
     }))
   ];
 
-  const totalPages = Math.ceil(DATASETS.length / ITEMS_PER_PAGE);
-  const paginatedDatasets = DATASETS.slice(
+  const totalPages = Math.ceil(PROVIDERS.length / ITEMS_PER_PAGE);
+  const paginatedProviders = PROVIDERS.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
@@ -115,43 +105,45 @@ export function DatasetsView() {
     }));
   };
 
-  const filteredCategories = useMemo(() => {
-    if (!searchQuery) return DATASET_MODALITIES;
+  const filteredHardwareTypes = useMemo(() => {
+    if (!searchQuery) return HARDWARE_TYPES;
 
     const query = searchQuery.toLowerCase();
-    const filtered: typeof DATASET_MODALITIES = {
-      'Modalities': []
+    const filtered: typeof HARDWARE_TYPES = {
+      'Compute': [],
+      'Infrastructure': []
     };
 
-    Object.entries(DATASET_MODALITIES).forEach(([category, modalities]) => {
-      const matchingModalities = modalities.filter(modality => 
-        modality.toLowerCase().includes(query)
+    Object.entries(HARDWARE_TYPES).forEach(([category, types]) => {
+      const matchingTypes = types.filter(type => 
+        type.toLowerCase().includes(query)
       );
 
-      if (matchingModalities.length > 0) {
-        filtered[category] = matchingModalities;
+      if (matchingTypes.length > 0) {
+        filtered[category] = matchingTypes;
       }
     });
 
     return filtered;
   }, [searchQuery]);
 
-  const filteredFormats = useMemo(() => {
-    if (!searchQuery) return FORMAT_CATEGORIES;
+  const filteredRegions = useMemo(() => {
+    if (!searchQuery) return REGIONS;
 
     const query = searchQuery.toLowerCase();
-    const filtered: typeof FORMAT_CATEGORIES = {
-      'File Formats': [],
-      'Folder Types': []
+    const filtered: typeof REGIONS = {
+      'North America': [],
+      'Europe': [],
+      'Asia Pacific': []
     };
 
-    Object.entries(FORMAT_CATEGORIES).forEach(([category, formats]) => {
-      const matchingFormats = formats.filter(format => 
-        format.toLowerCase().includes(query)
+    Object.entries(REGIONS).forEach(([region, locations]) => {
+      const matchingLocations = locations.filter(location => 
+        location.toLowerCase().includes(query)
       );
 
-      if (matchingFormats.length > 0) {
-        filtered[category] = matchingFormats;
+      if (matchingLocations.length > 0) {
+        filtered[region] = matchingLocations;
       }
     });
 
@@ -161,13 +153,13 @@ export function DatasetsView() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 px-4 md:px-6 lg:px-8 h-[calc(100vh-112px)] pt-6 pb-16">
       <div className="lg:col-span-3 h-[calc(100vh-112px)] overflow-y-auto pr-4 pb-16 scrollbar-hide">
-        {/* Dataset Cards Grid */}
+        {/* Provider Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {paginatedDatasets.map((dataset) => (
+          {paginatedProviders.map((provider) => (
             <ModelCard
-              key={dataset.id}
-              model={dataset}
-              isLiked={likedItems[dataset.id]}
+              key={provider.id}
+              model={provider}
+              isLiked={likedItems[provider.id]}
               onLike={handleLike}
             />
           ))}
@@ -196,9 +188,9 @@ export function DatasetsView() {
               <p className="text-sm text-gray-700">
                 Showing <span className="font-medium">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span> to{' '}
                 <span className="font-medium">
-                  {Math.min(currentPage * ITEMS_PER_PAGE, DATASETS.length)}
+                  {Math.min(currentPage * ITEMS_PER_PAGE, PROVIDERS.length)}
                 </span>{' '}
-                of <span className="font-medium">{DATASETS.length}</span> results
+                of <span className="font-medium">{PROVIDERS.length}</span> results
               </p>
             </div>
             <div>
@@ -249,8 +241,8 @@ export function DatasetsView() {
           <input
             type="search"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search formats..."
+            onChange={(e ) => setSearchQuery(e.target.value)}
+            placeholder="Search hardware..."
             className="w-full pl-12 pr-4 h-12 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0284a5] focus:ring-offset-0 bg-white border border-[#e1e3e5] placeholder-gray-400 text-gray-900"
           />
           <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -270,43 +262,43 @@ export function DatasetsView() {
           )}
         </div>
 
-        {Object.entries(filteredCategories).map(([category, modalities]) => (
+        {Object.entries(filteredHardwareTypes).map(([category, types]) => (
           <div key={category} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
             <div className="mb-4">
               <h2 className="text-lg font-semibold text-gray-900">{category}</h2>
             </div>
             <div className="space-y-2">
-              {modalities.map((modality) => (
+              {types.map((type) => (
                 <button
-                  key={modality}
+                  key={type}
                   className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2"
                 >
-                  <div className={`w-5 h-5 ${CATEGORY_ICONS[modality as keyof typeof CATEGORY_ICONS].color} rounded flex items-center justify-center text-white`}>
+                  <div className={`w-5 h-5 ${PROVIDER_ICONS[type as keyof typeof PROVIDER_ICONS].color} rounded flex items-center justify-center text-white`}>
                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path 
                         strokeLinecap="round" 
                         strokeLinejoin="round" 
                         strokeWidth="1.5" 
-                        d={CATEGORY_ICONS[modality as keyof typeof CATEGORY_ICONS].icon} 
+                        d={PROVIDER_ICONS[type as keyof typeof PROVIDER_ICONS].icon} 
                       />
                     </svg>
                   </div>
-                  <span>{modality}</span>
+                  <span>{type}</span>
                 </button>
               ))}
             </div>
           </div>
         ))}
 
-        {Object.entries(filteredFormats).map(([category, formats]) => (
-          <div key={category} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
+        {Object.entries(filteredRegions).map(([region, locations]) => (
+          <div key={region} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
             <div className="mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">{category}</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{region}</h2>
             </div>
             <div className="space-y-2">
-              {formats.map((format) => (
+              {locations.map((location) => (
                 <button
-                  key={format}
+                  key={location}
                   className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2"
                 >
                   <div className="w-5 h-5 bg-gradient-to-br from-gray-500 to-gray-600 rounded flex items-center justify-center text-white">
@@ -315,11 +307,11 @@ export function DatasetsView() {
                         strokeLinecap="round" 
                         strokeLinejoin="round" 
                         strokeWidth="1.5" 
-                        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                        d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
                       />
                     </svg>
                   </div>
-                  <span className="font-mono">.{format}</span>
+                  <span>{location}</span>
                 </button>
               ))}
             </div>

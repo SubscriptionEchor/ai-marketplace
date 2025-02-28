@@ -11,7 +11,7 @@
 
 @layer base {
   body {
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-weight: 400;
     font-style: normal;
     font-size: 15px;
@@ -24,22 +24,27 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-weight: 600;
     font-style: normal;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.01em;
     line-height: 1.2;
   }
 }
 
 /* Typography */
 .font-display {
-  font-family: system-ui, -apple-system, sans-serif;
-  letter-spacing: -0.02em;
+  font-family: 'IBM Plex Sans', sans-serif;
+  letter-spacing: -0.01em;
 }
 
 .font-body {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'IBM Plex Sans', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.font-mono {
+  font-family: 'IBM Plex Mono', monospace;
   letter-spacing: -0.01em;
 }
 

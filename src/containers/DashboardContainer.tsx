@@ -1,12 +1,12 @@
-import { DashboardLayout, HomeView, ModelsView, DatasetsView } from '@/components/dashboard';
+import { DashboardLayout, HomeView, ModelsView, DatasetsView, InfraProvidersView, DataProviderView } from '@/components/dashboard';
 import { useParams } from 'react-router-dom';
 
 const VIEWS = {
   all: HomeView,
   models: ModelsView,
   datasets: DatasetsView,
-  providers: HomeView, // Fallback to HomeView for now
-  tools: HomeView // Fallback to HomeView for now
+  'infra-providers': InfraProvidersView,
+  'provider': DataProviderView
 };
 
 export function DashboardContainer() {

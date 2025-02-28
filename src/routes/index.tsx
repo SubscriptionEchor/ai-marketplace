@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { DashboardContainer } from "../containers/DashboardContainer";
 import { RootLayout } from '../components/layouts';
+import { Navigate } from 'react-router-dom';
 
 export const router = createBrowserRouter([
   {
@@ -9,14 +10,14 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <DashboardContainer />, // This will now show HomeView by default
+        element: <Navigate to="/dashboard/all" replace />,
       },
       {
         path: '/dashboard',
         children: [
           {
             index: true,
-            element: <DashboardContainer />, // This will now show HomeView by default
+            element: <Navigate to="/dashboard/all" replace />,
           },
           {
             path: ':view',

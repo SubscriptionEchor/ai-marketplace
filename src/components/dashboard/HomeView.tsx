@@ -14,14 +14,12 @@ export function HomeView() {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-4 md:px-6 lg:px-8 pt-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-4 md:px-6 lg:px-8 h-[calc(100vh-112px)] pt-6 pb-16">
       {/* Main Content Column */}
-      <div className="lg:col-span-2 h-[calc(100vh-160px)] overflow-y-auto pr-4 scrollbar-hide">
-        <div className="p-6">
-          <h1 className="text-2xl font-semibold text-gray-900">Welcome to TRIE AI Marketplace</h1>
-        
+      <div className="lg:col-span-2 h-[calc(100vh-112px)] overflow-y-auto pr-4 pb-16 scrollbar-hide">
+        <div>
           {/* Trending Section */}
-          <div className="mt-6">
+          <div>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -332,7 +330,7 @@ export function HomeView() {
       </div>
       
       {/* Setup Guide Column */}
-      <div className="space-y-6 h-[calc(100vh-160px)] overflow-y-auto pr-4 -mr-4">
+      <div className="space-y-6 h-[calc(100vh-112px)] overflow-y-auto pr-4 -mr-4 pb-16 scrollbar-hide">
         {/* Setup Guide */}
         {showSetupGuide && (
           <div className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] overflow-hidden">

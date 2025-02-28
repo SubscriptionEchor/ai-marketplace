@@ -3,4 +3,6 @@ export * from './TopNavbar';
 export * from './HomeView';
 export * from './ModelsView';
 export * from './DatasetsView';
+export * from './InfraProvidersView';
+export * from './DataProviderView';
 export * from './NavItem';

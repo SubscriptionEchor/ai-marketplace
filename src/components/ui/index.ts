@@ -1,2 +1,2 @@
-export * from './Modal';
 export * from './LikeButton';
+export * from './ModelCard';

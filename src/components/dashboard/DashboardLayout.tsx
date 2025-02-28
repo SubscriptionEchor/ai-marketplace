@@ -1,5 +1,4 @@
 import { TopNavbar } from './TopNavbar';
-import { useLocation } from 'react-router-dom';
 import { NavItem } from './NavItem';
 
 interface DashboardLayoutProps {
@@ -23,20 +22,15 @@ const MAIN_NAVIGATION = [
     icon: 'M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125'
   },
   { 
-    id: 'providers', 
-    label: 'Data Providers', 
+    id: 'infra-providers', 
+    label: 'Infra Providers', 
     icon: 'M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z'
-  },
-  { 
-    id: 'tools', 
-    label: 'Tools', 
-    icon: 'M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z'
   }
 ];
 
 const ADDITIONAL_NAVIGATION = [
   {
-    id: 'become-provider',
+    id: 'provider',
     label: 'Become a Data Provider',
     icon: 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z'
   }
@@ -51,18 +45,15 @@ const SETTINGS = [
 ];
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
-  const location = useLocation();
-  const currentPath = location.pathname.split('/').pop() || 'home';
-
   return (
     <div className="h-screen bg-[#f6f6f7] overflow-hidden">
       <div className="h-full flex flex-col">
         <TopNavbar />
         
-        <main className="flex-1 pt-[120px] relative bg-[#f6f6f7]">
+        <main className="flex-1 pt-[112px] relative bg-[#f6f6f7]">
           <div className="flex">
             {/* Left Sidebar - Navigation */}
-            <div className="w-[280px] hidden lg:block flex-shrink-0 fixed left-0 top-[120px] bottom-0 overflow-y-auto border-r border-[#e1e3e5] pt-8 bg-[#f6f6f7]">
+            <div className="w-[280px] hidden lg:block flex-shrink-0 fixed left-0 top-[112px] bottom-0 overflow-y-auto border-r border-[#e1e3e5] pt-8 bg-[#f6f6f7]">
               <div className="flex flex-col h-full px-6">
                 {/* Main Navigation */}
                 <div className="space-y-1.5 mb-6">
@@ -70,7 +61,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     <h2 className="font-display text-label text-gray-400 uppercase tracking-wider">Main</h2>
                   </div>
                   {MAIN_NAVIGATION.map((item) => (
-                    <NavItem key={item.id} item={item} isActive={currentPath === item.id} />
+                    <NavItem key={item.id} item={item} />
                   ))}
                 </div>
 
@@ -80,14 +71,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     <h2 className="font-display text-label text-gray-400 uppercase tracking-wider">Additional</h2>
                   </div>
                   {ADDITIONAL_NAVIGATION.map((item) => (
-                    <NavItem key={item.id} item={item} isActive={currentPath === item.id} />
+                    <NavItem key={item.id} item={item} />
                   ))}
                 </div>
 
                 {/* Settings - Fixed at Bottom */}
                 <div className="mt-auto pt-4 pb-6 border-t border-[#e1e3e5] flex flex-col items-center">
                   {SETTINGS.map((item) => (
-                    <NavItem key={item.id} item={item} isActive={currentPath === item.id} />
+                    <NavItem key={item.id} item={item} />
                   ))}
                 </div>
               </div>

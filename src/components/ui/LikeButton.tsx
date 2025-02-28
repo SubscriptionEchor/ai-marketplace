@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatNumber } from '@/utils/formatNumber';
 
 interface LikeButtonProps {
   isLiked: boolean;
@@ -13,7 +14,7 @@ export function LikeButton({ isLiked, likes, onLike }: LikeButtonProps) {
         e.stopPropagation();
         onLike();
       }}
-      className="flex items-center gap-1 group relative"
+      className="p-2.5 bg-white rounded-full shadow-sm hover:scale-105 transition-transform flex items-center gap-2 group relative"
       whileTap={{ scale: 0.9 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
@@ -21,7 +22,7 @@ export function LikeButton({ isLiked, likes, onLike }: LikeButtonProps) {
         {isLiked ? (
           <motion.svg
             key="filled"
-            className="w-4 h-4 text-red-500"
+            className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform"
             viewBox="0 0 24 24"
             fill="currentColor"
             initial={{ scale: 0 }}
@@ -39,7 +40,7 @@ export function LikeButton({ isLiked, likes, onLike }: LikeButtonProps) {
         ) : (
           <motion.svg
             key="outline"
-            className="w-4 h-4 text-gray-600 group-hover:text-red-500 transition-colors"
+            className="w-5 h-5 text-gray-600 group-hover:text-red-500 group-hover:scale-110 transition-all"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -56,13 +57,13 @@ export function LikeButton({ isLiked, likes, onLike }: LikeButtonProps) {
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth="2"
+              strokeWidth="1.5"
               d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
             />
           </motion.svg>
         )}
       </AnimatePresence>
-      {likes}
+      <span className="text-sm font-medium text-gray-700">{formatNumber(likes)}</span>
     </motion.button>
   );
 }
