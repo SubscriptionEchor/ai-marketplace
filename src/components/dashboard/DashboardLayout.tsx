@@ -1,9 +1,17 @@
 import { TopNavbar } from './TopNavbar';
 import { NavItem } from './NavItem';
+import { useAuth } from '@/hooks';
+import { useState, useEffect } from 'react';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
+
+const STORAGE_KEYS = {
+  models: 'user_uploads_models',
+  datasets: 'user_uploads_datasets',
+  infra: 'user_uploads_infra'
+} as const;
 
 const MAIN_NAVIGATION = [
   { 
@@ -28,11 +36,29 @@ const MAIN_NAVIGATION = [
   }
 ];
 
-const ADDITIONAL_NAVIGATION = [
+const UPLOAD_NAVIGATION = [
   {
     id: 'upload',
-    label: 'Upload Dataset',
+    label: 'Upload Content',
     icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L9 8m4-4v12'
+  }
+];
+
+const CREATOR_NAVIGATION = [
+  {
+    id: 'my-uploads',
+    label: 'My Uploads',
+    icon: 'M7 4V20M7 4L3 8M7 4L11 8M17 4V20M17 4L13 8M17 4L21 8'
+  },
+  {
+    id: 'earnings',
+    label: 'Earnings',
+    icon: 'M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+  },
+  {
+    id: 'balance',
+    label: 'Balance',
+    icon: 'M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z'
   }
 ];
 
@@ -45,6 +71,24 @@ const SETTINGS = [
 ];
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
+  const { isAuthenticated } = useAuth();
+  const [hasUploads, setHasUploads] = useState({
+    models: false,
+    datasets: false,
+    infra: false
+  });
+
+  useEffect(() => {
+    // Check for uploads in each category
+    setHasUploads({
+      models: !!localStorage.getItem(STORAGE_KEYS.models),
+      datasets: !!localStorage.getItem(STORAGE_KEYS.datasets),
+      infra: !!localStorage.getItem(STORAGE_KEYS.infra)
+    });
+  }, []);
+
+  const hasAnyUploads = Object.values(hasUploads).some(Boolean);
+
   return (
     <div className="h-screen bg-[#f6f6f7] overflow-hidden">
       <div className="h-full flex flex-col">
@@ -70,9 +114,18 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   <div className="px-3 mb-2">
                     <h2 className="font-display text-label text-gray-400 uppercase tracking-wider">Additional</h2>
                   </div>
-                  {ADDITIONAL_NAVIGATION.map((item) => (
+                  {UPLOAD_NAVIGATION.map((item) => (
                     <NavItem key={item.id} item={item} />
                   ))}
+                  
+                  {/* Creator Navigation - Only shown when authenticated and has any uploads */}
+                  {isAuthenticated && hasAnyUploads && (
+                    <div className="pl-6 mt-2 space-y-1">
+                      {CREATOR_NAVIGATION.map((item) => (
+                        <NavItem key={item.id} item={item} />
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Settings - Fixed at Bottom */}

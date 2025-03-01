@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { LikeButton } from './LikeButton';
 import { formatNumber } from '@/utils/formatNumber';
+import { Model } from '@/types/models';
 
 const CATEGORY_STYLES = {
   'Natural Language Processing': 'bg-green-50 text-green-700',
@@ -18,26 +19,15 @@ const CATEGORY_STYLES = {
 };
 
 interface ModelCardProps {
-  model: {
-    id: string;
-    creator?: {
-      name: string;
-      avatar?: string;
-    };
-    image: string;
-    name: string;
-    categories: string[];
-    description: string;
-    updatedAt: string;
-    downloads: string;
-    likes: string;
-  };
+  model: Model;
   isLiked: boolean;
   likeCount?: number;
   onLike: (id: string) => void;
 }
 
 export function ModelCard({ model, isLiked, likeCount, onLike }: ModelCardProps) {
+  if (!model) return null;
+  
   return (
     <motion.div
       whileHover={{ y: -4 }}
@@ -63,47 +53,64 @@ export function ModelCard({ model, isLiked, likeCount, onLike }: ModelCardProps)
       
       {/* Content */}
       <div className="p-5 flex-1 flex flex-col">
-        <div className="flex items-start justify-between">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-medium shadow-sm flex-shrink-0">
-                {model.creator?.avatar || model.creator?.name?.[0] || model.name[0]}
-              </div>
-              <div className="min-w-0">
-                <h3 className="text-base font-semibold text-gray-900 leading-snug tracking-tight truncate font-display">
-                  {model.name}
-                </h3>
-                <p className="text-xs text-gray-500 truncate font-mono">
-                  {model.creator?.name || model.name.split('/')[0]}
-                </p>
-              </div>
+        <div className="flex-1">
+          {/* Model Name & Creator */}
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-medium shadow-sm flex-shrink-0">
+              {model.creator?.avatar || model.creator?.name?.[0] || model.name?.[0] || 'M'}
             </div>
-            <div className="flex items-center justify-between mb-4">
-              {model.categories.slice(0, 1).map((category) => (
-                <span key={category} className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${
-                  CATEGORY_STYLES[category as keyof typeof CATEGORY_STYLES] || CATEGORY_STYLES['Other']
-                }`}>
-                  {category}
-                </span>
-              ))}
-              {model.categories.length > 1 && (
-                <span className="inline-flex items-center text-xs font-mono px-2 py-0.5 rounded-full bg-gray-50 text-gray-600 whitespace-nowrap">
-                  +{model.categories.length - 1} more
-                </span>
-              )}
+            <div className="min-w-0">
+              <h3 className="text-base font-semibold text-gray-900 leading-snug tracking-tight truncate font-display">
+                {model.name}
+              </h3>
+              <p className="text-xs text-gray-500 truncate font-mono">
+                {model.creator?.name || model.name.split('/')[0]}
+              </p>
             </div>
-            <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
-              {model.description}
-            </p>
           </div>
+          
+          {/* Categories */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {model.categories.map((category) => (
+              <span key={category} className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${
+                CATEGORY_STYLES[category as keyof typeof CATEGORY_STYLES] || CATEGORY_STYLES['Other']
+              }`}>
+                {category}
+              </span>
+            ))}
+          </div>
+          
+          {/* Description */}
+          <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed mb-4">
+            {model.description}
+          </p>
+          
+          {/* Performance Metrics */}
+          {model.metrics && (
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              {Object.entries(model.metrics).map(([key, value]) => (
+                <div key={key} className="bg-gray-50 rounded-lg p-2">
+                  <div className="text-xs text-gray-500 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</div>
+                  <div className="text-sm font-medium text-gray-900">{value}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         
         <div className="mt-auto pt-4 flex items-center justify-between border-t border-gray-100 flex-shrink-0">
-          <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            <span>{formatNumber(model.downloads)}</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-sm text-gray-700">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              <span>{formatNumber(model.downloads)}</span>
+            </div>
+            {model.pricing && (
+              <div className="text-sm font-medium text-[#0284a5]">
+                ${model.pricing?.price} {model.pricing?.model === 'pay-per-use' ? '/ call' : ''}
+              </div>
+            )}
           </div>
           <span className="text-xs text-gray-500">
             Updated {model.updatedAt}

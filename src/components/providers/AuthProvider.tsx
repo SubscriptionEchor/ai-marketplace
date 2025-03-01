@@ -4,8 +4,15 @@ import { useState, useCallback, useEffect } from 'react';
 import { WalletService, WalletType } from '@/services/wallet';
 import { Modal } from '@/components/ui';
 
+const STORAGE_KEY = 'wallet_connection';
+
 interface AuthProviderProps {
   children: ReactNode;
+}
+
+interface StoredWallet {
+  type: WalletType;
+  address: string;
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -16,6 +23,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
     metamask: false
   });
   const [connectedWallet, setConnectedWallet] = useState<{ type: WalletType; address: string } | null>(null);
+
+  // Load stored wallet connection on mount
+  useEffect(() => {
+    const storedWallet = localStorage.getItem(STORAGE_KEY);
+    if (storedWallet) {
+      try {
+        const wallet = JSON.parse(storedWallet) as StoredWallet;
+        setConnectedWallet(wallet);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Failed to parse stored wallet:', error);
+      }
+    }
+  }, []);
 
   // Check for available wallets
   useEffect(() => {
@@ -61,6 +82,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
       setIsAuthenticated(true);
       setConnectedWallet({ type: result.type, address: result.address });
+      
+      // Store wallet connection
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        type: result.type,
+        address: result.address
+      }));
+      
     } catch (error) {
       console.error('Wallet connection failed:', error);
     }
@@ -82,6 +110,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
     setIsAuthenticated(false);
     setConnectedWallet(null);
+    
+    // Clear stored wallet connection
+    localStorage.removeItem(STORAGE_KEY);
+    
   }, [connectedWallet]);
 
   return (

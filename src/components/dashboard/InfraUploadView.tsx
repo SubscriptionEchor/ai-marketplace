@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const STORAGE_KEY = 'user_uploads_infra';
+
 export function InfraUploadView() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -183,7 +185,12 @@ export function InfraUploadView() {
             </button>
             <button
               type="button"
-              className="px-4 py-2 text-sm font-medium text-white bg-[#0284a5] rounded-lg hover:bg-[#026d8a]"
+              onClick={() => {
+                // Mark that user has registered infrastructure
+                localStorage.setItem(STORAGE_KEY, 'true');
+                navigate('/dashboard/infra-providers');
+              }}
+              className="px-4 py-2 text-sm font-medium text-white bg-[#0284a5] rounded-lg hover:bg-[#026d8a] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Register Infrastructure
             </button>

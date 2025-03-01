@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ModelCard, SearchInput, EmptyState, FilterButton } from '@/components/ui';
 import { useFilteredItems, useLikes } from '@/hooks';
+import { useEffect } from 'react';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -114,39 +115,25 @@ const TASK_CATEGORIES = {
 export function ModelsView() {
   const [searchQuery, setSearchQuery] = useState('');
   const { likedItems, likeCounts, handleLike } = useLikes();
+  const [userModels, setUserModels] = useState<any[]>([]);
   const [searchParams] = useSearchParams();
   const categoryFromUrl = searchParams.get('category');
+  const [isLoading, setIsLoading] = useState(true);
 
-  const MODELS = [
-    {
-      id: 'facebook/natural_reasoning',
-      creator: {
-        name: 'Facebook AI',
-        avatar: 'F'
-      },
-      image: 'https://cdn.midjourney.com/d8fdb597-0d88-467d-8637-8022fb31dc1e/0_0.png',
-      name: 'facebook/natural_reasoning',
-      categories: ['Natural Language Processing', 'Multimodal', 'Text Generation', 'Question Answering'],
-      description: 'A powerful natural reasoning model for advanced language understanding and logical inference tasks.',
-      updatedAt: '7 days ago',
-      downloads: '1.15M',
-      likes: '250'
-    },
-    ...Array.from({ length: 24 }, (_, i) => ({
-      id: `model-${i + 2}`,
-      creator: {
-        name: `Creator ${i + 2}`,
-        avatar: `C${i + 2}`
-      },
-      image: 'https://cdn.midjourney.com/d8fdb597-0d88-467d-8637-8022fb31dc1e/0_0.png',
-      name: `AI Model ${i + 2}`,
-      categories: ['Natural Language Processing', 'Multimodal', 'Text Generation'].slice(0, Math.floor(Math.random() * 2) + 2),
-      description: 'An advanced AI model for various language and multimodal tasks.',
-      updatedAt: `${Math.floor(Math.random() * 30) + 1} days ago`,
-      downloads: `${(Math.random() * 1000000).toFixed(0)}`,
-      likes: `${(Math.random() * 10000).toFixed(0)}`
-    }))
-  ];
+  useEffect(() => {
+    // Load user's models from localStorage
+    try {
+      const storedModels = JSON.parse(localStorage.getItem('user_models') || '[]');
+      setUserModels(storedModels);
+    } catch (error) {
+      console.error('Failed to load models:', error);
+      setUserModels([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const MODELS = userModels;
 
   const {
     filteredItems: paginatedModels,
@@ -189,7 +176,11 @@ export function ModelsView() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 px-4 md:px-6 lg:px-8 h-[calc(100vh-112px)] pt-6 pb-16">
       <div className="lg:col-span-3 h-[calc(100vh-112px)] overflow-y-auto pr-4 pb-16 scrollbar-hide">
-        {paginatedModels.length > 0 ? (
+        {isLoading ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0284a5]"></div>
+          </div>
+        ) : paginatedModels.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {paginatedModels.map((model) => (
               <ModelCard
