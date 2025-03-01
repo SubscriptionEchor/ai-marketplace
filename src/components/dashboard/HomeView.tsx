@@ -32,223 +32,15 @@ export function HomeView() {
           
           {/* Trending Items */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-medium">P</div>
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900">perplexity-ai/r1-1776</h3>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <span>Text Generation</span>
-                    <span>•</span>
-                    <span>Updated 2 days ago</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
-                <div className="flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  14.8k
-                </div>
-                <LikeButton
-                  isLiked={likedItems['perplexity-ai/r1-1776']}
-                  likes="1.87k"
-                  onLike={() => handleLike('perplexity-ai/r1-1776')}
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-medium">P</div>
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900">perplexity-ai/r1-1776-2</h3>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <span>Text Generation</span>
-                    <span>•</span>
-                    <span>Updated 2 days ago</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
-                <div className="flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  14.8k
-                </div>
-                <LikeButton
-                  isLiked={likedItems['perplexity-ai/r1-1776-2']}
-                  likes="1.87k"
-                  onLike={() => handleLike('perplexity-ai/r1-1776-2')}
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center text-white font-medium">D</div>
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900">deepseek-ai/DeepSeek-R1</h3>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <span>Text Generation</span>
-                    <span>•</span>
-                    <span>Updated 3 days ago</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
-                <div className="flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  4.64M
-                </div>
-                <LikeButton
-                  isLiked={likedItems['deepseek-ai/DeepSeek-R1']}
-                  likes="10.4k"
-                  onLike={() => handleLike('deepseek-ai/DeepSeek-R1')}
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center text-white font-medium">W</div>
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900">Wan-AI/Wan2.1-T2V-14B</h3>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <span>Text-to-Video</span>
-                    <span>•</span>
-                    <span>Updated 1 day ago</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
-                <div className="flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  3.7k
-                </div>
-                <LikeButton
-                  isLiked={likedItems['Wan-AI/Wan2.1-T2V-14B']}
-                  likes="495"
-                  onLike={() => handleLike('Wan-AI/Wan2.1-T2V-14B')}
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center text-white font-medium">L</div>
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900">llama-lab/llama-2-70b-chat</h3>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <span>Chat Model</span>
-                    <span>•</span>
-                    <span>Updated 4 days ago</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
-                <div className="flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  2.8M
-                </div>
-                <LikeButton
-                  isLiked={likedItems['llama-lab/llama-2-70b-chat']}
-                  likes="8.2k"
-                  onLike={() => handleLike('llama-lab/llama-2-70b-chat')}
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center text-white font-medium">S</div>
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900">stable-diffusion/sdxl-turbo</h3>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <span>Image Generation</span>
-                    <span>•</span>
-                    <span>Updated 5 days ago</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
-                <div className="flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  1.2M
-                </div>
-                <LikeButton
-                  isLiked={likedItems['stable-diffusion/sdxl-turbo']}
-                  likes="5.6k"
-                  onLike={() => handleLike('stable-diffusion/sdxl-turbo')}
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center text-white font-medium">C</div>
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900">claude-ai/claude-3-opus</h3>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <span>Chat Model</span>
-                    <span>•</span>
-                    <span>Updated 1 day ago</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
-                <div className="flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  756k
-                </div>
-                <LikeButton
-                  isLiked={likedItems['claude-ai/claude-3-opus']}
-                  likes="2.9k"
-                  onLike={() => handleLike('claude-ai/claude-3-opus')}
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white font-medium">G</div>
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900">gemini-pro/vision-pro</h3>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <span>Vision Model</span>
-                    <span>•</span>
-                    <span>Updated 2 days ago</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
-                <div className="flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  680k
-                </div>
-                <LikeButton
-                  isLiked={likedItems['gemini-pro/vision-pro']}
-                  likes="2.4k"
-                  onLike={() => handleLike('gemini-pro/vision-pro')}
-                />
-              </div>
-            </div>
-
             {[
+              { name: 'perplexity-ai/r1-1776', type: 'Text Generation', downloads: '14.8k', likes: '1.87k', color: 'from-purple-500 to-pink-500', letter: 'P' },
+              { name: 'perplexity-ai/r1-1776-2', type: 'Text Generation', downloads: '14.8k', likes: '1.87k', color: 'from-purple-500 to-pink-500', letter: 'P' },
+              { name: 'deepseek-ai/DeepSeek-R1', type: 'Text Generation', downloads: '4.64M', likes: '10.4k', color: 'from-blue-500 to-cyan-500', letter: 'D' },
+              { name: 'Wan-AI/Wan2.1-T2V-14B', type: 'Text-to-Video', downloads: '3.7k', likes: '495', color: 'from-green-500 to-emerald-500', letter: 'W' },
+              { name: 'llama-lab/llama-2-70b-chat', type: 'Chat Model', downloads: '2.8M', likes: '8.2k', color: 'from-orange-500 to-red-500', letter: 'L' },
+              { name: 'stable-diffusion/sdxl-turbo', type: 'Image Generation', downloads: '1.2M', likes: '5.6k', color: 'from-indigo-500 to-purple-500', letter: 'S' },
+              { name: 'claude-ai/claude-3-opus', type: 'Chat Model', downloads: '756k', likes: '2.9k', color: 'from-yellow-500 to-orange-500', letter: 'C' },
+              { name: 'gemini-pro/vision-pro', type: 'Vision Model', downloads: '680k', likes: '2.4k', color: 'from-blue-600 to-indigo-600', letter: 'G' },
               { name: 'anthropic/claude-instant', type: 'Chat Model', downloads: '520k', likes: '1.8k', color: 'from-purple-600 to-pink-600', letter: 'A' },
               { name: 'meta-ai/llama-3-70b', type: 'Language Model', downloads: '450k', likes: '1.6k', color: 'from-green-600 to-teal-600', letter: 'M' },
               { name: 'stability-ai/sdxl-2.0', type: 'Image Generation', downloads: '380k', likes: '1.4k', color: 'from-red-600 to-pink-600', letter: 'S' },
@@ -257,7 +49,45 @@ export function HomeView() {
               { name: 'google/palm-2', type: 'Language Model', downloads: '260k', likes: '980', color: 'from-blue-500 to-cyan-500', letter: 'G' },
               { name: 'nvidia/nerf-studio', type: '3D Generation', downloads: '230k', likes: '860', color: 'from-green-600 to-emerald-600', letter: 'N' },
               { name: 'adobe/firefly-pro', type: 'Image Generation', downloads: '210k', likes: '790', color: 'from-red-500 to-orange-500', letter: 'A' },
-              { name: 'runwayml/gen-2', type: 'Video Generation', downloads: '190k', likes: '710', color: 'from-purple-500 to-indigo-500', letter: 'R' },
+              { name: 'runwayml/gen-2', type: 'Video Generation', downloads: '190k', likes: '710', color: 'from-purple-500 to-indigo-500', letter: 'R' }
+            ].map((option, index) => (
+              <div
+                key={index}
+                className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-0 sm:justify-between p-4 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]"
+              >
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <div className={`w-8 h-8 bg-gradient-to-br ${option.color} rounded-lg flex items-center justify-center text-white font-medium`}>
+                    {option.letter}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-medium text-gray-900 truncate">
+                      {option.name}
+                    </h3>
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <span>{option.type}</span>
+                      <span>•</span>
+                      <span>Updated 2 days ago</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 text-sm text-gray-600 w-full sm:w-auto justify-between sm:justify-end mt-2 sm:mt-0 border-t sm:border-t-0 pt-3 sm:pt-0">
+                  <div className="flex items-center gap-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    {option.downloads}
+                  </div>
+                  <LikeButton
+                    className="like-button"
+                    isLiked={likedItems[option.name]}
+                    likes={option.likes}
+                    onLike={() => handleLike(option.name)}
+                  />
+                </div>
+              </div>
+            ))}
+
+            {[
               { name: 'midjourney/v6', type: 'Image Generation', downloads: '175k', likes: '650', color: 'from-blue-500 to-purple-500', letter: 'M' },
               { name: 'inflection/pi-2', type: 'Chat Model', downloads: '160k', likes: '600', color: 'from-teal-500 to-cyan-500', letter: 'I' },
               { name: 'meta/musicgen', type: 'Audio Generation', downloads: '145k', likes: '540', color: 'from-indigo-500 to-blue-500', letter: 'M' },
@@ -266,32 +96,38 @@ export function HomeView() {
               { name: 'anthropic/claude-3-sonnet', type: 'Chat Model', downloads: '110k', likes: '410', color: 'from-violet-500 to-purple-500', letter: 'A' },
               { name: 'deepmind/alphafold-3', type: 'Protein Folding', downloads: '100k', likes: '375', color: 'from-emerald-500 to-green-500', letter: 'D' },
               { name: 'meta/audiocraft', type: 'Audio Generation', downloads: '90k', likes: '340', color: 'from-pink-500 to-rose-500', letter: 'M' }
-            ].map((item, index) => (
-              <div key={index} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]">
-                <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 bg-gradient-to-br ${item.color} rounded-lg flex items-center justify-center text-white font-medium`}>
-                    {item.letter}
+            ].map((option, index) => (
+              <div
+                key={index}
+                className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-0 sm:justify-between p-4 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]"
+              >
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <div className={`w-8 h-8 bg-gradient-to-br ${option.color} rounded-lg flex items-center justify-center text-white font-medium`}>
+                    {option.letter}
                   </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-900">{item.name}</h3>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-medium text-gray-900 truncate">
+                      {option.name}
+                    </h3>
                     <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <span>{item.type}</span>
+                      <span>{option.type}</span>
                       <span>•</span>
-                      <span>Updated recently</span>
+                      <span>Updated 2 days ago</span>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-4 text-sm text-gray-600 w-full sm:w-auto justify-between sm:justify-end mt-2 sm:mt-0 border-t sm:border-t-0 pt-3 sm:pt-0">
                   <div className="flex items-center gap-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
-                    {item.downloads}
+                    {option.downloads}
                   </div>
                   <LikeButton
-                    isLiked={likedItems[item.name]}
-                    likes={item.likes}
-                    onLike={() => handleLike(item.name)}
+                    className="like-button"
+                    isLiked={likedItems[option.name]}
+                    likes={option.likes}
+                    onLike={() => handleLike(option.name)}
                   />
                 </div>
               </div>
