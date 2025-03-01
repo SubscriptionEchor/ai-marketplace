@@ -1,5 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTransactions, STATUS_STYLES } from '@/hooks';
+import { Pagination } from '@/components/ui';
+
+const ITEMS_PER_PAGE = 12;
 
 export function TransactionsView() {
   const { 
@@ -7,7 +10,11 @@ export function TransactionsView() {
     selectedTransaction, 
     setSelectedTransaction, 
     sortConfig, 
-    handleSort 
+    handleSort,
+    currentPage,
+    setCurrentPage,
+    totalItems,
+    totalPages
   } = useTransactions();
 
   return (
@@ -70,17 +77,15 @@ export function TransactionsView() {
                     Status
                   </th>
                   <th scope="col" className="relative px-6 py-3">
-                    <span className="sr-only">Actions</span>
                   </th>
                 </tr>
+                <th scope="col" className="relative px-6 py-3">
+                  <span className="sr-only">Actions</span>
+                </th>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {sortedTransactions.map((transaction) => (
-                  <tr 
-                    key={transaction.id} 
-                    className="hover:bg-gray-50 cursor-pointer"
-                    onClick={() => setSelectedTransaction(transaction)}
-                  >
+                  <tr key={transaction.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {new Date(transaction.date).toLocaleDateString()}
                     </td>
@@ -136,6 +141,17 @@ export function TransactionsView() {
             </table>
           </div>
         </div>
+
+        {totalPages > 1 && totalItems > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            itemsPerPage={ITEMS_PER_PAGE}
+            onPageChange={setCurrentPage}
+            className="mt-8"
+          />
+        )}
       </div>
 
       {/* Transaction Details Sidebar */}

@@ -1,6 +1,7 @@
 export * from './DashboardLayout';
 export * from './TopNavbar';
 export * from './HomeView';
+export * from './DownloadsView';
 export * from './ModelsView';
 export * from './DatasetsView';
 export * from './InfraProvidersView';
@@ -18,3 +19,5 @@ export * from './EarningsView';
 export * from './TransactionsView';
 export * from './NavItem';
 export * from './SettingsView';
+export * from './CreatorProfileView';
+export * from './DetailView';

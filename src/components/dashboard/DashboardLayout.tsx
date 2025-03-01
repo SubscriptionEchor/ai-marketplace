@@ -90,14 +90,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const hasAnyUploads = Object.values(hasUploads).some(Boolean);
 
   return (
-    <div className="h-screen bg-[#f6f6f7] overflow-hidden">
+    <div className="min-h-screen bg-[#f6f6f7]">
       <div className="h-full flex flex-col">
         <TopNavbar />
         
         <main className="flex-1 pt-[112px] relative bg-[#f6f6f7]">
           <div className="flex">
             {/* Left Sidebar - Navigation */}
-            <div className="w-[280px] hidden lg:block flex-shrink-0 fixed left-0 top-[112px] bottom-0 overflow-y-auto border-r border-[#e1e3e5] pt-8 bg-[#f6f6f7]">
+            <div className="w-[280px] hidden lg:block flex-shrink-0 fixed left-0 top-[112px] bottom-0 border-r border-[#e1e3e5] pt-8 bg-[#f6f6f7]">
               <div className="flex flex-col h-full px-6">
                 {/* Main Navigation */}
                 <div className="space-y-1.5 mb-6">
@@ -138,7 +138,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
 
             {/* Main Content Area */}
-            <div className="flex-1 min-w-0 lg:ml-[276px] lg:mr-[24px]">
+            <div className="flex-1 min-w-0 lg:ml-[280px] lg:mr-[24px]">
               {children}
             </div>
           </div>

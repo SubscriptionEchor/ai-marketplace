@@ -4,17 +4,15 @@ import { formatNumber } from '@/utils/formatNumber';
 interface LikeButtonProps {
   isLiked: boolean;
   likes: string;
-  onLike: () => void;
+  onLike: (e: React.MouseEvent) => void;
+  className?: string;
 }
 
-export function LikeButton({ isLiked, likes, onLike }: LikeButtonProps) {
+export function LikeButton({ isLiked, likes, onLike, className = '' }: LikeButtonProps) {
   return (
     <motion.button
-      onClick={(e) => {
-        e.stopPropagation();
-        onLike();
-      }}
-      className="p-2.5 bg-white rounded-full shadow-sm hover:scale-105 transition-transform flex items-center gap-2 group relative"
+      onClick={onLike}
+      className={`p-2.5 bg-white rounded-full shadow-sm hover:scale-105 transition-transform flex items-center gap-2 group relative ${className}`}
       whileTap={{ scale: 0.9 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >

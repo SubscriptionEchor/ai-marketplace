@@ -1,8 +1,10 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { IPFSService } from '@/services/ipfs';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { useCallback, useState } from 'react';
 import confetti from 'canvas-confetti';
-import { useState, useCallback } from 'react';
+import { Breadcrumbs } from '@/components/ui';
+import { Modal } from '@/components/ui';
 
 const STORAGE_KEY = 'user_uploads_datasets';
 
@@ -39,7 +41,6 @@ export function DatasetUploadView() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [isNavigatingAway, setIsNavigatingAway] = useState(false);
   const currentTab = location.pathname.includes('metadata') ? 'metadata'
     : location.pathname.includes('pricing') ? 'pricing'
     : location.pathname.includes('review') ? 'review'
@@ -65,7 +66,6 @@ export function DatasetUploadView() {
     files: []
   });
   const [uploading, setUploading] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -145,19 +145,6 @@ export function DatasetUploadView() {
     }
   }, [formData, navigate]);
 
-  const handleNext = () => {
-    switch (currentTab) {
-      case 'details':
-        navigate('/dashboard/upload/dataset/metadata', { replace: true });
-        break;
-      case 'metadata':
-        navigate('/dashboard/upload/dataset/pricing', { replace: true });
-        break;
-      case 'pricing':
-        navigate('/dashboard/upload/dataset/review', { replace: true });
-        break;
-    }
-  };
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
@@ -610,7 +597,6 @@ export function DatasetUploadView() {
               type="button"
               onClick={() => {
                 if (formData.name || formData.description || formData.files.length > 0) {
-                  setIsNavigatingAway(true);
                   setShowConfirmModal(true);
                 } else {
                   navigate('/dashboard/upload');
@@ -624,7 +610,7 @@ export function DatasetUploadView() {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => setCurrentTab(TABS[TABS.findIndex(tab => tab.id === currentTab) - 1].id)}
+                  onClick={() => navigate('/dashboard/upload/dataset')}
                   className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   Back
@@ -643,7 +629,7 @@ export function DatasetUploadView() {
                 {currentTab !== 'details' && (
                   <button
                     type="button"
-                    onClick={() => setCurrentTab(TABS[TABS.findIndex(tab => tab.id === currentTab) - 1].id)}
+                    onClick={() => navigate('/dashboard/upload/dataset')}
                     className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
                   >
                     Back
@@ -673,6 +659,40 @@ export function DatasetUploadView() {
           </div>
         </motion.div>
       </div>
+      
+      {/* Confirm Navigation Modal */}
+      <Modal
+        show={showConfirmModal}
+        onClose={() => {
+          setShowConfirmModal(false); 
+        }}
+        title="Unsaved Changes"
+      >
+        <div className="p-6">
+          <p className="text-gray-600 mb-6">
+            You have unsaved changes. Are you sure you want to leave? All changes will be lost.
+          </p>
+          <div className="flex justify-end gap-4">
+            <button
+              onClick={() => {
+                setShowConfirmModal(false); 
+              }}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              Stay
+            </button>
+            <button
+              onClick={() => {
+                setShowConfirmModal(false);
+                navigate('/dashboard/upload');
+              }}
+              className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700"
+            >
+              Leave
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

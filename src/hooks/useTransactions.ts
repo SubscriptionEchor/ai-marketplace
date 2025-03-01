@@ -46,6 +46,7 @@ export const STATUS_STYLES = {
 
 export function useTransactions() {
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: 'asc' | 'desc';
@@ -53,6 +54,9 @@ export function useTransactions() {
     key: 'date',
     direction: 'desc'
   });
+
+  const totalItems = MOCK_TRANSACTIONS.length;
+  const totalPages = Math.ceil(totalItems / 12);
 
   const handleSort = (key: string) => {
     setSortConfig(prev => ({
@@ -80,7 +84,11 @@ export function useTransactions() {
     selectedTransaction,
     setSelectedTransaction,
     sortConfig,
-    handleSort
+    handleSort,
+    currentPage,
+    setCurrentPage,
+    totalItems,
+    totalPages
   };
 }
 

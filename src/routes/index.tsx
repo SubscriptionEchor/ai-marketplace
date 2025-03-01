@@ -3,6 +3,9 @@ import { DashboardContainer } from "@/containers";
 import { 
   DatasetUploadView, 
   ModelUploadView, 
+  CreatorProfileView,
+  DetailView,
+  DownloadsView,
   ModelPricingView, 
   ModelReviewView, 
   InfraUploadView,
@@ -31,6 +34,30 @@ export const router = createBrowserRouter([
           {
             path: ':view',
             element: <DashboardContainer />,
+          },
+          {
+            path: 'model/:id',
+            element: <DetailView />
+          },
+          {
+            path: 'dataset/:id', 
+            element: <DetailView />
+          },
+          {
+            path: 'infra/:id',
+            element: <DetailView />
+          },
+          {
+            path: 'creator/:creatorId',
+            element: <CreatorProfileView />
+          },
+          {
+            path: 'creator/:creatorId',
+            element: <CreatorProfileView />
+          },
+          {
+            path: 'downloads',
+            element: <DownloadsView />,
           },
           {
             path: 'upload/model',

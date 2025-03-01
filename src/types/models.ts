@@ -1,6 +1,6 @@
 export interface Model {
   id: string;
-  type?: 'model' | 'dataset' | 'infra';
+  type: 'model' | 'dataset' | 'infra' | string;
   creator?: {
     name: string;
     avatar?: string;

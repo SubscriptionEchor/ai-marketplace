@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { LikeButton } from './LikeButton';
 import { formatNumber } from '@/utils/formatNumber';
+import { useNavigate } from 'react-router-dom';
 import { Model } from '@/types/models';
 
 const CATEGORY_STYLES = {
@@ -22,16 +23,28 @@ interface ModelCardProps {
   model: Model;
   isLiked: boolean;
   likeCount?: number;
-  onLike: (id: string) => void;
+  onLike: (id: string, likes: string) => void;
 }
 
 export function ModelCard({ model, isLiked, likeCount, onLike }: ModelCardProps) {
+  const navigate = useNavigate();
   if (!model) return null;
+  
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Prevent navigation if clicking the like button
+    if ((e.target as HTMLElement).closest('.like-button')) {
+      return;
+    }
+    // Default to 'model' type if not specified
+    const type = model.type || 'model';
+    navigate(`/dashboard/${type}/${model.id}`);
+  };
   
   return (
     <motion.div
       whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      onClick={handleCardClick}
       className="group bg-white rounded-xl border border-[#e1e3e5] hover:border-gray-300 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col cursor-pointer h-[420px]"
     >
       {/* Image Container */}
@@ -44,9 +57,13 @@ export function ModelCard({ model, isLiked, likeCount, onLike }: ModelCardProps)
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <div className="absolute top-3 right-3">
           <LikeButton
+            className="like-button"
             isLiked={isLiked}
             likes={likeCount?.toString() || model.likes}
-            onLike={() => onLike(model.id)}
+            onLike={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              onLike(model.id, model.likes);
+            }}
           />
         </div>
       </div>
