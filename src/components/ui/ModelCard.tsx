@@ -33,10 +33,11 @@ interface ModelCardProps {
     likes: string;
   };
   isLiked: boolean;
+  likeCount?: number;
   onLike: (id: string) => void;
 }
 
-export function ModelCard({ model, isLiked, onLike }: ModelCardProps) {
+export function ModelCard({ model, isLiked, likeCount, onLike }: ModelCardProps) {
   return (
     <motion.div
       whileHover={{ y: -4 }}
@@ -54,7 +55,7 @@ export function ModelCard({ model, isLiked, onLike }: ModelCardProps) {
         <div className="absolute top-3 right-3">
           <LikeButton
             isLiked={isLiked}
-            likes={model.likes}
+            likes={likeCount?.toString() || model.likes}
             onLike={() => onLike(model.id)}
           />
         </div>

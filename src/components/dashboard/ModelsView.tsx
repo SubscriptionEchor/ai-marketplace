@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react';
-import { ModelCard } from '@/components/ui';
+import { useSearchParams } from 'react-router-dom';
+import { ModelCard, SearchInput, EmptyState, FilterButton } from '@/components/ui';
+import { useFilteredItems, useLikes } from '@/hooks';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -110,9 +112,10 @@ const TASK_CATEGORIES = {
 };
 
 export function ModelsView() {
-  const [likedItems, setLikedItems] = useState<Record<string, boolean>>({});
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
+  const { likedItems, likeCounts, handleLike } = useLikes();
+  const [searchParams] = useSearchParams();
+  const categoryFromUrl = searchParams.get('category');
 
   const MODELS = [
     {
@@ -145,18 +148,16 @@ export function ModelsView() {
     }))
   ];
 
-  const totalPages = Math.ceil(MODELS.length / ITEMS_PER_PAGE);
-  const paginatedModels = MODELS.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
-
-  const handleLike = (itemId: string) => {
-    setLikedItems(prev => ({
-      ...prev,
-      [itemId]: !prev[itemId]
-    }));
-  };
+  const {
+    filteredItems: paginatedModels,
+    totalItems,
+    currentPage,
+    totalPages,
+    selectedFilters,
+    clearFilters,
+    setCurrentPage,
+    handleFilterSelect
+  } = useFilteredItems(MODELS, 12, categoryFromUrl || undefined);
 
   const filteredCategories = useMemo(() => {
     if (!searchQuery) return TASK_CATEGORIES;
@@ -188,17 +189,31 @@ export function ModelsView() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 px-4 md:px-6 lg:px-8 h-[calc(100vh-112px)] pt-6 pb-16">
       <div className="lg:col-span-3 h-[calc(100vh-112px)] overflow-y-auto pr-4 pb-16 scrollbar-hide">
-        {/* Model Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {paginatedModels.map((model) => (
-            <ModelCard
-              key={model.id}
-              model={model}
-              isLiked={likedItems[model.id]}
-              onLike={handleLike}
-            />
-          ))}
-        </div>
+        {paginatedModels.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {paginatedModels.map((model) => (
+              <ModelCard
+                key={model.id}
+                model={model}
+                isLiked={likedItems[model.id]}
+                likeCount={likeCounts[model.id]}
+                onLike={() => handleLike(model.id, model.likes)}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            title={selectedFilters.size > 0 ? "No models found" : "No models available yet"}
+            description={selectedFilters.size > 0 
+              ? "Try adjusting your filters or search terms"
+              : "Be the first to add an AI model to the marketplace"}
+            icon="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+            action={{
+              label: "Add Model",
+              onClick: () => {/* Add model logic */}
+            }}
+          />
+        )}
         
         {/* Pagination */}
         <div className="mt-12 flex items-center justify-between border-t border-gray-200 px-4 py-4 sm:px-6">
@@ -223,9 +238,9 @@ export function ModelsView() {
               <p className="text-sm text-gray-700">
                 Showing <span className="font-medium">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span> to{' '}
                 <span className="font-medium">
-                  {Math.min(currentPage * ITEMS_PER_PAGE, MODELS.length)}
+                  {Math.min(currentPage * ITEMS_PER_PAGE, totalItems)}
                 </span>{' '}
-                of <span className="font-medium">{MODELS.length}</span> results
+                of <span className="font-medium">{totalItems}</span> results
               </p>
             </div>
             <div>
@@ -273,28 +288,26 @@ export function ModelsView() {
       <div className="space-y-6 h-[calc(100vh-112px)] overflow-y-auto pr-4 -mr-4 pb-16 scrollbar-hide w-[280px]">
         {/* Search Input */}
         <div className="relative">
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search tasks..."
-            className="w-full pl-12 pr-4 h-12 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0284a5] focus:ring-offset-0 bg-white border border-[#e1e3e5] placeholder-gray-400 text-gray-900"
-          />
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-            <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
+            {selectedFilters.size > 0 && (
+              <button
+                onClick={clearFilters}
+                className="text-sm text-[#0284a5] hover:text-[#026d8a] flex items-center gap-1"
+              >
+                <span>Clear filters</span>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
           </div>
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          )}
+          <SearchInput
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)} 
+            placeholder="Search tasks..."
+            onClear={() => setSearchQuery('')}
+          />
         </div>
 
         {Object.entries(filteredCategories).map(([category, tasks]) => (
@@ -304,22 +317,15 @@ export function ModelsView() {
             </div>
             <div className="space-y-2">
               {tasks.map((task) => (
-                <button
+                <FilterButton
                   key={task}
-                  className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2"
-                >
-                  <div className={`w-5 h-5 ${CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS].color} rounded flex items-center justify-center text-white`}>
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth="1.5" 
-                        d={CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS].taskIcons?.[task as keyof typeof CATEGORY_ICONS['Multimodal']['taskIcons']] || CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS].icon} 
-                      />
-                    </svg>
-                  </div>
-                  <span>{task}</span>
-                </button>
+                  label={task}
+                  icon={category === 'Multimodal' && CATEGORY_ICONS.Multimodal.taskIcons[task as keyof typeof CATEGORY_ICONS['Multimodal']['taskIcons']] || CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS].icon}
+                  color={CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS].color}
+                  isSelected={selectedFilters.has(task)}
+                  onSelect={() => handleFilterSelect(task)}
+                  onRemove={() => handleFilterSelect(task)}
+                />
               ))}
             </div>
           </div>

@@ -5,4 +5,6 @@ export * from './ModelsView';
 export * from './DatasetsView';
 export * from './InfraProvidersView';
 export * from './DataProviderView';
+export * from './DataProviderView';
 export * from './NavItem';
+export * from './SettingsView';

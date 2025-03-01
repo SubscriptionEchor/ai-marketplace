@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, Fragment, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Popover, Transition } from '@headlessui/react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks';
 
 const CATEGORIES = {
   'Multi-model': [
@@ -43,7 +43,7 @@ const PROFILE_MENU_ITEMS = [
   { label: 'Home', href: '/dashboard/home', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
   { label: 'My Downloads', href: '/dashboard/downloads', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4' },
   { label: 'Transactions', href: '/dashboard/transactions', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
-  { label: 'Become a data provider', href: '/dashboard/provider', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+  { label: 'Upload Dataset', href: '/dashboard/upload', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L9 8m4-4v12' },
   { label: 'Settings', href: '/dashboard/settings', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' },
 ];
 
@@ -57,12 +57,23 @@ export function TopNavbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [, setIsMobileMenuOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(SEARCH_OPTIONS[0]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated, login, logout } = useAuth();
+
+  // Get current category from URL
+  useEffect(() => {
+    const path = location.pathname.split('/').pop();
+    const category = Object.keys(CATEGORIES).find(cat => 
+      CATEGORIES[cat as keyof typeof CATEGORIES].some(task => task === path)
+    );
+    setSelectedCategory(category || null);
+  }, [location.pathname]);
 
   const focusSearchInput = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape' && isSearchFocused) {
@@ -189,9 +200,7 @@ export function TopNavbar() {
                 isAuthenticated ? 'hidden' : ''
               }`}
             >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
+              <img src="https://learn.rubix.net//images/logo.png" alt="XELL" className="w-5 h-5 mr-2" />
               Connect Wallet
             </button>
             
@@ -259,7 +268,7 @@ export function TopNavbar() {
             {Object.entries(CATEGORIES).map(([category, items]) => (
               <div key={category} className="relative group">
                 <div className="inline-flex items-center py-4 px-1 text-sm font-medium focus:outline-none rounded transition-colors text-text-secondary hover:text-text-primary cursor-pointer">
-                  <span>{category}</span>
+                  <span className={category === selectedCategory ? 'text-[#0284a5]' : ''}>{category}</span>
                   <svg
                     className="ml-2 h-4 w-4 transition-transform group-hover:rotate-180"
                     fill="none"
@@ -281,10 +290,23 @@ export function TopNavbar() {
                       {items.map((item) => (
                         <button
                           key={item}
+                          onClick={() => {
+                            // Determine which page to navigate to based on the category
+                            let targetView = 'models';
+                            if (item.toLowerCase().includes('data') || item.includes('folder')) {
+                              targetView = 'datasets';
+                            } else if (item.toLowerCase().includes('gpu') || item.toLowerCase().includes('cpu') || item.toLowerCase().includes('storage')) {
+                              targetView = 'infra-providers';
+                            }
+                            navigate(`/dashboard/${targetView}?category=${encodeURIComponent(item)}`);
+                            setSelectedCategory(category);
+                          }}
                           className="flex items-center rounded-lg px-4 py-2.5 transition duration-150 ease-in-out hover:bg-background-tertiary focus:outline-none w-full text-text-primary"
                         >
                           <div>
-                            <p className="text-sm font-medium">
+                            <p className={`text-sm font-medium ${
+                              location.search.includes(encodeURIComponent(item)) ? 'text-[#0284a5]' : ''
+                            }`}>
                               {item}
                             </p>
                           </div>

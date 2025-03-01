@@ -1,4 +1,5 @@
 import { DashboardLayout, HomeView, ModelsView, DatasetsView, InfraProvidersView, DataProviderView } from '@/components/dashboard';
+import { SettingsView } from '@/components/dashboard/SettingsView';
 import { useParams } from 'react-router-dom';
 
 const VIEWS = {
@@ -6,7 +7,8 @@ const VIEWS = {
   models: ModelsView,
   datasets: DatasetsView,
   'infra-providers': InfraProvidersView,
-  'provider': DataProviderView
+  'upload': DataProviderView,
+  'settings': SettingsView
 };
 
 export function DashboardContainer() {

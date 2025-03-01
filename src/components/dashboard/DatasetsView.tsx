@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { ModelCard } from '@/components/ui';
+import { ModelCard, SearchInput, EmptyState, FilterButton } from '@/components/ui';
+import { useFilteredItems } from '@/hooks';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -69,7 +70,6 @@ const FORMAT_CATEGORIES = {
 export function DatasetsView() {
   const [likedItems, setLikedItems] = useState<Record<string, boolean>>({});
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
 
   const DATASETS = [
     {
@@ -102,11 +102,16 @@ export function DatasetsView() {
     }))
   ];
 
-  const totalPages = Math.ceil(DATASETS.length / ITEMS_PER_PAGE);
-  const paginatedDatasets = DATASETS.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
+  const {
+    filteredItems: paginatedDatasets,
+    totalItems,
+    currentPage,
+    totalPages,
+    selectedFilters,
+    clearFilters,
+    setCurrentPage,
+    handleFilterSelect
+  } = useFilteredItems(DATASETS);
 
   const handleLike = (itemId: string) => {
     setLikedItems(prev => ({
@@ -123,14 +128,12 @@ export function DatasetsView() {
       'Modalities': []
     };
 
-    Object.entries(DATASET_MODALITIES).forEach(([category, modalities]) => {
+    Object.entries(DATASET_MODALITIES).forEach(([, modalities]) => {
       const matchingModalities = modalities.filter(modality => 
         modality.toLowerCase().includes(query)
       );
 
-      if (matchingModalities.length > 0) {
-        filtered[category] = matchingModalities;
-      }
+      filtered['Modalities'] = matchingModalities;
     });
 
     return filtered;
@@ -150,9 +153,7 @@ export function DatasetsView() {
         format.toLowerCase().includes(query)
       );
 
-      if (matchingFormats.length > 0) {
-        filtered[category] = matchingFormats;
-      }
+      filtered[category as keyof typeof FORMAT_CATEGORIES] = matchingFormats;
     });
 
     return filtered;
@@ -161,17 +162,30 @@ export function DatasetsView() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 px-4 md:px-6 lg:px-8 h-[calc(100vh-112px)] pt-6 pb-16">
       <div className="lg:col-span-3 h-[calc(100vh-112px)] overflow-y-auto pr-4 pb-16 scrollbar-hide">
-        {/* Dataset Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {paginatedDatasets.map((dataset) => (
-            <ModelCard
-              key={dataset.id}
-              model={dataset}
-              isLiked={likedItems[dataset.id]}
-              onLike={handleLike}
-            />
-          ))}
-        </div>
+        {paginatedDatasets.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {paginatedDatasets.map((dataset) => (
+              <ModelCard
+                key={dataset.id}
+                model={dataset}
+                isLiked={likedItems[dataset.id]}
+                onLike={handleLike}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            title={selectedFilters.size > 0 ? "No datasets found" : "No datasets available yet"}
+            description={selectedFilters.size > 0 
+              ? "Try adjusting your filters or search terms"
+              : "Be the first to contribute a dataset to the marketplace"}
+            icon="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L9 8m4-4v12"
+            action={{
+              label: "Upload Dataset",
+              href: "/dashboard/upload"
+            }}
+          />
+        )}
         
         {/* Pagination */}
         <div className="mt-12 flex items-center justify-between border-t border-gray-200 px-4 py-4 sm:px-6">
@@ -196,9 +210,9 @@ export function DatasetsView() {
               <p className="text-sm text-gray-700">
                 Showing <span className="font-medium">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span> to{' '}
                 <span className="font-medium">
-                  {Math.min(currentPage * ITEMS_PER_PAGE, DATASETS.length)}
+                  {Math.min(currentPage * ITEMS_PER_PAGE, totalItems)}
                 </span>{' '}
-                of <span className="font-medium">{DATASETS.length}</span> results
+                of <span className="font-medium">{totalItems}</span> results
               </p>
             </div>
             <div>
@@ -246,28 +260,26 @@ export function DatasetsView() {
       <div className="space-y-6 h-[calc(100vh-112px)] overflow-y-auto pr-4 -mr-4 pb-16 scrollbar-hide w-[280px]">
         {/* Search Input */}
         <div className="relative">
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search formats..."
-            className="w-full pl-12 pr-4 h-12 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0284a5] focus:ring-offset-0 bg-white border border-[#e1e3e5] placeholder-gray-400 text-gray-900"
-          />
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-            <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
+            {selectedFilters.size > 0 && (
+              <button
+                onClick={clearFilters}
+                className="text-sm text-[#0284a5] hover:text-[#026d8a] flex items-center gap-1"
+              >
+                <span>Clear filters</span>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
           </div>
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          )}
+          <SearchInput
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)} 
+            placeholder="Search formats..."
+            onClear={() => setSearchQuery('')}
+          />
         </div>
 
         {Object.entries(filteredCategories).map(([category, modalities]) => (
@@ -277,22 +289,15 @@ export function DatasetsView() {
             </div>
             <div className="space-y-2">
               {modalities.map((modality) => (
-                <button
+                <FilterButton
                   key={modality}
-                  className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2"
-                >
-                  <div className={`w-5 h-5 ${CATEGORY_ICONS[modality as keyof typeof CATEGORY_ICONS].color} rounded flex items-center justify-center text-white`}>
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth="1.5" 
-                        d={CATEGORY_ICONS[modality as keyof typeof CATEGORY_ICONS].icon} 
-                      />
-                    </svg>
-                  </div>
-                  <span>{modality}</span>
-                </button>
+                  label={modality}
+                  icon={CATEGORY_ICONS[modality as keyof typeof CATEGORY_ICONS].icon}
+                  color={CATEGORY_ICONS[modality as keyof typeof CATEGORY_ICONS].color}
+                  isSelected={selectedFilters.has(modality)}
+                  onSelect={() => handleFilterSelect(modality)}
+                  onRemove={() => handleFilterSelect(modality)}
+                />
               ))}
             </div>
           </div>

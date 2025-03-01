@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { ModelCard } from '@/components/ui';
+import { ModelCard, SearchInput, EmptyState, FilterButton } from '@/components/ui';
+import { useFilteredItems } from '@/hooks';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -59,7 +60,6 @@ const REGIONS = {
 export function InfraProvidersView() {
   const [likedItems, setLikedItems] = useState<Record<string, boolean>>({});
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
 
   const PROVIDERS = [
     {
@@ -92,11 +92,16 @@ export function InfraProvidersView() {
     }))
   ];
 
-  const totalPages = Math.ceil(PROVIDERS.length / ITEMS_PER_PAGE);
-  const paginatedProviders = PROVIDERS.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
+  const {
+    filteredItems: paginatedProviders,
+    totalItems,
+    currentPage,
+    totalPages,
+    selectedFilters,
+    clearFilters,
+    setCurrentPage,
+    handleFilterSelect
+  } = useFilteredItems(PROVIDERS);
 
   const handleLike = (itemId: string) => {
     setLikedItems(prev => ({
@@ -119,9 +124,7 @@ export function InfraProvidersView() {
         type.toLowerCase().includes(query)
       );
 
-      if (matchingTypes.length > 0) {
-        filtered[category] = matchingTypes;
-      }
+      filtered[category as keyof typeof HARDWARE_TYPES] = matchingTypes;
     });
 
     return filtered;
@@ -142,9 +145,7 @@ export function InfraProvidersView() {
         location.toLowerCase().includes(query)
       );
 
-      if (matchingLocations.length > 0) {
-        filtered[region] = matchingLocations;
-      }
+      filtered[region as keyof typeof REGIONS] = matchingLocations;
     });
 
     return filtered;
@@ -153,17 +154,30 @@ export function InfraProvidersView() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 px-4 md:px-6 lg:px-8 h-[calc(100vh-112px)] pt-6 pb-16">
       <div className="lg:col-span-3 h-[calc(100vh-112px)] overflow-y-auto pr-4 pb-16 scrollbar-hide">
-        {/* Provider Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {paginatedProviders.map((provider) => (
-            <ModelCard
-              key={provider.id}
-              model={provider}
-              isLiked={likedItems[provider.id]}
-              onLike={handleLike}
-            />
-          ))}
-        </div>
+        {paginatedProviders.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {paginatedProviders.map((provider) => (
+              <ModelCard
+                key={provider.id}
+                model={provider}
+                isLiked={likedItems[provider.id]}
+                onLike={handleLike}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            title={selectedFilters.size > 0 ? "No providers found" : "No infrastructure providers available yet"}
+            description={selectedFilters.size > 0 
+              ? "Try adjusting your filters or search terms"
+              : "Be the first to register as an infrastructure provider"}
+            icon="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+            action={{
+              label: "Become a Provider",
+              onClick: () => {/* Add provider logic */}
+            }}
+          />
+        )}
         
         {/* Pagination */}
         <div className="mt-12 flex items-center justify-between border-t border-gray-200 px-4 py-4 sm:px-6">
@@ -188,9 +202,9 @@ export function InfraProvidersView() {
               <p className="text-sm text-gray-700">
                 Showing <span className="font-medium">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span> to{' '}
                 <span className="font-medium">
-                  {Math.min(currentPage * ITEMS_PER_PAGE, PROVIDERS.length)}
+                  {Math.min(currentPage * ITEMS_PER_PAGE, totalItems)}
                 </span>{' '}
-                of <span className="font-medium">{PROVIDERS.length}</span> results
+                of <span className="font-medium">{totalItems}</span> results
               </p>
             </div>
             <div>
@@ -238,28 +252,26 @@ export function InfraProvidersView() {
       <div className="space-y-6 h-[calc(100vh-112px)] overflow-y-auto pr-4 -mr-4 pb-16 scrollbar-hide w-[280px]">
         {/* Search Input */}
         <div className="relative">
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={(e ) => setSearchQuery(e.target.value)}
-            placeholder="Search hardware..."
-            className="w-full pl-12 pr-4 h-12 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0284a5] focus:ring-offset-0 bg-white border border-[#e1e3e5] placeholder-gray-400 text-gray-900"
-          />
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-            <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
+            {selectedFilters.size > 0 && (
+              <button
+                onClick={clearFilters}
+                className="text-sm text-[#0284a5] hover:text-[#026d8a] flex items-center gap-1"
+              >
+                <span>Clear filters</span>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
           </div>
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          )}
+          <SearchInput
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)} 
+            placeholder="Search hardware..."
+            onClear={() => setSearchQuery('')}
+          />
         </div>
 
         {Object.entries(filteredHardwareTypes).map(([category, types]) => (
@@ -269,22 +281,15 @@ export function InfraProvidersView() {
             </div>
             <div className="space-y-2">
               {types.map((type) => (
-                <button
+                <FilterButton
                   key={type}
-                  className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2"
-                >
-                  <div className={`w-5 h-5 ${PROVIDER_ICONS[type as keyof typeof PROVIDER_ICONS].color} rounded flex items-center justify-center text-white`}>
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth="1.5" 
-                        d={PROVIDER_ICONS[type as keyof typeof PROVIDER_ICONS].icon} 
-                      />
-                    </svg>
-                  </div>
-                  <span>{type}</span>
-                </button>
+                  label={type}
+                  icon={PROVIDER_ICONS[type as keyof typeof PROVIDER_ICONS].icon}
+                  color={PROVIDER_ICONS[type as keyof typeof PROVIDER_ICONS].color}
+                  isSelected={selectedFilters.has(type)}
+                  onSelect={() => handleFilterSelect(type)}
+                  onRemove={() => handleFilterSelect(type)}
+                />
               ))}
             </div>
           </div>

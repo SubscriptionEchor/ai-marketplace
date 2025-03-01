@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { DashboardContainer } from "../containers/DashboardContainer";
+import { DashboardContainer } from "@/containers";
 import { RootLayout } from '../components/layouts';
 import { Navigate } from 'react-router-dom';
 
