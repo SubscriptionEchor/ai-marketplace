@@ -1,7 +1,31 @@
-import { useState, useRef, useCallback, Fragment, useEffect } from 'react';
+import { useState, useRef, useCallback, Fragment } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Popover, Transition } from '@headlessui/react';
+import { Popover, Transition, Dialog } from '@headlessui/react';
+import { Modal } from '@/components/ui';
 import { useAuth } from '@/hooks';
+
+const WALLET_OPTIONS = [
+  {
+    id: 'xell',
+    name: 'XELL Wallet',
+    description: 'Recommended wallet for TRIE AI Marketplace',
+    icon: 'https://learn.rubix.net//images/logo.png'
+  },
+  {
+    id: 'metamask',
+    name: 'MetaMask',
+    description: 'Connect with MetaMask wallet',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg'
+  }
+];
+
+const DISCONNECT_WARNING = {
+  title: 'Disconnect Wallet',
+  message: 'Are you sure you want to disconnect your wallet? This action will remove access to your account and is irreversible.',
+  confirmLabel: 'Yes, disconnect',
+  cancelLabel: 'Cancel'
+};
 
 const CATEGORIES = {
   'Multi-model': [
@@ -56,24 +80,18 @@ const SEARCH_OPTIONS = [
 export function TopNavbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showWalletModal, setShowWalletModal] = useState(false);
+  const [showDisconnectModal, setShowDisconnectModal] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [, setIsMobileMenuOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(SEARCH_OPTIONS[0]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, login, logout } = useAuth();
+  const { isAuthenticated, connectWallet, logout, connectedWallet } = useAuth();
 
-  // Get current category from URL
-  useEffect(() => {
-    const path = location.pathname.split('/').pop();
-    const category = Object.keys(CATEGORIES).find(cat => 
-      CATEGORIES[cat as keyof typeof CATEGORIES].some(task => task === path)
-    );
-    setSelectedCategory(category || null);
-  }, [location.pathname]);
 
   const focusSearchInput = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape' && isSearchFocused) {
@@ -112,7 +130,7 @@ export function TopNavbar() {
             {/* Mobile menu button */}
             <button
               type="button"
-              className="xl:hidden inline-flex items-center justify-center p-2 rounded-md text-text-secondary hover:text-text-primary hover:bg-background-tertiary focus:outline-none"
+              className="xl:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-[#222222] focus:outline-none"
               onClick={() => setIsMobileMenuOpen(true)}
             >
               <span className="sr-only">Open main menu</span>
@@ -195,7 +213,7 @@ export function TopNavbar() {
           
           <div className="flex items-center space-x-6">
             <button
-              onClick={login}
+              onClick={() => setShowWalletModal(true)}
               className={`inline-flex items-center px-4 py-2 bg-[#0284a5] text-white text-sm font-medium rounded-lg hover:bg-[#026d8a] transition-colors ${
                 isAuthenticated ? 'hidden' : ''
               }`}
@@ -242,15 +260,14 @@ export function TopNavbar() {
                         <div className="border-t border-border mt-1">
                           <button
                             onClick={() => {
-                              logout();
-                              navigate('/');
+                              setShowDisconnectModal(true);
                             }}
-                            className="w-full text-left px-4 py-2 text-sm text-error hover:bg-background-tertiary flex items-center space-x-2"
+                            className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-background-tertiary flex items-center space-x-2"
                           >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
-                            <span>Log Out</span>
+                            <span>Disconnect Wallet</span>
                           </button>
                         </div>
                       </Popover.Panel>
@@ -320,6 +337,195 @@ export function TopNavbar() {
           </nav>
         </div>
       </div>
+      
+      {/* Disconnect Confirmation Modal */}
+      <Modal
+        show={showDisconnectModal}
+        onClose={() => setShowDisconnectModal(false)}
+        title={DISCONNECT_WARNING.title}
+      >
+        <div className="p-6">
+          <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 rounded-full bg-red-100">
+            <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <p className="mb-8 text-center text-gray-600">{DISCONNECT_WARNING.message}</p>
+          <div className="flex justify-end space-x-4">
+            <button
+              onClick={() => setShowDisconnectModal(false)}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              {DISCONNECT_WARNING.cancelLabel}
+            </button>
+            <button
+              onClick={() => {
+                logout();
+                setShowDisconnectModal(false);
+                navigate('/');
+              }}
+              className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700"
+            >
+              {DISCONNECT_WARNING.confirmLabel}
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Wallet Selection Modal */}
+      <Modal
+        show={showWalletModal}
+        onClose={() => setShowWalletModal(false)}
+        title="Connect Wallet"
+      >
+        <div className="p-6">
+          <div className="space-y-4">
+            {WALLET_OPTIONS.map((wallet) => (
+              <button
+                key={wallet.id}
+                onClick={async () => {
+                  setShowWalletModal(false);
+                  await connectWallet(wallet.id as 'xell' | 'metamask');
+                }}
+                className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white rounded-full p-2 shadow-sm">
+                    <img src={wallet.icon} alt={wallet.name} className="w-full h-full object-contain" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-sm font-medium text-gray-900">{wallet.name}</h3>
+                    <p className="text-xs text-gray-500">{wallet.description}</p>
+                  </div>
+                </div>
+                {connectedWallet?.type === wallet.id ? (
+                  <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">Connected</span>
+                ) : (
+                  <span className="text-xs font-medium text-gray-600">Connect</span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      </Modal>
+
+      {/* Mobile Menu */}
+      <Transition show={isMobileMenuOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-50" onClose={setIsMobileMenuOpen}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 z-50 flex">
+            <Transition.Child
+              as={Fragment}
+              enter="transform transition ease-in-out duration-300"
+              enterFrom="-translate-x-full"
+              enterTo="translate-x-0"
+              leave="transform transition ease-in-out duration-300"
+              leaveFrom="translate-x-0"
+              leaveTo="-translate-x-full"
+            >
+              <Dialog.Panel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-[#191919] pb-12 shadow-xl">
+                <div className="flex px-4 pb-2 pt-5">
+                  <button
+                    type="button"
+                    className="relative -m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:text-white"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <span className="absolute -inset-0.5" />
+                    <span className="sr-only">Close menu</span>
+                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Mobile Navigation */}
+                <div className="mt-2 px-4">
+                  <div className="border-b border-border pb-6">
+                    <div className="flow-root">
+                      <div className="-my-2 divide-y divide-border">
+                        {Object.entries(CATEGORIES).map(([category, items]) => (
+                          <div key={category} className="py-6">
+                            <h3 className="text-sm font-medium text-gray-400 mb-2">{category}</h3>
+                            <ul className="space-y-1">
+                              {items.map((item) => (
+                                <li key={item}>
+                                  <button
+                                    onClick={() => {
+                                      let targetView = 'models';
+                                      if (item.toLowerCase().includes('data') || item.includes('folder')) {
+                                        targetView = 'datasets';
+                                      } else if (item.toLowerCase().includes('gpu') || item.toLowerCase().includes('cpu') || item.toLowerCase().includes('storage')) {
+                                        targetView = 'infra-providers';
+                                      }
+                                      navigate(`/dashboard/${targetView}?category=${encodeURIComponent(item)}`);
+                                      setIsMobileMenuOpen(false);
+                                    }}
+                                    className="block py-2 text-sm text-gray-300 hover:text-white w-full text-left"
+                                  >
+                                    {item}
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mobile Profile Menu */}
+                {isAuthenticated && (
+                  <div className="border-t border-border px-4 py-6">
+                    <div className="flow-root">
+                      <div className="-my-2">
+                        {PROFILE_MENU_ITEMS.map((item) => (
+                          <button
+                            key={item.label}
+                            onClick={() => {
+                              navigate(item.href);
+                              setIsMobileMenuOpen(false);
+                            }}
+                            className="flex items-center py-2 text-sm text-gray-300 hover:text-white w-full"
+                          >
+                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
+                            </svg>
+                            {item.label}
+                          </button>
+                        ))}
+                        <button
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            setShowDisconnectModal(true);
+                          }}
+                          className="flex items-center py-2 text-sm text-red-500 hover:text-red-400 w-full"
+                        >
+                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                          </svg>
+                          Disconnect Wallet
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition>
     </nav>
   );
 }

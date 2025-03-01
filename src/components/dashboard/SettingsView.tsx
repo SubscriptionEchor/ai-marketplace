@@ -26,10 +26,10 @@ const NOTIFICATION_PREFERENCES: NotificationPreference[] = [
 ];
 
 export function SettingsView() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, connectWallet, connectedWallet } = useAuth();
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [notifications, setNotifications] = useState({
+  const [notifications, setNotifications] = useState<Record<string, boolean>>({
     newModels: true,
     priceAlerts: true,
     securityAlerts: true
@@ -69,25 +69,64 @@ export function SettingsView() {
       <div className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6 mb-8">
         <h2 className="text-lg font-semibold text-gray-900 mb-6">Wallet</h2>
         <div className="space-y-6">
-          <div>
+          <div className="space-y-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Connected Wallet
+              Wallet Connection
             </label>
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center">
-                  <img src="https://learn.rubix.net//images/logo.png" alt="XELL" className="w-full h-full" />
+            
+            {/* XELL Wallet */}
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+              onClick={() => connectWallet('xell')}>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white rounded-full p-2 shadow-sm">
+                  <img src="https://learn.rubix.net//images/logo.png" alt="XELL" className="w-full h-full object-contain" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">XELL Wallet</p>
-                  <p className="text-xs text-gray-500 font-mono">0x1234...5678</p>
+                  <h3 className="text-sm font-medium text-gray-900">XELL Wallet</h3>
+                  <p className="text-xs text-gray-500">Recommended wallet for TRIE AI Marketplace</p>
                 </div>
               </div>
-              <button className="text-sm text-red-600 hover:text-red-700 font-medium">
-                Disconnect
-              </button>
+              {connectedWallet?.type === 'xell' ? (
+                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">Connected</span>
+              ) : (
+                <span className="text-xs font-medium text-gray-600">Connect</span>
+              )}
+            </div>
+
+            {/* MetaMask */}
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+              onClick={() => connectWallet('metamask')}>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white rounded-full p-2 shadow-sm">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" className="w-full h-full object-contain" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900">MetaMask</h3>
+                  <p className="text-xs text-gray-500">Connect with MetaMask wallet</p>
+                </div>
+              </div>
+              {connectedWallet?.type === 'metamask' ? (
+                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">Connected</span>
+              ) : (
+                <span className="text-xs font-medium text-gray-600">Connect</span>
+              )}
             </div>
           </div>
+
+          {connectedWallet && (
+            <div className="border-t border-gray-100 pt-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Connected Address</p>
+                  <p className="text-xs font-mono text-gray-500">{connectedWallet.address}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="flex w-2 h-2 bg-green-500 rounded-full"></span>
+                  <span className="text-xs text-gray-500">Active</span>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">

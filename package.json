@@ -14,7 +14,8 @@
     "react-dom": "^18.2.0",
     "@headlessui/react": "^1.7.17",
     "framer-motion": "^10.16.16",
-    "react-router-dom": "^6.21.1"
+    "react-router-dom": "^6.21.1",
+    "@types/node": "^20.10.5"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
