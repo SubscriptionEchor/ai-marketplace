@@ -1,6 +1,14 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { DashboardContainer } from "@/containers";
-import { DatasetUploadView, ModelUploadView, ModelPricingView, ModelReviewView, InfraUploadView, DataProviderView } from "@/components/dashboard";
+import { 
+  DatasetUploadView, 
+  ModelUploadView, 
+  ModelPricingView, 
+  ModelReviewView, 
+  InfraUploadView,
+  InfraPricingView,
+  InfraReviewView
+} from "@/components/dashboard";
 import { RootLayout } from '../components/layouts';
 import { Navigate } from 'react-router-dom';
 
@@ -41,8 +49,28 @@ export const router = createBrowserRouter([
             element: <DatasetUploadView />,
           },
           {
+            path: 'upload/dataset/metadata',
+            element: <DatasetUploadView />,
+          },
+          {
+            path: 'upload/dataset/pricing',
+            element: <DatasetUploadView />,
+          },
+          {
+            path: 'upload/dataset/review',
+            element: <DatasetUploadView />,
+          },
+          {
             path: 'upload/infra',
             element: <InfraUploadView />,
+          },
+          {
+            path: 'upload/infra/pricing',
+            element: <InfraPricingView />,
+          },
+          {
+            path: 'upload/infra/review',
+            element: <InfraReviewView />,
           }
         ]
       }

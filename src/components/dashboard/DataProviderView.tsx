@@ -1,9 +1,8 @@
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/hooks';
 import { Modal } from '@/components/ui';
-import { useState } from 'react';
-import { Breadcrumbs } from '@/components/ui';
 
 const UPLOAD_OPTIONS = [
   {
@@ -34,9 +33,22 @@ const UPLOAD_OPTIONS = [
 
 export function DataProviderView() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated, login } = useAuth();
+  const [selectedOption, setSelectedOption] = useState<string>('');
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<string>('model');
+
+  useEffect(() => {
+    // Check if we're returning from a specific upload page
+    const path = location.pathname;
+    if (path.includes('dataset')) {
+      setSelectedOption('dataset');
+    } else if (path.includes('model')) {
+      setSelectedOption('model');
+    } else if (path.includes('infra')) {
+      setSelectedOption('infra');
+    }
+  }, [location]);
 
   const handleOptionClick = (optionId: string) => {
     if (!isAuthenticated) {

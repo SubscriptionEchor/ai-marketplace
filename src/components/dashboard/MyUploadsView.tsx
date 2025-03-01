@@ -32,38 +32,6 @@ const MOCK_DATA = Array.from({ length: 50 }, (_, i) => ({
   updatedAt: `${Math.floor(Math.random() * 30) + 1} days ago`
 }));
 
-const INITIAL_DATA = [
-  {
-    id: 'model-1',
-    type: 'AI Model',
-    name: 'Advanced NLP Model',
-    category: 'Natural Language Processing',
-    status: 'Active',
-    downloads: '1.2k',
-    earnings: '$120.00',
-    updatedAt: '2 days ago'
-  },
-  {
-    id: 'model-2',
-    type: 'AI Model',
-    name: 'Image Classifier Pro',
-    category: 'Computer Vision',
-    status: 'Active',
-    downloads: '3.4k',
-    earnings: '$340.00',
-    updatedAt: '1 week ago'
-  },
-  {
-    id: 'model-3',
-    type: 'AI Model',
-    name: 'Speech Recognition Engine',
-    category: 'Audio',
-    status: 'Active',
-    downloads: '2.1k',
-    earnings: '$210.00',
-    updatedAt: '3 days ago'
-  }
-];
 import { useNavigate } from 'react-router-dom';
 
 export function MyUploadsView() {
@@ -166,12 +134,26 @@ export function MyUploadsView() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button 
-                        onClick={() => navigate(`/dashboard/upload/model?edit=${item.id}`, { 
+                        onClick={() => {
+                          // Determine which edit page to navigate to based on item type
+                          let editPath = '';
+                          switch (item.type) {
+                            case 'AI Model':
+                              editPath = `/dashboard/upload/model`;
+                              break;
+                            case 'Dataset':
+                              editPath = `/dashboard/upload/dataset`;
+                              break;
+                            case 'Infrastructure':
+                              editPath = `/dashboard/upload/infra`;
+                              break;
+                          }
+                          navigate(editPath, {
                           state: { 
                             editMode: true,
                             modelData: item
                           }
-                        })}
+                        })}}
                         className="text-[#0284a5] hover:text-[#026d8a]"
                       >
                         Edit

@@ -78,6 +78,7 @@ export function DatasetsView() {
         name: 'Mozilla',
         avatar: 'M'
       },
+      type: 'dataset',
       image: 'https://cdn.midjourney.com/d8fdb597-0d88-467d-8637-8022fb31dc1e/0_0.png',
       name: 'Common Voice',
       categories: ['Audio', 'Text', 'Multilingual'],
@@ -92,6 +93,7 @@ export function DatasetsView() {
         name: `Creator ${i + 2}`,
         avatar: `C${i + 2}`
       },
+      type: 'dataset',
       image: 'https://cdn.midjourney.com/d8fdb597-0d88-467d-8637-8022fb31dc1e/0_0.png',
       name: `Dataset ${i + 2}`,
       categories: Object.keys(CATEGORY_ICONS).slice(0, Math.floor(Math.random() * 2) + 2),

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Breadcrumbs } from '@/components/ui';
 
 const STORAGE_KEY = 'user_uploads_infra';
 
@@ -39,6 +40,19 @@ export function InfraUploadView() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
+      <div className="mb-8">
+        <Breadcrumbs
+          items={[
+            { label: 'Choose Type', href: '/dashboard/upload' },
+            { label: 'Details', href: '/dashboard/upload/infra' },
+            { label: 'Pricing', href: '/dashboard/upload/infra/pricing' },
+            { label: 'Review' }
+          ]}
+          currentStep={2}
+          totalSteps={4}
+        />
+      </div>
+
       <div className="text-center mb-12">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">Add Infrastructure Service</h1>
         <p className="text-lg text-gray-600">Provide computing resources for AI workloads</p>
@@ -179,20 +193,27 @@ export function InfraUploadView() {
             <button
               type="button"
               onClick={() => navigate('/dashboard/upload')}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
             >
               Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/dashboard/upload')}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              Back
             </button>
             <button
               type="button"
               onClick={() => {
                 // Mark that user has registered infrastructure
                 localStorage.setItem(STORAGE_KEY, 'true');
-                navigate('/dashboard/infra-providers');
+                navigate('/dashboard/upload/infra/pricing');
               }}
               className="px-4 py-2 text-sm font-medium text-white bg-[#0284a5] rounded-lg hover:bg-[#026d8a] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Register Infrastructure
+              Next
             </button>
           </div>
         </div>

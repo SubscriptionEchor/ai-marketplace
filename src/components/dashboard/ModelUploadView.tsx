@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Breadcrumbs } from '@/components/ui';
 
 interface ModelThumbnail {
@@ -73,7 +73,6 @@ const TASK_CATEGORIES = {
   ]
 };
 
-const STORAGE_KEY = 'user_uploads_models';
 
 interface ModelMetrics {
   accuracy: string;
@@ -216,7 +215,7 @@ export function ModelUploadView() {
       setFormData(prev => ({
         ...prev,
         [parent]: {
-          ...prev[parent as keyof typeof prev],
+          ...((prev[parent as keyof typeof prev] || {}) as Record<string, string>),
           [child]: value
         }
       }));
@@ -611,9 +610,16 @@ export function ModelUploadView() {
             <button
               type="button"
               onClick={() => navigate('/dashboard/upload')}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
             >
               Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/dashboard/upload')}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              Back
             </button>
             <button
               type="button"

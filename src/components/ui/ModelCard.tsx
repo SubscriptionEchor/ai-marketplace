@@ -71,13 +71,13 @@ export function ModelCard({ model, isLiked, likeCount, onLike }: ModelCardProps)
           
           {/* Categories */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {model.categories.map((category) => (
+            {model.categories?.map((category) => (
               <span key={category} className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${
                 CATEGORY_STYLES[category as keyof typeof CATEGORY_STYLES] || CATEGORY_STYLES['Other']
               }`}>
                 {category}
               </span>
-            ))}
+            )) || null}
           </div>
           
           {/* Description */}

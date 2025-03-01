@@ -3,26 +3,27 @@ import { useState, useMemo, useEffect } from 'react';
 export function useFilteredItems<T extends { categories: string[] }>(
   items: T[],
   itemsPerPage: number = 12,
-  initialFilter?: string
+  initialFilter?: string | null
 ) {
   const [selectedFilters, setSelectedFilters] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
 
   // Initialize with category from URL if provided
   useEffect(() => {
-    if (initialFilter) {
+    if (initialFilter && items.length > 0) {
       setSelectedFilters(new Set([initialFilter]));
     }
   }, [initialFilter]);
 
   const filteredItems = useMemo(() => {
-    if (selectedFilters.size === 0) return items;
+    if (!items || selectedFilters.size === 0) return items || [];
     return items.filter(item => 
-      item.categories.some(category => selectedFilters.has(category))
+      item.categories?.some(category => selectedFilters.has(category)) || false
     );
-  }, [items, selectedFilters]);
+  }, [items, selectedFilters]); 
 
-  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const totalItems = filteredItems?.length || 0;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
   const paginatedItems = filteredItems.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -49,7 +50,7 @@ export function useFilteredItems<T extends { categories: string[] }>(
 
   return {
     filteredItems: paginatedItems,
-    totalItems: filteredItems.length,
+    totalItems,
     currentPage,
     totalPages,
     selectedFilters,

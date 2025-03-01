@@ -68,6 +68,7 @@ export function InfraProvidersView() {
         name: 'AWS',
         avatar: 'A'
       },
+      type: 'infra',
       image: 'https://cdn.midjourney.com/d8fdb597-0d88-467d-8637-8022fb31dc1e/0_0.png',
       name: 'P4d Instance',
       categories: ['GPU', 'Memory'],
@@ -82,6 +83,7 @@ export function InfraProvidersView() {
         name: `Provider ${i + 2}`,
         avatar: `P${i + 2}`
       },
+      type: 'infra',
       image: 'https://cdn.midjourney.com/d8fdb597-0d88-467d-8637-8022fb31dc1e/0_0.png',
       name: `Infrastructure ${i + 2}`,
       categories: Object.keys(PROVIDER_ICONS).slice(0, Math.floor(Math.random() * 2) + 2),

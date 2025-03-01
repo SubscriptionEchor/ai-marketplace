@@ -1,5 +1,5 @@
 import { DashboardLayout, HomeView, ModelsView, DatasetsView, InfraProvidersView, DataProviderView, SettingsView } from '@/components/dashboard';
-import { MyUploadsView } from '@/components/dashboard/MyUploadsView';
+import { MyUploadsView, EarningsView, WithdrawView, TransactionsView } from '@/components/dashboard';
 import { useParams } from 'react-router-dom';
 
 const VIEWS = {
@@ -9,6 +9,9 @@ const VIEWS = {
   'infra-providers': InfraProvidersView,
   upload: DataProviderView,
   'my-uploads': MyUploadsView,
+  'earnings': EarningsView,
+  'withdraw': WithdrawView,
+  'transactions': TransactionsView,
   'settings': SettingsView
 };
 
