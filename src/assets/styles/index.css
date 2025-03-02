@@ -65,14 +65,14 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-[#f6f6f7];
+  @apply bg-gray-100;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-border;
+  @apply bg-gray-300 hover:bg-gray-400;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary/50;
+  @apply bg-gray-400;
 }

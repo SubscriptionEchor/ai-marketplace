@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { formatNumber } from '@/utils/formatNumber';
+import { Select } from '@/components/ui';
 
 const MOCK_TRANSACTIONS = Array.from({ length: 20 }, (_, i) => ({
   id: `tx-${i + 1}`,
@@ -78,29 +79,40 @@ export function EarningsView() {
   });
 
   return (
-    <div className="px-4 md:px-6 lg:px-8 py-8">
+    <div className="h-[calc(100vh-112px)] overflow-y-auto scrollbar-hide">
       {/* Time Period Selection */}
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Earnings Overview</h1>
-        <div className="flex items-center gap-2">
-          {TIME_PERIODS.map((period) => (
-            <button
-              key={period.id}
-              onClick={() => setSelectedPeriod(period.id)}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                selectedPeriod === period.id
-                  ? 'bg-[#0284a5] text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-50'
-              }`}
-            >
-              {period.label}
-            </button>
-          ))}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 px-4 relative">
+        <h1 className="text-2xl font-bold text-gray-900 flex-shrink-0">Earnings Overview</h1>
+        <div className="relative">
+          {/* Mobile Select */}
+          <Select
+            value={selectedPeriod}
+            onChange={setSelectedPeriod}
+            options={TIME_PERIODS}
+            className="sm:hidden w-full min-w-[200px]"
+          />
+
+          {/* Desktop Period Buttons */}
+          <div className="hidden sm:flex items-center gap-2 min-w-[300px]">
+            {TIME_PERIODS.map((period) => (
+              <button
+                key={period.id}
+                onClick={() => setSelectedPeriod(period.id)}
+                className={`flex-1 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                  selectedPeriod === period.id
+                    ? 'bg-[#0284a5] text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                {period.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 px-4">
         <div className="bg-white rounded-xl border border-[#e1e3e5] p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-medium text-gray-500">Total Earnings</h3>
@@ -152,11 +164,11 @@ export function EarningsView() {
       </div>
 
       {/* Transactions Table */}
-      <div className="bg-white rounded-xl border border-[#e1e3e5] overflow-hidden">
+      <div className="bg-white rounded-xl border border-[#e1e3e5] overflow-hidden mx-4">
         <div className="px-6 py-4 border-b border-[#e1e3e5]">
           <h2 className="text-lg font-semibold text-gray-900">Recent Transactions</h2>
         </div>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto min-w-full">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
@@ -177,10 +189,10 @@ export function EarningsView() {
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Buyer
+                  <span className="hidden sm:inline">Buyer</span>
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Asset
+                  <span className="hidden sm:inline">Asset</span>
                 </th>
                 <th
                   scope="col"
@@ -201,24 +213,26 @@ export function EarningsView() {
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
+                <th scope="col" className="relative px-6 py-3 hidden sm:table-cell">
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {sortedTransactions.map((transaction) => (
                 <tr key={transaction.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {new Date(transaction.date).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {transaction.buyer}
+                  <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{transaction.buyer}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {transaction.asset}
+                  <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">{transaction.asset}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     ${transaction.amount}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                       transaction.status === 'completed'
                         ? 'bg-green-100 text-green-800'
@@ -228,6 +242,11 @@ export function EarningsView() {
                     }`}>
                       {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
                     </span>
+                  </td>
+                  <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button className="text-[#0284a5] hover:text-[#026d8a]">
+                      View
+                    </button>
                   </td>
                 </tr>
               ))}

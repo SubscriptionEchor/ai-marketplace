@@ -5,6 +5,55 @@ import { Popover, Transition, Dialog } from '@headlessui/react';
 import { Modal } from '@/components/ui';
 import { useAuth } from '@/hooks';
 
+const MAIN_NAVIGATION = [
+  { 
+    id: 'all',
+    label: 'Home',
+    icon: 'M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 018.25 20.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z'
+  },
+  { 
+    id: 'models', 
+    label: 'AI Models', 
+    icon: 'M9 3.75H6.912a2.25 2.25 0 00-2.15 1.588L2.35 13.177a2.25 2.25 0 00-.1.661V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 00-2.15-1.588H15M2.25 15h19.5m-16.5 0h13.5M9 3.75l2.25 4.5m0 0L15 3.75M11.25 8.25h4.5'
+  },
+  { 
+    id: 'datasets', 
+    label: 'Data Sets', 
+    icon: 'M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125'
+  },
+  { 
+    id: 'infra-providers', 
+    label: 'Infra Providers', 
+    icon: 'M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z'
+  }
+];
+
+const UPLOAD_NAVIGATION = [
+  {
+    id: 'upload',
+    label: 'Upload Content',
+    icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L9 8m4-4v12'
+  }
+];
+
+const CREATOR_NAVIGATION = [
+  {
+    id: 'my-uploads',
+    label: 'My Uploads',
+    icon: 'M7 4V20M7 4L3 8M7 4L11 8M17 4V20M17 4L13 8M17 4L21 8'
+  },
+  {
+    id: 'earnings',
+    label: 'Earnings',
+    icon: 'M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+  },
+  {
+    id: 'withdraw',
+    label: 'Withdraw',
+    icon: 'M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z'
+  }
+];
+
 const WALLET_OPTIONS = [
   {
     id: 'xell',
@@ -131,7 +180,7 @@ export function TopNavbar() {
             <button
               type="button"
               className="xl:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-[#222222] focus:outline-none"
-              onClick={() => setIsMobileMenuOpen(true)}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               <span className="sr-only">Open main menu</span>
               <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -212,6 +261,63 @@ export function TopNavbar() {
           </div>
           
           <div className="flex items-center space-x-6">
+            {/* Mobile Profile Button */}
+            {isAuthenticated && (
+              <div className="relative xl:hidden">
+                <Popover>
+                  {({ open }) => (
+                    <>
+                      <Popover.Button className="flex items-center space-x-2 p-1.5 rounded-full hover:bg-[#222222] transition-colors focus:outline-none">
+                        <div className="w-8 h-8 bg-[#0284a5] rounded-full flex items-center justify-center text-white font-medium">
+                          J
+                        </div>
+                      </Popover.Button>
+
+                      <Transition
+                        show={open}
+                        as={Fragment}
+                        enter="transition ease-out duration-200"
+                        enterFrom="opacity-0 scale-95"
+                        enterTo="opacity-100 scale-100"
+                        leave="transition ease-in duration-150"
+                        leaveFrom="opacity-100 scale-100"
+                        leaveTo="opacity-0 scale-95"
+                      >
+                        <Popover.Panel className="absolute right-0 mt-2 w-56 bg-[#191919] rounded-lg shadow-popup border border-border py-1 z-50">
+                          {PROFILE_MENU_ITEMS.map((item) => (
+                            <button
+                              key={item.label}
+                              onClick={() => navigate(item.href)}
+                              className="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-background-tertiary flex items-center space-x-2"
+                            >
+                              <svg className="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
+                              </svg>
+                              <span>{item.label}</span>
+                            </button>
+                          ))}
+                          
+                          <div className="border-t border-border mt-1">
+                            <button
+                              onClick={() => {
+                                setShowDisconnectModal(true);
+                              }}
+                              className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-background-tertiary flex items-center space-x-2"
+                            >
+                              <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                              </svg>
+                              <span>Disconnect Wallet</span>
+                            </button>
+                          </div>
+                        </Popover.Panel>
+                      </Transition>
+                    </>
+                  )}
+                </Popover>
+              </div>
+            )}
+
             <button
               onClick={() => setShowWalletModal(true)}
               className={`inline-flex items-center px-4 py-2 bg-[#0284a5] text-white text-sm font-medium rounded-lg hover:bg-[#026d8a] transition-colors ${
@@ -223,7 +329,7 @@ export function TopNavbar() {
             </button>
             
             {/* Profile Menu */}
-            <div className={`relative ${!isAuthenticated ? 'hidden' : ''}`}>
+            <div className={`relative hidden xl:block ${!isAuthenticated ? 'hidden' : ''}`}>
               <Popover className="relative">
                 {({ open }) => (
                   <>
@@ -434,8 +540,8 @@ export function TopNavbar() {
               leaveFrom="translate-x-0"
               leaveTo="-translate-x-full"
             >
-              <Dialog.Panel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-[#191919] pb-12 shadow-xl">
-                <div className="flex px-4 pb-2 pt-5">
+              <Dialog.Panel className="relative flex w-full max-w-xs flex-col overflow-y-auto scrollbar-hide bg-[#191919] pb-12 shadow-xl">
+                <div className="flex items-center justify-between px-4 py-4 border-b border-border">
                   <button
                     type="button"
                     className="relative -m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:text-white"
@@ -447,80 +553,92 @@ export function TopNavbar() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
-                </div>
-
-                {/* Mobile Navigation */}
-                <div className="mt-2 px-4">
-                  <div className="border-b border-border pb-6">
-                    <div className="flow-root">
-                      <div className="-my-2 divide-y divide-border">
-                        {Object.entries(CATEGORIES).map(([category, items]) => (
-                          <div key={category} className="py-6">
-                            <h3 className="text-sm font-medium text-gray-400 mb-2">{category}</h3>
-                            <ul className="space-y-1">
-                              {items.map((item) => (
-                                <li key={item}>
-                                  <button
-                                    onClick={() => {
-                                      let targetView = 'models';
-                                      if (item.toLowerCase().includes('data') || item.includes('folder')) {
-                                        targetView = 'datasets';
-                                      } else if (item.toLowerCase().includes('gpu') || item.toLowerCase().includes('cpu') || item.toLowerCase().includes('storage')) {
-                                        targetView = 'infra-providers';
-                                      }
-                                      navigate(`/dashboard/${targetView}?category=${encodeURIComponent(item)}`);
-                                      setIsMobileMenuOpen(false);
-                                    }}
-                                    className="block py-2 text-sm text-gray-300 hover:text-white w-full text-left"
-                                  >
-                                    {item}
-                                  </button>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
+                  {isAuthenticated && (
+                    <div className="flex items-center gap-4">
+                      <div className="w-8 h-8 bg-[#0284a5] rounded-full flex items-center justify-center text-white font-medium">
+                        J
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-white">John Doe</span>
+                        <span className="text-xs text-gray-400">Connected with XELL</span>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 {/* Mobile Profile Menu */}
-                {isAuthenticated && (
-                  <div className="border-t border-border px-4 py-6">
-                    <div className="flow-root">
-                      <div className="-my-2">
-                        {PROFILE_MENU_ITEMS.map((item) => (
-                          <button
-                            key={item.label}
-                            onClick={() => {
-                              navigate(item.href);
-                              setIsMobileMenuOpen(false);
-                            }}
-                            className="flex items-center py-2 text-sm text-gray-300 hover:text-white w-full"
-                          >
-                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
-                            </svg>
-                            {item.label}
-                          </button>
-                        ))}
-                        <button
-                          onClick={() => {
-                            setIsMobileMenuOpen(false);
-                            setShowDisconnectModal(true);
-                          }}
-                          className="flex items-center py-2 text-sm text-red-500 hover:text-red-400 w-full"
-                        >
-                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                          </svg>
-                          Disconnect Wallet
-                        </button>
+
+                {/* Categories Navigation */}
+                <div className="px-4 py-6">
+                  <div className="flow-root">
+                    <div className="space-y-8">
+                      {/* Main Navigation */}
+                      <div>
+                        <h3 className="px-3 text-sm font-medium text-gray-400 uppercase tracking-wider mb-3">Main</h3>
+                        <div className="space-y-1">
+                          {MAIN_NAVIGATION.map((item) => (
+                            <button
+                              key={item.id}
+                              onClick={() => {
+                                navigate(`/dashboard/${item.id}`);
+                                setIsMobileMenuOpen(false);
+                              }}
+                              className="flex items-center w-full px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#222222] rounded-lg transition-colors"
+                            >
+                              <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={item.icon} />
+                              </svg>
+                              {item.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Additional Navigation */}
+                      <div>
+                        <h3 className="px-3 text-sm font-medium text-gray-400 uppercase tracking-wider mb-3">Additional</h3>
+                        <div className="space-y-1">
+                          {UPLOAD_NAVIGATION.map((item) => (
+                            <button
+                              key={item.id}
+                              onClick={() => {
+                                navigate(`/dashboard/${item.id}`);
+                                setIsMobileMenuOpen(false);
+                              }}
+                              className="flex items-center w-full px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#222222] rounded-lg transition-colors"
+                            >
+                              <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={item.icon} />
+                              </svg>
+                              {item.label}
+                            </button>
+                          ))}
+
+                          {/* Creator Navigation */}
+                          {isAuthenticated && (
+                            <div className="pl-6 mt-2 space-y-1">
+                              {CREATOR_NAVIGATION.map((item) => (
+                                <button
+                                  key={item.id}
+                                  onClick={() => {
+                                    navigate(`/dashboard/${item.id}`);
+                                    setIsMobileMenuOpen(false);
+                                  }}
+                                  className="flex items-center w-full px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#222222] rounded-lg transition-colors"
+                                >
+                                  <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={item.icon} />
+                                  </svg>
+                                  {item.label}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>

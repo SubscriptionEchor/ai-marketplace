@@ -90,14 +90,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const hasAnyUploads = Object.values(hasUploads).some(Boolean);
 
   return (
-    <div className="min-h-screen bg-[#f6f6f7]">
-      <div className="h-full flex flex-col">
+    <div className="min-h-screen bg-[#f6f6f7] flex flex-col">
         <TopNavbar />
         
-        <main className="flex-1 pt-[112px] relative bg-[#f6f6f7]">
-          <div className="flex">
+        <main className="flex-1 pt-[84px] pb-[84px] bg-[#f6f6f7] overflow-y-auto scrollbar-hide">
+          <div className="flex flex-col lg:flex-row">
             {/* Left Sidebar - Navigation */}
-            <div className="w-[280px] hidden lg:block flex-shrink-0 fixed left-0 top-[112px] bottom-0 border-r border-[#e1e3e5] pt-8 bg-[#f6f6f7]">
+            <div className="w-[280px] hidden lg:block flex-shrink-0 fixed left-0 top-[84px] bottom-0 border-r border-[#e1e3e5] pt-8 bg-[#f6f6f7]">
               <div className="flex flex-col h-full px-6">
                 {/* Main Navigation */}
                 <div className="space-y-1.5 mb-6">
@@ -138,12 +137,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
 
             {/* Main Content Area */}
-            <div className="flex-1 min-w-0 lg:ml-[280px] lg:mr-[24px]">
+            <div className="flex-1 min-w-0 lg:ml-[280px] px-4 sm:px-6 lg:px-8">
               {children}
             </div>
           </div>
         </main>
-      </div>
     </div>
   );
 }

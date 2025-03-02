@@ -14,9 +14,9 @@ export function HomeView() {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-4 md:px-6 lg:px-8 h-[calc(100vh-112px)] pt-6 pb-16">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-112px)] pt-6 pb-16">
       {/* Main Content Column */}
-      <div className="lg:col-span-2 h-[calc(100vh-112px)] overflow-y-auto pr-4 pb-16 scrollbar-hide">
+      <div className="lg:col-span-2 h-[calc(100vh-112px)] overflow-y-auto pb-16 scrollbar-hide">
         <div>
           {/* Trending Section */}
           <div>

@@ -62,27 +62,29 @@ export function MyUploadsView() {
   }, []);
 
   return (
-    <div className="px-4 md:px-6 lg:px-8 h-[calc(100vh-112px)] pt-6 pb-16 overflow-y-auto scrollbar-hide">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">My Uploads</h1>
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500">Total Assets:</span>
-            <span className="text-sm font-semibold text-gray-900">{stats.totalAssets}</span>
+    <div className="h-[calc(100vh-112px)] pt-6 pb-16 overflow-y-auto scrollbar-hide">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 px-4">
+          <div className="flex-shrink-0">
+            <h1 className="text-2xl font-semibold text-gray-900">My Uploads</h1>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500">Total Purchases:</span>
-            <span className="text-sm font-semibold text-gray-900">{formatNumber(stats.totalPurchases.toString())}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500">Total Earnings:</span>
-            <span className="text-sm font-semibold text-gray-900">${formatNumber(stats.totalEarnings.toString())}</span>
+          <div className="flex flex-wrap items-center gap-4 sm:gap-8">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500">Total Assets:</span>
+              <span className="text-sm font-semibold text-gray-900">{stats.totalAssets}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500">Total Purchases:</span>
+              <span className="text-sm font-semibold text-gray-900">{formatNumber(stats.totalPurchases.toString())}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500">Total Earnings:</span>
+              <span className="text-sm font-semibold text-gray-900">${formatNumber(stats.totalEarnings.toString())}</span>
+            </div>
           </div>
         </div>
-      </div>
 
-        {/* Table Header */}
-        <div className="bg-white rounded-xl border border-[#e1e3e5] overflow-hidden">
+        <div className="bg-white rounded-xl border border-[#e1e3e5] overflow-hidden mx-4">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -150,11 +152,12 @@ export function MyUploadsView() {
                               break;
                           }
                           navigate(editPath, {
-                          state: { 
-                            editMode: true,
-                            modelData: item
-                          }
-                        })}}
+                            state: { 
+                              editMode: true,
+                              modelData: item
+                            }
+                          });
+                        }}
                         className="text-[#0284a5] hover:text-[#026d8a]"
                       >
                         Edit
@@ -177,6 +180,7 @@ export function MyUploadsView() {
             />
           )}
         </div>
+      </div>
     </div>
   );
 }

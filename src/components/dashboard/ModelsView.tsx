@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { ModelCard, SearchInput, EmptyState, FilterButton, Pagination } from '@/components/ui';
+import { ModelCard, SearchInput, EmptyState, FilterButton, Pagination, MobileFilterDrawer } from '@/components/ui';
 import { useFilteredItems, useLikes } from '@/hooks';
 import { useEffect } from 'react';
 
@@ -114,6 +114,7 @@ const TASK_CATEGORIES = {
 
 export function ModelsView() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const { likedItems, likeCounts, handleLike } = useLikes();
   const [userModels, setUserModels] = useState<any[]>([]);
   const [searchParams] = useSearchParams();
@@ -174,14 +175,69 @@ export function ModelsView() {
   }, [searchQuery]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 px-4 md:px-6 lg:px-8 h-[calc(100vh-112px)] pt-6 pb-16">
-      <div className="lg:col-span-3 h-[calc(100vh-112px)] overflow-y-auto pr-4 pb-16 scrollbar-hide">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-112px)] pt-6 pb-16">
+      {/* Mobile filter dialog */}
+      <MobileFilterDrawer isOpen={mobileFiltersOpen} onClose={() => setMobileFiltersOpen(false)}>
+        <div className="space-y-6">
+          {/* Search Input */}
+          <div className="relative">
+            <SearchInput
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)} 
+              placeholder="Search tasks..."
+              onClear={() => setSearchQuery('')}
+            />
+          </div>
+
+          {Object.entries(filteredCategories).map(([category, tasks]) => (
+            <div key={category} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
+              <div className="mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">{category}</h2>
+              </div>
+              <div className="space-y-2">
+                {tasks.map((task) => (
+                  <FilterButton
+                    key={task}
+                    label={task}
+                    icon={category === 'Multimodal' && CATEGORY_ICONS.Multimodal.taskIcons[task as keyof typeof CATEGORY_ICONS['Multimodal']['taskIcons']] || CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS].icon}
+                    color={CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS].color}
+                    isSelected={selectedFilters.has(task)}
+                    onSelect={() => handleFilterSelect(task)}
+                    onRemove={() => handleFilterSelect(task)}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </MobileFilterDrawer>
+
+      <div className="lg:col-span-3 h-[calc(100vh-112px)] overflow-y-auto pb-16 scrollbar-hide">
+        {/* Mobile filter button */}
+        <div className="flex items-center justify-between mb-4 lg:hidden px-4">
+          <button
+            type="button"
+            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+            onClick={() => setMobileFiltersOpen(true)}
+          >
+            <svg className="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            Filters
+          </button>
+          {selectedFilters.size > 0 && (
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#0284a5] text-white">
+              {selectedFilters.size} selected
+            </span>
+          )}
+        </div>
+
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0284a5]"></div>
           </div>
         ) : paginatedModels.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
             {paginatedModels.map((model) => (
               <ModelCard
                 key={model.id}
@@ -220,7 +276,7 @@ export function ModelsView() {
       </div>
       
       {/* Right Column */}
-      <div className="space-y-6 h-[calc(100vh-112px)] overflow-y-auto pr-4 -mr-4 pb-16 scrollbar-hide w-[280px]">
+      <div className="hidden lg:block space-y-6 h-[calc(100vh-112px)] overflow-y-auto pr-4 -mr-4 pb-16 scrollbar-hide w-[280px]">
         {/* Search Input */}
         <div className="relative">
           <div className="flex items-center justify-between mb-4">

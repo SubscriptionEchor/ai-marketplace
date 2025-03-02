@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { ModelCard, SearchInput, EmptyState, FilterButton, Pagination } from '@/components/ui';
+import { ModelCard, SearchInput, EmptyState, FilterButton, Pagination, MobileFilterDrawer } from '@/components/ui';
 import { useFilteredItems } from '@/hooks';
 
 const ITEMS_PER_PAGE = 12;
@@ -60,6 +60,7 @@ const REGIONS = {
 export function InfraProvidersView() {
   const [likedItems, setLikedItems] = useState<Record<string, boolean>>({});
   const [searchQuery, setSearchQuery] = useState('');
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const PROVIDERS = [
     {
@@ -154,8 +155,91 @@ export function InfraProvidersView() {
   }, [searchQuery]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 px-4 md:px-6 lg:px-8 h-[calc(100vh-112px)] pt-6 pb-16">
-      <div className="lg:col-span-3 h-[calc(100vh-112px)] overflow-y-auto pr-4 pb-16 scrollbar-hide">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-112px)] pt-6 pb-16">
+      {/* Mobile filter dialog */}
+      <MobileFilterDrawer isOpen={mobileFiltersOpen} onClose={() => setMobileFiltersOpen(false)}>
+        <div className="space-y-6">
+          {/* Search Input */}
+          <div className="relative">
+            <SearchInput
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)} 
+              placeholder="Search hardware..."
+              onClear={() => setSearchQuery('')}
+            />
+          </div>
+
+          {Object.entries(filteredHardwareTypes).map(([category, types]) => (
+            <div key={category} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
+              <div className="mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">{category}</h2>
+              </div>
+              <div className="space-y-2">
+                {types.map((type) => (
+                  <FilterButton
+                    key={type}
+                    label={type}
+                    icon={PROVIDER_ICONS[type as keyof typeof PROVIDER_ICONS].icon}
+                    color={PROVIDER_ICONS[type as keyof typeof PROVIDER_ICONS].color}
+                    isSelected={selectedFilters.has(type)}
+                    onSelect={() => handleFilterSelect(type)}
+                    onRemove={() => handleFilterSelect(type)}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {Object.entries(filteredRegions).map(([region, locations]) => (
+            <div key={region} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
+              <div className="mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">{region}</h2>
+              </div>
+              <div className="space-y-2">
+                {locations.map((location) => (
+                  <button
+                    key={location}
+                    className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2"
+                  >
+                    <div className="w-5 h-5 bg-gradient-to-br from-gray-500 to-gray-600 rounded flex items-center justify-center text-white">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth="1.5" 
+                          d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                        />
+                      </svg>
+                    </div>
+                    <span>{location}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </MobileFilterDrawer>
+
+      <div className="lg:col-span-3 h-[calc(100vh-112px)] overflow-y-auto pb-16 scrollbar-hide">
+        {/* Mobile filter button */}
+        <div className="flex items-center justify-between mb-4 lg:hidden">
+          <button
+            type="button"
+            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+            onClick={() => setMobileFiltersOpen(true)}
+          >
+            <svg className="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            Filters
+          </button>
+          {selectedFilters.size > 0 && (
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#0284a5] text-white">
+              {selectedFilters.size} selected
+            </span>
+          )}
+        </div>
+
         {paginatedProviders.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {paginatedProviders.map((provider) => (

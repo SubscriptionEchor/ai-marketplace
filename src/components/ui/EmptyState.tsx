@@ -9,9 +9,10 @@ interface EmptyStateProps {
     onClick?: () => void;
     href?: string;
   };
+  showBackToHome?: boolean;
 }
 
-export function EmptyState({ title, description, icon, action }: EmptyStateProps) {
+export function EmptyState({ title, description, icon, action, showBackToHome = true }: EmptyStateProps) {
   const navigate = useNavigate();
 
   const handleAction = () => {
@@ -36,14 +37,24 @@ export function EmptyState({ title, description, icon, action }: EmptyStateProps
       </div>
       <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
       <p className="text-gray-600 max-w-sm mb-6">{description}</p>
-      {action && !title.includes("No") && (
+      <div className="flex flex-col items-center gap-4">
+        {action && !title.includes("No") && (
         <button
           onClick={handleAction}
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-[#0284a5] hover:bg-[#026d8a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0284a5]"
         >
           {action.label}
         </button>
-      )}
+        )}
+        {showBackToHome && (
+          <button
+            onClick={() => navigate('/dashboard/all')}
+            className="text-sm text-[#0284a5] hover:text-[#026d8a] font-medium"
+          >
+            Back to Home
+          </button>
+        )}
+      </div>
     </div>
   );
 }
