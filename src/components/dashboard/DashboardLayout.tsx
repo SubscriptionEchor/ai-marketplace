@@ -93,10 +93,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     <div className="min-h-screen bg-[#f6f6f7] flex flex-col">
         <TopNavbar />
         
-        <main className="flex-1 pt-[112px] pb-[84px] bg-[#f6f6f7] overflow-y-auto scrollbar-hide">
+        <main className="flex-1 pt-[72px] sm:pt-[84px] md:pt-[96px] lg:pt-[112px] pb-[48px] sm:pb-[64px] md:pb-[72px] lg:pb-[84px] bg-[#f6f6f7] overflow-y-auto scrollbar-hide">
           <div className="flex flex-col lg:flex-row">
             {/* Left Sidebar - Navigation */}
-            <div className="w-[280px] hidden lg:block flex-shrink-0 fixed left-0 top-[112px] bottom-0 border-r border-[#e1e3e5] pt-8 bg-[#f6f6f7]">
+            <div className="w-[280px] hidden lg:block flex-shrink-0 fixed left-0 top-[112px] bottom-0 border-r border-[#e1e3e5] pt-6 lg:pt-8 bg-[#f6f6f7]">
               <div className="flex flex-col h-full px-6">
                 {/* Main Navigation */}
                 <div className="space-y-1.5 mb-6">

@@ -157,7 +157,7 @@ export function TopNavbar() {
 
   return (
     <nav className="fixed top-0 right-0 left-0 z-20 bg-[#191919] border-b border-border">
-      <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-screen-2xl mx-auto px-3 pt-4 sm:pt-5 md:pt-6 lg:pt-8 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 relative">
           <div className="flex items-center">
             {/* Mobile menu button */}
