@@ -66,7 +66,7 @@ export function SettingsView() {
       <h1 className="text-2xl font-bold text-gray-900 mb-8">Settings</h1>
 
       {/* Wallet Section */}
-      <div className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6 mb-8">
+      <div className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-4 sm:p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-6">Wallet</h2>
         <div className="space-y-6">
           <div className="space-y-4">
@@ -75,9 +75,9 @@ export function SettingsView() {
             </label>
             
             {/* XELL Wallet */}
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer gap-4 sm:gap-0"
               onClick={() => connectWallet('xell')}>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-white rounded-full p-2 shadow-sm">
                   <img src="https://learn.rubix.net//images/logo.png" alt="XELL" className="w-full h-full object-contain" />
                 </div>
@@ -94,9 +94,9 @@ export function SettingsView() {
             </div>
 
             {/* MetaMask */}
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer gap-4 sm:gap-0"
               onClick={() => connectWallet('metamask')}>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-white rounded-full p-2 shadow-sm">
                   <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" className="w-full h-full object-contain" />
                 </div>
@@ -114,11 +114,11 @@ export function SettingsView() {
           </div>
 
           {connectedWallet && (
-            <div className="border-t border-gray-100 pt-4">
-              <div className="flex items-center justify-between">
+            <div className="border-t border-gray-100 pt-4 mt-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                   <p className="text-sm font-medium text-gray-900">Connected Address</p>
-                  <p className="text-xs font-mono text-gray-500">{connectedWallet.address}</p>
+                  <p className="text-xs font-mono text-gray-500 break-all">{connectedWallet.address}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="flex w-2 h-2 bg-green-500 rounded-full"></span>
@@ -152,18 +152,18 @@ export function SettingsView() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Email Notifications
             </label>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0284a5] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0284a5] focus:border-transparent"
               />
               <button
                 onClick={handleSubscribe}
                 disabled={!email || !email.includes('@')}
-                className={`px-4 py-2 text-white rounded-lg transition-colors ${
+                className={`w-full sm:w-auto px-4 py-2 text-white rounded-lg transition-colors ${
                   !email || !email.includes('@')
                     ? 'bg-gray-300 cursor-not-allowed'
                     : 'bg-[#0284a5] hover:bg-[#026d8a]'
@@ -178,7 +178,7 @@ export function SettingsView() {
           </div>
 
           <div className="border-t border-gray-100 pt-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
               <h3 className="text-sm font-medium text-gray-900">Notification Preferences</h3>
               {!isSubscribed && (
                 <span className="text-xs text-gray-500">Subscribe to email notifications to enable preferences</span>
@@ -187,7 +187,7 @@ export function SettingsView() {
           </div>
 
           {NOTIFICATION_PREFERENCES.map((preference) => (
-            <div key={preference.id} className="flex items-center justify-between">
+            <div key={preference.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-gray-50 rounded-lg">
               <div>
                 <p className="text-sm font-medium text-gray-900">{preference.label}</p>
                 <p className="text-xs text-gray-500">{preference.description}</p>

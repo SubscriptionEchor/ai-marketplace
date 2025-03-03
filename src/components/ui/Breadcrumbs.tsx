@@ -16,12 +16,12 @@ export function Breadcrumbs({ items, currentStep, totalSteps }: BreadcrumbsProps
   const location = useLocation();
 
   return (
-    <nav className="flex items-center bg-white px-4 py-3 rounded-lg border border-[#e1e3e5] shadow-sm" aria-label="Breadcrumb">
-      <ol className="flex items-center space-x-1">
+    <nav className="flex flex-col sm:flex-row sm:items-center gap-3 bg-white px-4 py-3 rounded-lg border border-[#e1e3e5] shadow-sm" aria-label="Breadcrumb">
+      <ol className="flex items-center flex-wrap gap-1">
         {items.map((item, index) => (
           <li key={item.label} className="flex items-center">
             {index > 0 && (
-              <div className="mx-2 text-gray-400">/</div>
+              <div className="mx-2 text-gray-400 hidden sm:block">/</div>
             )}
             {item.href ? (
               <motion.div
@@ -44,10 +44,17 @@ export function Breadcrumbs({ items, currentStep, totalSteps }: BreadcrumbsProps
                 {item.label}
               </span>
             )}
+            {index > 0 && index < items.length - 1 && (
+              <div className="mx-1 text-gray-400 block sm:hidden">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            )}
           </li>
         ))}
       </ol>
-      <div className="ml-auto">
+      <div className="sm:ml-auto border-t sm:border-t-0 pt-2 sm:pt-0 mt-2 sm:mt-0">
         <div className="text-xs text-gray-500">
           Step {currentStep} of {totalSteps}
         </div>

@@ -77,11 +77,9 @@ export function TransactionsView() {
                     Status
                   </th>
                   <th scope="col" className="relative px-6 py-3">
+                    <span className="sr-only">Actions</span>
                   </th>
                 </tr>
-                <th scope="col" className="relative px-6 py-3">
-                  <span className="sr-only">Actions</span>
-                </th>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {sortedTransactions.map((transaction) => (
