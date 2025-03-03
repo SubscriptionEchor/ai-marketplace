@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { formatNumber } from '@/utils/formatNumber';
 import { Select } from '@/components/ui';
 

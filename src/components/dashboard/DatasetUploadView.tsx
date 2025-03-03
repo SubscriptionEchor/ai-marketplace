@@ -157,6 +157,7 @@ export function DatasetUploadView() {
             { label: 'Pricing', href: '/dashboard/upload/dataset/pricing' },
             { label: 'Review' }
           ]}
+          showSteps={true}
           currentStep={TABS.findIndex(tab => tab.id === currentTab) + 1}
           totalSteps={TABS.length}
         />

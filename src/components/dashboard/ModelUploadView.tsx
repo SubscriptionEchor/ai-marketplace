@@ -250,6 +250,7 @@ export function ModelUploadView() {
             { label: 'Pricing', href: '/dashboard/upload/model/pricing' },
             { label: 'Review' }
           ]}
+          showSteps={true}
           currentStep={2}
           totalSteps={4}
         />

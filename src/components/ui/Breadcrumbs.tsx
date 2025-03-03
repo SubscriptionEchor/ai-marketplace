@@ -8,18 +8,19 @@ interface BreadcrumbItem {
 
 interface BreadcrumbsProps {
   items: BreadcrumbItem[];
-  currentStep?: number;
-  totalSteps?: number;
+  showSteps?: boolean;
+  currentStep?: number; 
+  totalSteps?: number; 
 }
 
-export function Breadcrumbs({ items, currentStep, totalSteps }: BreadcrumbsProps) {
+export function Breadcrumbs({ items, showSteps = false, currentStep, totalSteps }: BreadcrumbsProps) {
   const location = useLocation();
 
   return (
-    <nav className="flex items-center bg-white px-4 py-3 rounded-lg border border-[#e1e3e5] shadow-sm" aria-label="Breadcrumb">
-      <ol className="flex items-center space-x-1">
+    <nav className="flex items-center justify-between bg-white px-4 py-3 rounded-lg border border-[#e1e3e5] shadow-sm" aria-label="Breadcrumb">
+      <ol className="flex items-center space-x-1 min-w-0 flex-1">
         {items.map((item, index) => (
-          <li key={item.label} className="flex items-center">
+          <li key={item.label} className="flex items-center min-w-0">
             {index > 0 && (
               <div className="mx-2 text-gray-400">/</div>
             )}
@@ -27,10 +28,11 @@ export function Breadcrumbs({ items, currentStep, totalSteps }: BreadcrumbsProps
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                className="min-w-0"
               >
                 <Link
                   to={item.href}
-                  className={`text-sm font-medium rounded-md px-2 py-1 transition-colors ${
+                  className={`text-sm font-medium rounded-md px-2 py-1 transition-colors truncate block ${
                     location.pathname === item.href
                       ? 'text-[#0284a5] bg-[#0284a5]/5'
                       : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
@@ -40,18 +42,20 @@ export function Breadcrumbs({ items, currentStep, totalSteps }: BreadcrumbsProps
                 </Link>
               </motion.div>
             ) : (
-              <span className="text-sm font-semibold text-gray-900 px-2 py-1">
+              <span className="text-sm font-semibold text-gray-900 px-2 py-1 truncate block">
                 {item.label}
               </span>
             )}
           </li>
         ))}
       </ol>
-      <div className="ml-auto">
-        <div className="text-xs text-gray-500">
-          Step {currentStep} of {totalSteps}
+      {showSteps && currentStep && totalSteps && (
+        <div className="ml-4 flex-shrink-0">
+          <div className="text-xs text-gray-500">
+            Step {currentStep} of {totalSteps}
+          </div>
         </div>
-      </div>
+      )}
     </nav>
   );
 }

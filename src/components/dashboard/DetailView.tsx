@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LikeButton, Modal } from '@/components/ui';
+import { LikeButton, Modal, Breadcrumbs } from '@/components/ui';
 import { useAuth } from '@/hooks';
 
 interface Tab {
@@ -137,34 +137,39 @@ output = model.generate("Your input text here")
 
   return (
     <div className="min-h-[calc(100vh-112px)] bg-[#f6f6f7]">
+      {/* Breadcrumb Navigation */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <Breadcrumbs
+          items={[
+            { label: 'Home', href: '/dashboard/all' },
+            { label: item.type === 'model' ? 'AI Models' : item.type === 'dataset' ? 'Datasets' : 'Infra Providers', 
+              href: `/dashboard/${item.type === 'model' ? 'models' : item.type === 'dataset' ? 'datasets' : 'infra-providers'}` },
+            { label: item.name }
+          ]} 
+        />
+      </div>
+
       {/* Hero Section - Law of Common Region */}
-      <div className="bg-white border-b border-[#e1e3e5]">
+      <div className="bg-white border-b border-[#e1e3e5] mt-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-4 mb-6">
-            <button
-              onClick={() => navigate(-1)}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-            </button>
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold text-gray-900">{item.name}</h1>
+                <h1 className="text-xl md:text-3xl font-bold text-gray-900">{item.name}</h1>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#0284a5]/10 text-[#0284a5] capitalize">
                   {item.type}
                 </span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-gray-500 cursor-pointer" onClick={() => navigate(`/dashboard/creator/${item.creator.name}`)}>
-                <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-sm text-gray-500" onClick={() => navigate(`/dashboard/creator/${item.creator.name}`)}>
+                <div className="flex items-center gap-2 cursor-pointer">
                   <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm">
                     {item.creator.avatar}
                   </div>
                   <span className="hover:text-[#0284a5] transition-colors">{item.creator.name}</span>
-                  <span>•</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs sm:text-sm">
                   <span>Updated {item.lastUpdated}</span>
-                  <span>•</span>
+                  <span className="hidden sm:inline">•</span>
                   <span>{item.license} License</span>
                 </div>
               </div>
@@ -210,23 +215,25 @@ output = model.generate("Your input text here")
       {/* Navigation - Law of Common Region */}
       <div className="bg-white border-b border-[#e1e3e5] shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex -mb-px space-x-8" aria-label="Tabs">
-            {TABS.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`
-                  px-1 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap relative
-                  ${activeTab === tab.id
-                    ? 'border-[#0284a5] text-[#0284a5]'
-                    : 'border-transparent text-gray-900 hover:text-[#0284a5] hover:border-[#0284a5]/50'
-                  }
-                `}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </nav>
+          <div className="overflow-x-auto scrollbar-hide">
+            <nav className="flex -mb-px space-x-8 min-w-max" aria-label="Tabs">
+              {TABS.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`
+                    px-1 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap relative
+                    ${activeTab === tab.id
+                      ? 'border-[#0284a5] text-[#0284a5]'
+                      : 'border-transparent text-gray-900 hover:text-[#0284a5] hover:border-[#0284a5]/50'
+                    }
+                  `}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
+          </div>
         </div>
       </div>
 

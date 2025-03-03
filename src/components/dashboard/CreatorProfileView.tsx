@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { ModelCard, Pagination } from '@/components/ui';
 import { useLikes } from '@/hooks';
 import { useState } from 'react';
@@ -54,7 +54,6 @@ const MOCK_CONTENT = {
 
 export function CreatorProfileView() {
   const { creatorId: _ } = useParams(); // Ignore unused param
-  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const { likedItems, likeCounts, handleLike } = useLikes();
   const [activeTab, setActiveTab] = useState('models');
@@ -73,33 +72,22 @@ export function CreatorProfileView() {
   };
 
   return (
-    <div className="px-4 md:px-6 lg:px-8 py-8">
+    <div className="px-4 md:px-6 lg:px-8 py-4 md:py-8">
       <div className="max-w-6xl mx-auto">
-        {/* Back Button */}
-        <button
-          onClick={() => navigate(-1)}
-          className="mb-6 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors inline-flex items-center gap-2"
-        >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          <span>Back</span>
-        </button>
-
         {/* Creator Profile Header */}
-        <div className="bg-white rounded-xl border border-[#e1e3e5] p-8 mb-8">
-          <div className="flex items-start gap-6">
+        <div className="bg-white rounded-xl border border-[#e1e3e5] p-4 md:p-8 mb-6 md:mb-8">
+          <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-6">
             {/* Avatar */}
-            <div className="w-24 h-24 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-4xl font-semibold">
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-3xl md:text-4xl font-semibold">
               {MOCK_CREATOR.avatar}
             </div>
             
             {/* Info */}
             <div className="flex-1">
-              <div className="flex items-start justify-between">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-0">
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-2">{MOCK_CREATOR.name}</h1>
-                  <p className="text-gray-600 mb-4">{MOCK_CREATOR.bio}</p>
+                  <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-1 md:mb-2">{MOCK_CREATOR.name}</h1>
+                  <p className="text-gray-600 mb-3 md:mb-4">{MOCK_CREATOR.bio}</p>
                   <div className="flex items-center gap-4 text-sm text-gray-500">
                     {MOCK_CREATOR.location && (
                       <div className="flex items-center gap-1">
