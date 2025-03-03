@@ -60,12 +60,6 @@ const WALLET_OPTIONS = [
     name: 'XELL Wallet',
     description: 'Recommended wallet for TRIE AI Marketplace',
     icon: 'https://learn.rubix.net//images/logo.png'
-  },
-  {
-    id: 'metamask',
-    name: 'MetaMask',
-    description: 'Connect with MetaMask wallet',
-    icon: 'https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg'
   }
 ];
 
@@ -491,7 +485,7 @@ export function TopNavbar() {
                 key={wallet.id}
                 onClick={async () => {
                   setShowWalletModal(false);
-                  await connectWallet(wallet.id as 'xell' | 'metamask');
+                  await connectWallet(wallet.id as 'xell');
                 }}
                 className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
               >

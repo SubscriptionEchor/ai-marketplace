@@ -92,25 +92,6 @@ export function SettingsView() {
                 <span className="text-xs font-medium text-gray-600">Connect</span>
               )}
             </div>
-
-            {/* MetaMask */}
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
-              onClick={() => connectWallet('metamask')}>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white rounded-full p-2 shadow-sm">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" className="w-full h-full object-contain" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900">MetaMask</h3>
-                  <p className="text-xs text-gray-500">Connect with MetaMask wallet</p>
-                </div>
-              </div>
-              {connectedWallet?.type === 'metamask' ? (
-                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">Connected</span>
-              ) : (
-                <span className="text-xs font-medium text-gray-600">Connect</span>
-              )}
-            </div>
           </div>
 
           {connectedWallet && (
@@ -152,18 +133,18 @@ export function SettingsView() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Email Notifications
             </label>
-            <div className="flex gap-3">
+            <div className="flex flex-col gap-3">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0284a5] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0284a5] focus:border-transparent"
               />
               <button
                 onClick={handleSubscribe}
                 disabled={!email || !email.includes('@')}
-                className={`px-4 py-2 text-white rounded-lg transition-colors ${
+                className={`w-full px-4 py-2 text-white rounded-lg transition-colors ${
                   !email || !email.includes('@')
                     ? 'bg-gray-300 cursor-not-allowed'
                     : 'bg-[#0284a5] hover:bg-[#026d8a]'

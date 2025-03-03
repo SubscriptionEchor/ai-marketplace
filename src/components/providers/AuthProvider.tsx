@@ -19,8 +19,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showExtensionModal, setShowExtensionModal] = useState(false);
   const [availableWallets, setAvailableWallets] = useState<Record<WalletType, boolean>>({
-    xell: false,
-    metamask: false
+    xell: false
   });
   const [connectedWallet, setConnectedWallet] = useState<{ type: WalletType; address: string } | null>(null);
 
@@ -41,12 +40,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Check for available wallets
   useEffect(() => {
     const checkWallets = async () => {
-      const xellAvailable = await WalletService.isExtensionInstalled('xell');
-      const metamaskAvailable = await WalletService.isExtensionInstalled('metamask');
+      const xellAvailable = await WalletService.isExtensionInstalled();
       
       setAvailableWallets({
-        xell: xellAvailable,
-        metamask: metamaskAvailable
+        xell: xellAvailable
       });
     };
 
@@ -59,14 +56,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const connectWallet = useCallback(async (type: WalletType) => {
-    const isInstalled = await WalletService.isExtensionInstalled(type);
+    const isInstalled = await WalletService.isExtensionInstalled();
     
     // If wallet is not installed, show installation options
     if (!isInstalled) {
       if (type === 'xell') {
         setShowExtensionModal(true);
-      } else {
-        window.open('https://metamask.io/download/', '_blank');
       }
       return;
     }
@@ -95,13 +90,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const login = useCallback(async () => {
-    // Try XELL first, fallback to MetaMask
-    const xellInstalled = await WalletService.isExtensionInstalled('xell');
-    if (xellInstalled) {
-      await connectWallet('xell');
-    } else {
-      await connectWallet('metamask');
-    }
+    await connectWallet('xell');
   }, [connectWallet]);
 
   const logout = useCallback(async () => {
@@ -166,49 +155,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
                   {availableWallets.xell ? 'Available' : 'Not Installed'}
                 </span>
               </div>
-            </div>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or connect with</span>
-              </div>
-            </div>
-
-            {/* MetaMask */}
-            <div className="relative">
-              {availableWallets.metamask ? (
-                <button
-                  onClick={() => {
-                    setShowExtensionModal(false);
-                    connectWallet('metamask');
-                  }}
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg shadow-sm text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" className="w-5 h-5 mr-2" />
-                  Connect MetaMask
-                </button>
-              ) : (
-                <a
-                  href="https://metamask.io/download/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg shadow-sm text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" className="w-5 h-5 mr-2" />
-                  Get MetaMask
-                </a>
-              )}
-              <div className="absolute top-0 right-0">
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  availableWallets.metamask ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                }`}>
-                  {availableWallets.metamask ? 'Available' : 'Not Installed'}
-                </span>
-              </div>
-              <p className="mt-2 text-xs text-gray-500">(For testing only)</p>
             </div>
           </div>
         </div>
