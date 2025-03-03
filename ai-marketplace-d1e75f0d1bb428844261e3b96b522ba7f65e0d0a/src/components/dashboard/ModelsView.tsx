@@ -237,7 +237,7 @@ export function ModelsView() {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0284a5]"></div>
           </div>
         ) : paginatedModels.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
             {paginatedModels.map((model) => (
               <ModelCard
                 key={model.id}

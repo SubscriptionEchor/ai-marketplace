@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LikeButton, Modal } from '@/components/ui';
 import { useAuth } from '@/hooks';
@@ -19,16 +19,13 @@ const TABS: Tab[] = [
 
 export function DetailView() {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { id: _ } = useParams(); // Ignore unused param since we're using mock data
   const { isAuthenticated, login } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [isLiked, setIsLiked] = useState(false);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
-  
-  // Extract the full model ID from the URL path
-  const modelId = location.pathname.split('/').slice(3).join('/');
 
   const handlePurchase = async () => {
     if (!isAuthenticated) {
@@ -53,11 +50,6 @@ export function DetailView() {
       setShowPurchaseModal(false);
     }
   };
-
-  useEffect(() => {
-    // Log the model ID for debugging
-    console.log('Model ID:', modelId);
-  }, [modelId]);
 
   // Mock data - in a real app, this would be fetched based on the ID
   const item = {
@@ -147,19 +139,16 @@ output = model.generate("Your input text here")
     <div className="min-h-[calc(100vh-112px)] bg-[#f6f6f7]">
       {/* Hero Section - Law of Common Region */}
       <div className="bg-white border-b border-[#e1e3e5]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          {/* Back Button */}
-          <button
-            onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 px-3 py-2 mb-6 text-sm text-gray-600 hover:text-gray-900 bg-white rounded-lg border border-gray-200 hover:border-gray-300 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            <span>Back</span>
-          </button>
-
-          <div className="mb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex items-center gap-4 mb-6">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+            </button>
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-3xl font-bold text-gray-900">{item.name}</h1>
@@ -167,12 +156,12 @@ output = model.generate("Your input text here")
                   {item.type}
                 </span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-gray-500">
+              <div className="flex items-center gap-3 text-sm text-gray-500 cursor-pointer" onClick={() => navigate(`/dashboard/creator/${item.creator.name}`)}>
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm">
                     {item.creator.avatar}
                   </div>
-                  <span>{item.creator.name}</span>
+                  <span className="hover:text-[#0284a5] transition-colors">{item.creator.name}</span>
                   <span>•</span>
                   <span>Updated {item.lastUpdated}</span>
                   <span>•</span>

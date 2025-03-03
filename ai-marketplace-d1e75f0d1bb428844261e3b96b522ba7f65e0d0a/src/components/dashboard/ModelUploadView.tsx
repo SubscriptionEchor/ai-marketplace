@@ -606,28 +606,37 @@ export function ModelUploadView() {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3">
+          <div className="flex items-center justify-end gap-4">
             <button
               type="button"
               onClick={() => navigate('/dashboard/upload')}
-              className="min-w-[100px] px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center"
+              className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={() => navigate('/dashboard/upload')}
-              className="min-w-[100px] px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-center"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
             >
               Back
             </button>
             <button
               type="button"
               onClick={handleUpload}
-              disabled={isUploading || !formData.name || !formData.description || !formData.mainCategory || !formData.category || formData.files.length === 0 || !thumbnail}
-              className="min-w-[100px] px-4 py-2 text-sm font-medium text-white bg-[#0284a5] rounded-lg hover:bg-[#026d8a] disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-center"
+              className={`px-4 py-2 text-sm font-medium text-white bg-[#0284a5] rounded-lg hover:bg-[#026d8a] ${
+                isUploading || 
+                !formData.name || 
+                !formData.description || 
+                !formData.mainCategory ||
+                !formData.category ||
+                formData.files.length === 0 ||
+                !thumbnail
+                ? 'opacity-50 cursor-not-allowed'
+                : 'cursor-pointer'
+              }`}
             >
-              {isUploading ? 'Uploading...' : 'Next'}
+              {isUploading ? 'Uploading...' : 'Upload Model'}
             </button>
           </div>
         </div>

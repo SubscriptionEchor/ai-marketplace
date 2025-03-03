@@ -78,7 +78,7 @@ export function DataProviderView() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[calc(100vh-112px)] pt-6 pb-16">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-4 md:px-6 lg:px-8 h-[calc(100vh-112px)] pt-6 pb-16">
       {/* Left Column - Image */}
       <div className="hidden lg:block">
         <div className="w-full h-full rounded-xl overflow-hidden">

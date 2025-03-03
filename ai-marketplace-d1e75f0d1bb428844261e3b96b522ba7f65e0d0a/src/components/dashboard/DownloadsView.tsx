@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { EmptyState } from '@/components/ui';
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 5;
 
 interface PurchasedAsset {
   id: string;
@@ -166,35 +166,39 @@ export function DownloadsView() {
     <div className="px-4 md:px-6 lg:px-8 py-8 bg-[#f6f6f7]">
       <div className="max-w-6xl mx-auto">
         {/* Header - Law of Common Region */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 bg-white p-6 rounded-xl border border-[#e1e3e5] shadow-sm">
-          <div className="flex items-start sm:items-center gap-4">
+        <div className="flex items-center justify-between mb-8 bg-white p-6 rounded-xl border border-[#e1e3e5] shadow-sm">
+          <div className="flex items-center gap-4">
             <button
               onClick={handleBack}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors group relative flex-shrink-0"
+              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors group relative"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
+              {/* Law of Proximity - Tooltip */}
+              <span className="absolute left-1/2 -translate-x-1/2 -bottom-8 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Back to Dashboard
+              </span>
             </button>
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">My Downloads</h1>
-              <p className="text-xs sm:text-sm text-gray-500">
+              <h1 className="text-2xl font-bold text-gray-900 mb-1">My Downloads</h1>
+              <p className="text-sm text-gray-500">
                 Access your purchased AI models, datasets, and infrastructure services
               </p>
             </div>
           </div>
           
           {/* Law of Common Region - Quick Stats */}
-          <div className="grid grid-cols-2 gap-4 w-full sm:w-auto sm:flex sm:items-center sm:gap-6 sm:self-auto">
-            <div className="text-center bg-gray-50 p-4 rounded-lg">
-              <div className="text-lg sm:text-2xl font-bold text-[#0284a5]">{totalItems}</div>
-              <div className="text-xs sm:text-sm text-gray-500">Total Assets</div>
+          <div className="flex items-center gap-6">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-[#0284a5]">{totalItems}</div>
+              <div className="text-sm text-gray-500">Total Assets</div>
             </div>
-            <div className="text-center bg-gray-50 p-4 rounded-lg">
-              <div className="text-lg sm:text-2xl font-bold text-green-600">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">
                 {MOCK_PURCHASES.filter(p => p.status === 'active').length}
               </div>
-              <div className="text-xs sm:text-sm text-gray-500">Active</div>
+              <div className="text-sm text-gray-500">Active</div>
             </div>
           </div>
         </div>
@@ -209,9 +213,9 @@ export function DownloadsView() {
               className="bg-white rounded-xl border border-[#e1e3e5] overflow-hidden hover:border-[#0284a5] hover:shadow-lg transition-all duration-200"
             >
               <div className="p-6">
-                <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
+                <div className="flex items-start gap-6">
                   {/* Asset Image */}
-                  <div className="w-full sm:w-24 h-48 sm:h-24 rounded-lg overflow-hidden">
+                  <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
                     <img
                       src={asset.image}
                       alt={asset.name}
@@ -222,7 +226,7 @@ export function DownloadsView() {
                   {/* Asset Details */}
                   <div className="flex-1 min-w-0">
                     {/* Law of Proximity - Group Related Info */}
-                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                    <div className="flex items-center gap-3 mb-3">
                       <h2 className="text-lg font-semibold text-gray-900 truncate">
                         {asset.name}
                       </h2>
@@ -237,7 +241,7 @@ export function DownloadsView() {
                       </span>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-2">
                       <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm">
                         {asset.creator.avatar}
                       </div>
@@ -257,7 +261,7 @@ export function DownloadsView() {
                       {asset.accessType === 'download' && asset.files && (
                         <div>
                           <h3 className="text-sm font-medium text-gray-900 mb-2">Available Files</h3>
-                          <div className="grid grid-cols-1 gap-3">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {asset.files.map((file) => (
                               <button
                                 key={file.name}
@@ -286,10 +290,10 @@ export function DownloadsView() {
                       {asset.accessType === 'api' && asset.apiEndpoint && (
                         <div>
                           <h3 className="text-sm font-medium text-gray-900 mb-2">API Access</h3>
-                          <div className="bg-gray-50 rounded-lg p-4 overflow-hidden">
-                            <div className="flex flex-wrap items-center gap-2 font-mono text-sm mb-2">
+                          <div className="bg-gray-50 rounded-lg p-4">
+                            <div className="flex items-center gap-2 font-mono text-sm mb-2">
                               <span className="text-gray-500">Endpoint:</span>
-                              <code className="text-gray-900 break-all">{asset.apiEndpoint}</code>
+                              <code className="text-gray-900">{asset.apiEndpoint}</code>
                               <button
                                 onClick={() => asset.apiEndpoint && navigator.clipboard.writeText(asset.apiEndpoint)}
                                 className="p-1 text-gray-400 hover:text-gray-600"
@@ -299,7 +303,7 @@ export function DownloadsView() {
                                 </svg>
                               </button>
                             </div>
-                            <p className="text-xs text-gray-500 break-words">
+                            <p className="text-xs text-gray-500">
                               Use this endpoint to make API calls to the model. Check the documentation for authentication and request formats.
                             </p>
                           </div>
@@ -332,21 +336,21 @@ export function DownloadsView() {
 
                       {/* Documentation & Guides */}
                       {asset.documentation && (
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 pt-4 border-t border-gray-100">
-                          <div className="text-xs sm:text-sm text-gray-500">
+                        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                          <div className="text-sm text-gray-500">
                             Need help getting started?
                           </div>
-                          <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                            }}
-                            className="inline-flex items-center gap-1 text-xs sm:text-sm text-[#0284a5] hover:text-[#026d8a] w-full sm:w-auto justify-center sm:justify-start bg-[#0284a5]/5 hover:bg-[#0284a5]/10 px-4 py-2 rounded-lg transition-colors"
+                          <a
+                            href={asset.documentation}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-sm text-[#0284a5] hover:text-[#026d8a]"
                           >
                             <span>View Documentation</span>
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                             </svg>
-                          </button>
+                          </a>
                         </div>
                       )}
                     </div>

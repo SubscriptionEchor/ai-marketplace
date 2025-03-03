@@ -1,11 +1,9 @@
 import { useState, useCallback } from 'react';
-import { LikeButton } from '@/components/ui'; 
-import { useNavigate } from 'react-router-dom';
+import { LikeButton } from '@/components/ui';
 
 export function HomeView() {
   const [showSetupGuide, setShowSetupGuide] = useState(true);
   const [likedItems, setLikedItems] = useState<Record<string, boolean>>({});
-  const navigate = useNavigate();
 
   const handleLike = useCallback((itemId: string, _currentLikes?: string) => {
     setLikedItems(prev => {
@@ -37,11 +35,24 @@ export function HomeView() {
             {[
               { name: 'perplexity-ai/r1-1776', type: 'Text Generation', downloads: '14.8k', likes: '1.87k', color: 'from-purple-500 to-pink-500', letter: 'P' },
               { name: 'perplexity-ai/r1-1776-2', type: 'Text Generation', downloads: '14.8k', likes: '1.87k', color: 'from-purple-500 to-pink-500', letter: 'P' },
-              { name: 'deepseek-ai/DeepSeek-R1', type: 'Text Generation', downloads: '4.64M', likes: '10.4k', color: 'from-blue-500 to-cyan-500', letter: 'D' }
+              { name: 'deepseek-ai/DeepSeek-R1', type: 'Text Generation', downloads: '4.64M', likes: '10.4k', color: 'from-blue-500 to-cyan-500', letter: 'D' },
+              { name: 'Wan-AI/Wan2.1-T2V-14B', type: 'Text-to-Video', downloads: '3.7k', likes: '495', color: 'from-green-500 to-emerald-500', letter: 'W' },
+              { name: 'llama-lab/llama-2-70b-chat', type: 'Chat Model', downloads: '2.8M', likes: '8.2k', color: 'from-orange-500 to-red-500', letter: 'L' },
+              { name: 'stable-diffusion/sdxl-turbo', type: 'Image Generation', downloads: '1.2M', likes: '5.6k', color: 'from-indigo-500 to-purple-500', letter: 'S' },
+              { name: 'claude-ai/claude-3-opus', type: 'Chat Model', downloads: '756k', likes: '2.9k', color: 'from-yellow-500 to-orange-500', letter: 'C' },
+              { name: 'gemini-pro/vision-pro', type: 'Vision Model', downloads: '680k', likes: '2.4k', color: 'from-blue-600 to-indigo-600', letter: 'G' },
+              { name: 'anthropic/claude-instant', type: 'Chat Model', downloads: '520k', likes: '1.8k', color: 'from-purple-600 to-pink-600', letter: 'A' },
+              { name: 'meta-ai/llama-3-70b', type: 'Language Model', downloads: '450k', likes: '1.6k', color: 'from-green-600 to-teal-600', letter: 'M' },
+              { name: 'stability-ai/sdxl-2.0', type: 'Image Generation', downloads: '380k', likes: '1.4k', color: 'from-red-600 to-pink-600', letter: 'S' },
+              { name: 'cohere/command-r', type: 'Text Generation', downloads: '320k', likes: '1.2k', color: 'from-yellow-600 to-red-600', letter: 'C' },
+              { name: 'openai/gpt-4-vision', type: 'Vision Model', downloads: '290k', likes: '1.1k', color: 'from-green-500 to-emerald-500', letter: 'O' },
+              { name: 'google/palm-2', type: 'Language Model', downloads: '260k', likes: '980', color: 'from-blue-500 to-cyan-500', letter: 'G' },
+              { name: 'nvidia/nerf-studio', type: '3D Generation', downloads: '230k', likes: '860', color: 'from-green-600 to-emerald-600', letter: 'N' },
+              { name: 'adobe/firefly-pro', type: 'Image Generation', downloads: '210k', likes: '790', color: 'from-red-500 to-orange-500', letter: 'A' },
+              { name: 'runwayml/gen-2', type: 'Video Generation', downloads: '190k', likes: '710', color: 'from-purple-500 to-indigo-500', letter: 'R' }
             ].map((option, index) => (
               <div
                 key={index}
-                onClick={() => navigate(`/dashboard/model/${encodeURIComponent(option.name)}`)}
                 className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-0 sm:justify-between p-4 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]"
               >
                 <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -88,7 +99,6 @@ export function HomeView() {
             ].map((option, index) => (
               <div
                 key={index}
-                onClick={() => navigate(`/dashboard/model/${encodeURIComponent(option.name)}`)}
                 className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-0 sm:justify-between p-4 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]"
               >
                 <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -124,9 +134,7 @@ export function HomeView() {
             ))}
 
             {/* Additional Models (8-25) */}
-            <div 
-              onClick={() => navigate('/dashboard/model/gemini-pro/vision-pro')}
-              className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]">
+            <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white font-medium">G</div>
                 <div>

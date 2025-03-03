@@ -36,15 +36,15 @@ export const router = createBrowserRouter([
             element: <DashboardContainer />,
           },
           {
-            path: 'model/*',
+            path: 'model/:id',
             element: <DetailView />
           },
           {
-            path: 'dataset/*', 
+            path: 'dataset/:id', 
             element: <DetailView />
           },
           {
-            path: 'infra/*',
+            path: 'infra/:id',
             element: <DetailView />
           },
           {
