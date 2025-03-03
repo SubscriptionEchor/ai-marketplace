@@ -79,40 +79,22 @@ export function EarningsView() {
   });
 
   return (
-    <div className="h-[calc(100vh-112px)] overflow-y-auto scrollbar-hide">
+    <div className="px-4 md:px-6 lg:px-8 py-8 bg-[#f6f6f7]">
       {/* Time Period Selection */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 px-4 relative">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 relative">
         <h1 className="text-2xl font-bold text-gray-900 flex-shrink-0">Earnings Overview</h1>
         <div className="relative">
-          {/* Mobile Select */}
           <Select
             value={selectedPeriod}
             onChange={setSelectedPeriod}
             options={TIME_PERIODS}
-            className="sm:hidden w-full min-w-[200px]"
+            className="w-full min-w-[200px]"
           />
-
-          {/* Desktop Period Buttons */}
-          <div className="hidden sm:flex items-center gap-2 min-w-[300px]">
-            {TIME_PERIODS.map((period) => (
-              <button
-                key={period.id}
-                onClick={() => setSelectedPeriod(period.id)}
-                className={`flex-1 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-                  selectedPeriod === period.id
-                    ? 'bg-[#0284a5] text-white'
-                    : 'bg-white text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                {period.label}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
         <div className="bg-white rounded-xl border border-[#e1e3e5] p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-medium text-gray-500">Total Earnings</h3>
@@ -164,7 +146,7 @@ export function EarningsView() {
       </div>
 
       {/* Transactions Table */}
-      <div className="bg-white rounded-xl border border-[#e1e3e5] overflow-hidden mx-4">
+      <div className="bg-white rounded-xl border border-[#e1e3e5] overflow-hidden">
         <div className="px-6 py-4 border-b border-[#e1e3e5]">
           <h2 className="text-lg font-semibold text-gray-900">Recent Transactions</h2>
         </div>

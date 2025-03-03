@@ -7,11 +7,14 @@
 :root {
   --foreground-rgb: 255, 255, 255;
   --background-rgb: 246, 246, 247;
+  --font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 @layer base {
   body {
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: var(--font-family);
+    user-select: none;
+    touch-action: manipulation;
     font-weight: 400;
     font-style: normal;
     font-size: 15px;
@@ -24,7 +27,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: var(--font-family);
     font-weight: 600;
     font-style: normal;
     letter-spacing: -0.01em;
@@ -34,17 +37,17 @@
 
 /* Typography */
 .font-display {
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--font-family);
   letter-spacing: -0.01em;
 }
 
 .font-body {
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--font-family);
   letter-spacing: -0.01em;
 }
 
 .font-mono {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   letter-spacing: -0.01em;
 }
 

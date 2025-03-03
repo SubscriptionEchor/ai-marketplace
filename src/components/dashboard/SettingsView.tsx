@@ -92,25 +92,6 @@ export function SettingsView() {
                 <span className="text-xs font-medium text-gray-600">Connect</span>
               )}
             </div>
-
-            {/* MetaMask */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer gap-4 sm:gap-0"
-              onClick={() => connectWallet('metamask')}>
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-white rounded-full p-2 shadow-sm">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" className="w-full h-full object-contain" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900">MetaMask</h3>
-                  <p className="text-xs text-gray-500">Connect with MetaMask wallet</p>
-                </div>
-              </div>
-              {connectedWallet?.type === 'metamask' ? (
-                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">Connected</span>
-              ) : (
-                <span className="text-xs font-medium text-gray-600">Connect</span>
-              )}
-            </div>
           </div>
 
           {connectedWallet && (

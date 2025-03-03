@@ -62,8 +62,8 @@ export function MyUploadsView() {
   }, []);
 
   return (
-    <div className="h-[calc(100vh-112px)] pt-6 pb-16 overflow-y-auto scrollbar-hide">
-      <div className="max-w-6xl mx-auto">
+    <div className="py-8 bg-[#f6f6f7]">
+      <div className="w-full max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 px-4">
           <div className="flex-shrink-0">
             <h1 className="text-2xl font-semibold text-gray-900">My Uploads</h1>

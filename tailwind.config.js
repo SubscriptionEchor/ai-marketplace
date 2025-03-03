@@ -7,9 +7,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ['IBM Plex Sans', 'sans-serif'],
-        body: ['IBM Plex Sans', 'sans-serif'],
-        mono: ['IBM Plex Mono', 'monospace']
+        display: ['ui-sans-serif', 'system-ui', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"', '"Noto Color Emoji"'],
+        body: ['ui-sans-serif', 'system-ui', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"', '"Noto Color Emoji"'],
+        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', '"Courier New"', 'monospace']
       },
       fontSize: {
         'display-xl': ['2.25rem', { lineHeight: '2.5rem', letterSpacing: '-0.01em', fontWeight: '700' }],

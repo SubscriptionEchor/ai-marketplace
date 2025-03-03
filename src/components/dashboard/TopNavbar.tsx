@@ -54,21 +54,6 @@ const CREATOR_NAVIGATION = [
   }
 ];
 
-const WALLET_OPTIONS = [
-  {
-    id: 'xell',
-    name: 'XELL Wallet',
-    description: 'Recommended wallet for TRIE AI Marketplace',
-    icon: 'https://learn.rubix.net//images/logo.png'
-  },
-  {
-    id: 'metamask',
-    name: 'MetaMask',
-    description: 'Connect with MetaMask wallet',
-    icon: 'https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg'
-  }
-];
-
 const DISCONNECT_WARNING = {
   title: 'Disconnect Wallet',
   message: 'Are you sure you want to disconnect your wallet? This action will remove access to your account and is irreversible.',
@@ -130,7 +115,6 @@ export function TopNavbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showWalletModal, setShowWalletModal] = useState(false);
   const [showDisconnectModal, setShowDisconnectModal] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [selectedOption, setSelectedOption] = useState(SEARCH_OPTIONS[0]);
@@ -139,7 +123,7 @@ export function TopNavbar() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, connectWallet, logout, connectedWallet } = useAuth();
+  const { isAuthenticated, login, logout } = useAuth();
 
 
   const focusSearchInput = useCallback((e: KeyboardEvent) => {
@@ -319,7 +303,7 @@ export function TopNavbar() {
             )}
 
             <button
-              onClick={() => setShowWalletModal(true)}
+              onClick={() => login()}
               className={`inline-flex items-center px-4 py-2 bg-[#0284a5] text-white text-sm font-medium rounded-lg hover:bg-[#026d8a] transition-colors ${
                 isAuthenticated ? 'hidden' : ''
               }`}
@@ -479,41 +463,6 @@ export function TopNavbar() {
       </Modal>
 
       {/* Wallet Selection Modal */}
-      <Modal
-        show={showWalletModal}
-        onClose={() => setShowWalletModal(false)}
-        title="Connect Wallet"
-      >
-        <div className="p-6">
-          <div className="space-y-4">
-            {WALLET_OPTIONS.map((wallet) => (
-              <button
-                key={wallet.id}
-                onClick={async () => {
-                  setShowWalletModal(false);
-                  await connectWallet(wallet.id as 'xell' | 'metamask');
-                }}
-                className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white rounded-full p-2 shadow-sm">
-                    <img src={wallet.icon} alt={wallet.name} className="w-full h-full object-contain" />
-                  </div>
-                  <div className="text-left">
-                    <h3 className="text-sm font-medium text-gray-900">{wallet.name}</h3>
-                    <p className="text-xs text-gray-500">{wallet.description}</p>
-                  </div>
-                </div>
-                {connectedWallet?.type === wallet.id ? (
-                  <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">Connected</span>
-                ) : (
-                  <span className="text-xs font-medium text-gray-600">Connect</span>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-      </Modal>
 
       {/* Mobile Menu */}
       <Transition show={isMobileMenuOpen} as={Fragment}>
