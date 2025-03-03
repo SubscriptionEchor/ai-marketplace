@@ -19,8 +19,10 @@ export function Breadcrumbs({ items, showSteps = false, currentStep, totalSteps 
   return (
     <nav className="flex items-center justify-between bg-white px-4 py-3 rounded-lg border border-[#e1e3e5] shadow-sm" aria-label="Breadcrumb">
       <ol className="flex items-center space-x-1 min-w-0 flex-1">
-        {items.map((item, index) => (
-          <li key={item.label} className="flex items-center min-w-0">
+        {items.map((item, index) => {
+          const isHome = index === 0;
+          return (
+          <li key={item.label} className={`flex items-center ${isHome ? 'flex-shrink-0' : 'min-w-0'}`}>
             {index > 0 && (
               <div className="mx-2 text-gray-400">/</div>
             )}
@@ -28,26 +30,26 @@ export function Breadcrumbs({ items, showSteps = false, currentStep, totalSteps 
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="min-w-0"
+                className={isHome ? '' : 'min-w-0'}
               >
                 <Link
                   to={item.href}
                   className={`text-sm font-medium rounded-md px-2 py-1 transition-colors truncate block ${
-                    location.pathname === item.href
+                    location.pathname === item.href 
                       ? 'text-[#0284a5] bg-[#0284a5]/5'
                       : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
+                  } ${!isHome && 'truncate block'}`}
                 >
                   {item.label}
                 </Link>
               </motion.div>
             ) : (
-              <span className="text-sm font-semibold text-gray-900 px-2 py-1 truncate block">
+              <span className={`text-sm font-semibold text-gray-900 px-2 py-1 ${!isHome && 'truncate block'}`}>
                 {item.label}
               </span>
             )}
           </li>
-        ))}
+        )})}
       </ol>
       {showSteps && currentStep && totalSteps && (
         <div className="ml-4 flex-shrink-0">

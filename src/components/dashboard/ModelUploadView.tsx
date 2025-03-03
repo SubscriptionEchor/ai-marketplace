@@ -108,7 +108,7 @@ export function ModelUploadView() {
     tags: [],
     files: []
   });
-  const [isUploading, setIsUploading] = useState(false);
+  const [isUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const thumbnailInputRef = useRef<HTMLInputElement>(null);
@@ -229,15 +229,8 @@ export function ModelUploadView() {
     setFormData(prev => ({ ...prev, tags }));
   };
 
-  const handleUpload = async () => {
-    setIsUploading(true);
-    try {
-      navigate('/dashboard/upload/model/pricing');
-    } catch (error) {
-      console.error('Upload failed:', error);
-    } finally {
-      setIsUploading(false);
-    }
+  const handleNext = () => {
+    navigate('/dashboard/upload/model/pricing');
   };
 
   return (
@@ -624,8 +617,8 @@ export function ModelUploadView() {
             </button>
             <button
               type="button"
-              onClick={handleUpload}
-              className={`px-4 py-2 text-sm font-medium text-white bg-[#0284a5] rounded-lg hover:bg-[#026d8a] ${
+              onClick={handleNext}
+              className={`px-4 py-2 text-sm font-medium text-white bg-[#0284a5] rounded-lg hover:bg-[#026d8a] flex items-center gap-2 ${
                 isUploading || 
                 !formData.name || 
                 !formData.description || 
@@ -637,7 +630,7 @@ export function ModelUploadView() {
                 : 'cursor-pointer'
               }`}
             >
-              {isUploading ? 'Uploading...' : 'Upload Model'}
+              Next
             </button>
           </div>
         </div>

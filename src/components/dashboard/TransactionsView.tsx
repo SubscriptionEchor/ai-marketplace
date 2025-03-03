@@ -1,6 +1,7 @@
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTransactions, STATUS_STYLES } from '@/hooks';
-import { Pagination } from '@/components/ui';
+import { Pagination, Skeleton } from '@/components/ui';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -17,16 +18,35 @@ export function TransactionsView() {
     totalPages
   } = useTransactions();
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulate loading state
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="px-4 md:px-6 lg:px-8 py-8 h-[calc(100vh-112px)] overflow-y-auto scrollbar-hide">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Transaction History</h1>
-            <p className="mt-1 text-sm text-gray-500">
-              View and manage your purchases
-            </p>
-          </div>
+          {isLoading ? (
+            <>
+              <div>
+                <Skeleton className="w-48 h-8 mb-2" />
+                <Skeleton className="w-64 h-4" />
+              </div>
+            </>
+          ) : (
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Transaction History</h1>
+              <p className="mt-1 text-sm text-gray-500">
+                View and manage your purchases
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Transactions Table */}
@@ -79,69 +99,105 @@ export function TransactionsView() {
                   <th scope="col" className="relative px-6 py-3">
                   </th>
                 </tr>
-                <th scope="col" className="relative px-6 py-3">
-                  <span className="sr-only">Actions</span>
-                </th>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {sortedTransactions.map((transaction) => (
-                  <tr key={transaction.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {new Date(transaction.date).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="h-10 w-10 flex-shrink-0">
-                          <img 
-                            className="h-10 w-10 rounded-lg object-cover" 
-                            src={transaction.asset.image} 
-                            alt={transaction.asset.name} 
-                          />
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {transaction.asset.name}
+                {isLoading ? (
+                  Array.from({ length: 5 }).map((_, index) => (
+                    <tr key={index}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Skeleton className="w-24 h-4" />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="h-10 w-10 flex-shrink-0">
+                            <Skeleton className="w-10 h-10 rounded-lg" />
                           </div>
-                          <div className="text-sm text-gray-500 capitalize">
-                            {transaction.asset.type}
+                          <div className="ml-4">
+                            <Skeleton className="w-32 h-4 mb-1" />
+                            <Skeleton className="w-24 h-3" />
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm">
-                          {transaction.seller.avatar}
-                        </div>
-                        <div className="ml-3">
-                          <div className="text-sm font-medium text-gray-900">
-                            {transaction.seller.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <Skeleton className="w-8 h-8 rounded-full" />
+                          <div className="ml-3">
+                            <Skeleton className="w-24 h-4" />
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      ${transaction.amount}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        STATUS_STYLES[transaction.status]
-                      }`}>
-                        {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button className="text-[#0284a5] hover:text-[#026d8a]">
-                        View
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Skeleton className="w-16 h-4" />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Skeleton className="w-20 h-6 rounded-full" />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                        <Skeleton className="w-12 h-4 ml-auto" />
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  sortedTransactions.map((transaction) => (
+                    <tr key={transaction.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {new Date(transaction.date).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="h-10 w-10 flex-shrink-0">
+                            <img 
+                              className="h-10 w-10 rounded-lg object-cover" 
+                              src={transaction.asset.image} 
+                              alt={transaction.asset.name} 
+                            />
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {transaction.asset.name}
+                            </div>
+                            <div className="text-sm text-gray-500 capitalize">
+                              {transaction.asset.type}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm">
+                            {transaction.seller.avatar}
+                          </div>
+                          <div className="ml-3">
+                            <div className="text-sm font-medium text-gray-900">
+                              {transaction.seller.name}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ${transaction.amount}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          STATUS_STYLES[transaction.status]
+                        }`}>
+                          {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button className="text-[#0284a5] hover:text-[#026d8a]">
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
         </div>
 
+        {/* Pagination */}
         {totalPages > 1 && totalItems > 0 && (
           <Pagination
             currentPage={currentPage}

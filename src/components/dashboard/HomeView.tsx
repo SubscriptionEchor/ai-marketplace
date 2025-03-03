@@ -1,9 +1,21 @@
 import { useState, useCallback } from 'react';
-import { LikeButton } from '@/components/ui';
+import { LikeButton, TrendingItemSkeleton, SetupGuideSkeleton, Skeleton } from '@/components/ui';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function HomeView() {
   const [showSetupGuide, setShowSetupGuide] = useState(true);
   const [likedItems, setLikedItems] = useState<Record<string, boolean>>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  // Simulate loading state
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleLike = useCallback((itemId: string, _currentLikes?: string) => {
     setLikedItems(prev => {
@@ -14,7 +26,7 @@ export function HomeView() {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-112px)] pt-6 pb-16">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-112px)] pt-6 pb-16 px-4 md:px-6 lg:px-8">
       {/* Main Content Column */}
       <div className="lg:col-span-2 h-[calc(100vh-112px)] overflow-y-auto pb-16 scrollbar-hide">
         <div>
@@ -32,7 +44,13 @@ export function HomeView() {
           
           {/* Trending Items */}
           <div className="space-y-4">
-            {[
+            {isLoading ? (
+              Array.from({ length: 8 }).map((_, index) => (
+                <TrendingItemSkeleton key={index} />
+              ))
+            ) : (
+              <>
+              {[
               { name: 'perplexity-ai/r1-1776', type: 'Text Generation', downloads: '14.8k', likes: '1.87k', color: 'from-purple-500 to-pink-500', letter: 'P' },
               { name: 'perplexity-ai/r1-1776-2', type: 'Text Generation', downloads: '14.8k', likes: '1.87k', color: 'from-purple-500 to-pink-500', letter: 'P' },
               { name: 'deepseek-ai/DeepSeek-R1', type: 'Text Generation', downloads: '4.64M', likes: '10.4k', color: 'from-blue-500 to-cyan-500', letter: 'D' },
@@ -53,9 +71,10 @@ export function HomeView() {
             ].map((option, index) => (
               <div
                 key={index}
-                className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-0 sm:justify-between p-4 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]"
+                onClick={() => navigate(`/dashboard/model/${option.name.toLowerCase().replace(/\//g, '-')}`)}
+                className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]"
               >
-                <div className="flex items-center gap-3 w-full sm:w-auto">
+                <div className="flex items-center gap-3 w-full">
                   <div className={`w-8 h-8 bg-gradient-to-br ${option.color} rounded-lg flex items-center justify-center text-white font-medium`}>
                     {option.letter}
                   </div>
@@ -70,7 +89,7 @@ export function HomeView() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-gray-600 w-full sm:w-auto justify-between sm:justify-end mt-2 sm:mt-0 border-t sm:border-t-0 pt-3 sm:pt-0">
+                <div className="flex items-center gap-4 text-sm text-gray-600 w-full sm:w-auto justify-between mt-2 sm:mt-0 pt-2 sm:pt-0 border-t sm:border-t-0">
                   <div className="flex items-center gap-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -99,9 +118,10 @@ export function HomeView() {
             ].map((option, index) => (
               <div
                 key={index}
-                className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-0 sm:justify-between p-4 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]"
+                onClick={() => navigate(`/dashboard/model/${option.name.toLowerCase().replace(/\//g, '-')}`)}
+                className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]"
               >
-                <div className="flex items-center gap-3 w-full sm:w-auto">
+                <div className="flex items-center gap-3 w-full">
                   <div className={`w-8 h-8 bg-gradient-to-br ${option.color} rounded-lg flex items-center justify-center text-white font-medium`}>
                     {option.letter}
                   </div>
@@ -116,7 +136,7 @@ export function HomeView() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-gray-600 w-full sm:w-auto justify-between sm:justify-end mt-2 sm:mt-0 border-t sm:border-t-0 pt-3 sm:pt-0">
+                <div className="flex items-center gap-4 text-sm text-gray-600 w-full sm:w-auto justify-between mt-2 sm:mt-0 pt-2 sm:pt-0 border-t sm:border-t-0">
                   <div className="flex items-center gap-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -134,7 +154,10 @@ export function HomeView() {
             ))}
 
             {/* Additional Models (8-25) */}
-            <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]">
+            <div 
+              onClick={() => navigate('/dashboard/model/gemini-pro-vision-pro')}
+              className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer bg-white shadow-sm border border-[#e1e3e5]"
+            >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white font-medium">G</div>
                 <div>
@@ -160,6 +183,8 @@ export function HomeView() {
                 />
               </div>
             </div>
+            </>
+            )}
           </div>
         </div>
         </div>
@@ -167,8 +192,19 @@ export function HomeView() {
       
       {/* Setup Guide Column */}
       <div className="space-y-6 h-[calc(100vh-112px)] overflow-y-auto pr-4 -mr-4 pb-16 scrollbar-hide">
-        {/* Setup Guide */}
-        {showSetupGuide && (
+        {isLoading ? (
+          <>
+            <SetupGuideSkeleton />
+            <div className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6 space-y-4">
+              <Skeleton className="w-48 h-6" />
+              <Skeleton className="w-full h-16 rounded-lg" />
+              <Skeleton className="w-full h-16 rounded-lg" />
+              <Skeleton className="w-full h-16 rounded-lg" />
+            </div> 
+          </>
+        ) : (
+          <>
+          {showSetupGuide && (
           <div className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] overflow-hidden">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
@@ -233,25 +269,27 @@ export function HomeView() {
             </div>
           </div>
         )}
-
+        
         {/* Best Practices and Guides */}
         <div className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Resources</h2>
           <div className="space-y-4">
-            <a href="#" className="block p-4 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
+            <div className="block p-4 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors cursor-pointer">
               <h3 className="text-sm font-medium text-gray-900">Seller Guide</h3>
               <p className="mt-1 text-sm text-gray-500">Learn how to effectively sell your AI models</p>
-            </a>
-            <a href="#" className="block p-4 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
+            </div>
+            <div className="block p-4 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors cursor-pointer">
               <h3 className="text-sm font-medium text-gray-900">Buyer Guide</h3>
               <p className="mt-1 text-sm text-gray-500">Tips for finding and evaluating AI models</p>
-            </a>
-            <a href="#" className="block p-4 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
+            </div>
+            <div className="block p-4 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors cursor-pointer">
               <h3 className="text-sm font-medium text-gray-900">Best Practices</h3>
               <p className="mt-1 text-sm text-gray-500">Recommended practices for the marketplace</p>
-            </a>
+            </div>
           </div>
         </div>
+        </>
+        )}
       </div>
     </div>
   );

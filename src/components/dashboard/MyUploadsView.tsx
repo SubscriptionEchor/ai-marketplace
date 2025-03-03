@@ -1,14 +1,8 @@
 import { useState, useEffect } from 'react';
 import { formatNumber } from '@/utils/formatNumber';
-import { Pagination } from '@/components/ui';
+import { Pagination, Skeleton } from '@/components/ui';
 
 const ITEMS_PER_PAGE = 15;
-
-interface ProviderStats {
-  totalAssets: number;
-  totalPurchases: number;
-  totalEarnings: number;
-}
 
 const MOCK_DATA = Array.from({ length: 50 }, (_, i) => ({
   id: `model-${i + 1}`,
@@ -38,7 +32,12 @@ import { useNavigate } from 'react-router-dom';
 export function MyUploadsView() {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const [stats, setStats] = useState<ProviderStats>({
+  const [isLoading, setIsLoading] = useState(true);
+  const [stats, setStats] = useState<{
+    totalAssets: number;
+    totalPurchases: number;
+    totalEarnings: number;
+  }>({
     totalAssets: 0,
     totalPurchases: 0,
     totalEarnings: 0
@@ -47,6 +46,14 @@ export function MyUploadsView() {
   const totalPages = Math.ceil(MOCK_DATA.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedData = MOCK_DATA.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  // Simulate loading state
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     // Load stats from localStorage
@@ -64,24 +71,55 @@ export function MyUploadsView() {
   return (
     <div className="h-[calc(100vh-112px)] pt-6 pb-16 overflow-y-auto scrollbar-hide">
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 px-4">
-          <div className="flex-shrink-0">
-            <h1 className="text-2xl font-semibold text-gray-900">My Uploads</h1>
-          </div>
-          <div className="flex flex-wrap items-center gap-4 sm:gap-8">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">Total Assets:</span>
-              <span className="text-sm font-semibold text-gray-900">{stats.totalAssets}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">Total Purchases:</span>
-              <span className="text-sm font-semibold text-gray-900">{formatNumber(stats.totalPurchases.toString())}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">Total Earnings:</span>
-              <span className="text-sm font-semibold text-gray-900">${formatNumber(stats.totalEarnings.toString())}</span>
-            </div>
-          </div>
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between mb-8 px-4 animate-fadeIn">
+          {isLoading ? (
+            <>
+              <div className="flex-shrink-0">
+                <Skeleton className="w-48 h-8 mb-2" />
+                <Skeleton className="w-64 h-4" />
+              </div>
+              <div className="grid grid-cols-3 gap-4 sm:flex sm:items-center sm:gap-6">
+                <Skeleton className="w-32 h-16" />
+                <Skeleton className="w-32 h-16" />
+                <Skeleton className="w-32 h-16" />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex-shrink-0">
+                <h1 className="text-2xl font-bold text-gray-900">My Uploads</h1>
+                <p className="mt-1 text-sm text-gray-500">
+                  Access your purchased AI models, datasets, and infrastructure services
+                </p>
+              </div>
+              <div className="grid grid-cols-3 gap-4 sm:flex sm:items-center sm:gap-6">
+                <div className="bg-white p-4 rounded-xl border border-[#e1e3e5] text-center hover:border-[#0284a5] hover:shadow-lg transition-all duration-300 group">
+                  <div className="flex flex-col items-center">
+                    <div className="text-xl sm:text-2xl font-bold text-gray-900 group-hover:text-[#0284a5] transition-colors">
+                      {stats.totalAssets}
+                    </div>
+                    <div className="text-xs sm:text-sm text-gray-500 whitespace-nowrap mt-1">Total Assets</div>
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded-xl border border-[#e1e3e5] text-center hover:border-[#0284a5] hover:shadow-lg transition-all duration-300 group">
+                  <div className="flex flex-col items-center">
+                    <div className="text-xl sm:text-2xl font-bold text-gray-900 group-hover:text-[#0284a5] transition-colors">
+                      {formatNumber(stats.totalPurchases.toString())}
+                    </div>
+                    <div className="text-xs sm:text-sm text-gray-500 whitespace-nowrap mt-1">Total Purchases</div>
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded-xl border border-[#e1e3e5] text-center hover:border-[#0284a5] hover:shadow-lg transition-all duration-300 group">
+                  <div className="flex flex-col items-center">
+                    <div className="text-xl sm:text-2xl font-bold text-gray-900 group-hover:text-[#0284a5] transition-colors">
+                      ${formatNumber(stats.totalEarnings.toString())}
+                    </div>
+                    <div className="text-xs sm:text-sm text-gray-500 whitespace-nowrap mt-1">Total Earnings</div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="bg-white rounded-xl border border-[#e1e3e5] overflow-hidden mx-4">
@@ -113,58 +151,86 @@ export function MyUploadsView() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {paginatedData.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {item.type}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{item.name}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{item.category}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {item.downloads}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {item.earnings}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {item.updatedAt}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button 
-                        onClick={() => {
-                          // Determine which edit page to navigate to based on item type
-                          let editPath = '';
-                          switch (item.type) {
-                            case 'AI Model':
-                              editPath = `/dashboard/upload/model`;
-                              break;
-                            case 'Dataset':
-                              editPath = `/dashboard/upload/dataset`;
-                              break;
-                            case 'Infrastructure':
-                              editPath = `/dashboard/upload/infra`;
-                              break;
-                          }
-                          navigate(editPath, {
-                            state: { 
-                              editMode: true,
-                              modelData: item
+                {isLoading ? (
+                  Array.from({ length: 5 }).map((_, index) => (
+                    <tr key={index}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Skeleton className="w-24 h-6 rounded-full" />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Skeleton className="w-48 h-4" />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Skeleton className="w-32 h-4" />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Skeleton className="w-16 h-4" />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Skeleton className="w-20 h-4" />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Skeleton className="w-24 h-4" />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                        <Skeleton className="w-12 h-4 ml-auto" />
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  paginatedData.map((item) => (
+                    <tr key={item.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {item.type}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{item.name}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">{item.category}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {item.downloads}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {item.earnings}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {item.updatedAt}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button 
+                          onClick={() => {
+                            // Determine which edit page to navigate to based on item type
+                            let editPath = '';
+                            switch (item.type) {
+                              case 'AI Model':
+                                editPath = `/dashboard/upload/model`;
+                                break;
+                              case 'Dataset':
+                                editPath = `/dashboard/upload/dataset`;
+                                break;
+                              case 'Infrastructure':
+                                editPath = `/dashboard/upload/infra`;
+                                break;
                             }
-                          });
-                        }}
-                        className="text-[#0284a5] hover:text-[#026d8a]"
-                      >
-                        Edit
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                            navigate(editPath, {
+                              state: { 
+                                editMode: true,
+                                modelData: item
+                              }
+                            });
+                          }}
+                          className="text-[#0284a5] hover:text-[#026d8a]"
+                        >
+                          Edit
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -181,6 +247,6 @@ export function MyUploadsView() {
           )}
         </div>
       </div>
-    </div>
+    </div> 
   );
 }

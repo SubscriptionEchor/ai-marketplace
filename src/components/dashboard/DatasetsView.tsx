@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { ModelCard, SearchInput, EmptyState, FilterButton, Pagination, MobileFilterDrawer } from '@/components/ui';
+import { useState, useMemo, useEffect } from 'react';
+import { ModelCard, SearchInput, EmptyState, FilterButton, Pagination, MobileFilterDrawer, ModelCardSkeleton, Skeleton } from '@/components/ui';
 import { useFilteredItems } from '@/hooks';
 
 const ITEMS_PER_PAGE = 12;
@@ -71,6 +71,7 @@ export function DatasetsView() {
   const [likedItems, setLikedItems] = useState<Record<string, boolean>>({});
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const DATASETS = [
     {
@@ -162,8 +163,16 @@ export function DatasetsView() {
     return filtered;
   }, [searchQuery]);
 
+  // Simulate loading state
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-112px)] pt-6 pb-16">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-112px)] pt-6 pb-16 px-4 md:px-6 lg:px-8">
       {/* Mobile filter dialog */}
       <MobileFilterDrawer isOpen={mobileFiltersOpen} onClose={() => setMobileFiltersOpen(false)}>
         <div className="space-y-6">
@@ -248,7 +257,13 @@ export function DatasetsView() {
           )}
         </div>
 
-        {paginatedDatasets.length > 0 ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <ModelCardSkeleton key={index} />
+            ))}
+          </div>
+        ) : paginatedDatasets.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {paginatedDatasets.map((dataset) => (
               <ModelCard
@@ -289,77 +304,103 @@ export function DatasetsView() {
       {/* Right Column */}
       <div className="space-y-6 h-[calc(100vh-112px)] overflow-y-auto pr-4 -mr-4 pb-16 scrollbar-hide w-[280px]">
         {/* Search Input */}
-        <div className="relative">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
-            {selectedFilters.size > 0 && (
-              <button
-                onClick={clearFilters}
-                className="text-sm text-[#0284a5] hover:text-[#026d8a] flex items-center gap-1"
-              >
-                <span>Clear filters</span>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
-          </div>
-          <SearchInput
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)} 
-            placeholder="Search formats..."
-            onClear={() => setSearchQuery('')}
-          />
-        </div>
-
-        {Object.entries(filteredCategories).map(([category, modalities]) => (
-          <div key={category} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
-            <div className="mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">{category}</h2>
+        {isLoading ? (
+          <>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <Skeleton className="w-20 h-6" />
+              </div>
+              <Skeleton className="w-full h-12 rounded-lg" />
             </div>
-            <div className="space-y-2">
-              {modalities.map((modality) => (
-                <FilterButton
-                  key={modality}
-                  label={modality}
-                  icon={CATEGORY_ICONS[modality as keyof typeof CATEGORY_ICONS].icon}
-                  color={CATEGORY_ICONS[modality as keyof typeof CATEGORY_ICONS].color}
-                  isSelected={selectedFilters.has(modality)}
-                  onSelect={() => handleFilterSelect(modality)}
-                  onRemove={() => handleFilterSelect(modality)}
-                />
-              ))}
-            </div>
-          </div>
-        ))}
-
-        {Object.entries(filteredFormats).map(([category, formats]) => (
-          <div key={category} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
-            <div className="mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">{category}</h2>
-            </div>
-            <div className="space-y-2">
-              {formats.map((format) => (
-                <button
-                  key={format}
-                  className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2"
-                >
-                  <div className="w-5 h-5 bg-gradient-to-br from-gray-500 to-gray-600 rounded flex items-center justify-center text-white">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth="1.5" 
-                        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-                      />
+            {/* Skeleton filters */}
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
+                <div className="mb-4">
+                  <Skeleton className="w-32 h-6" />
+                </div>
+                <div className="space-y-2">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <Skeleton key={i} className="w-full h-10 rounded-lg" />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </>
+        ) : (
+          <>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
+                {selectedFilters.size > 0 && (
+                  <button
+                    onClick={clearFilters}
+                    className="text-sm text-[#0284a5] hover:text-[#026d8a] flex items-center gap-1"
+                  >
+                    <span>Clear filters</span>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                  </div>
-                  <span className="font-mono">.{format}</span>
-                </button>
-              ))}
+                  </button>
+                )}
+              </div>
+              <SearchInput
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)} 
+                placeholder="Search formats..."
+                onClear={() => setSearchQuery('')}
+              />
             </div>
-          </div>
-        ))}
+
+            {Object.entries(filteredCategories).map(([category, modalities]) => (
+              <div key={category} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
+                <div className="mb-4">
+                  <h2 className="text-lg font-semibold text-gray-900">{category}</h2>
+                </div>
+                <div className="space-y-2">
+                  {modalities.map((modality) => (
+                    <FilterButton
+                      key={modality}
+                      label={modality}
+                      icon={CATEGORY_ICONS[modality as keyof typeof CATEGORY_ICONS].icon}
+                      color={CATEGORY_ICONS[modality as keyof typeof CATEGORY_ICONS].color}
+                      isSelected={selectedFilters.has(modality)}
+                      onSelect={() => handleFilterSelect(modality)}
+                      onRemove={() => handleFilterSelect(modality)}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {Object.entries(filteredFormats).map(([category, formats]) => (
+              <div key={category} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
+                <div className="mb-4">
+                  <h2 className="text-lg font-semibold text-gray-900">{category}</h2>
+                </div>
+                <div className="space-y-2">
+                  {formats.map((format) => (
+                    <button
+                      key={format}
+                      className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2"
+                    >
+                      <div className="w-5 h-5 bg-gradient-to-br from-gray-500 to-gray-600 rounded flex items-center justify-center text-white">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            strokeWidth="1.5" 
+                            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                          />
+                        </svg>
+                      </div>
+                      <span className="font-mono">.{format}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </>
+        )}
       </div>
     </div>
   );

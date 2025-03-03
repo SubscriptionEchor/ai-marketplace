@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { ModelCard, SearchInput, EmptyState, FilterButton, Pagination, MobileFilterDrawer } from '@/components/ui';
+import { useState, useMemo, useEffect } from 'react';
+import { ModelCard, SearchInput, EmptyState, FilterButton, Pagination, MobileFilterDrawer, ModelCardSkeleton, FilterSkeleton, Skeleton } from '@/components/ui';
 import { useFilteredItems } from '@/hooks';
 
 const ITEMS_PER_PAGE = 12;
@@ -61,6 +61,7 @@ export function InfraProvidersView() {
   const [likedItems, setLikedItems] = useState<Record<string, boolean>>({});
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const PROVIDERS = [
     {
@@ -105,6 +106,14 @@ export function InfraProvidersView() {
     setCurrentPage,
     handleFilterSelect
   } = useFilteredItems(PROVIDERS);
+
+  // Simulate loading state
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleLike = (itemId: string, _likes: string) => {
     setLikedItems(prev => ({
@@ -155,7 +164,7 @@ export function InfraProvidersView() {
   }, [searchQuery]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-112px)] pt-6 pb-16">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-112px)] pt-6 pb-16 px-4 md:px-6 lg:px-8">
       {/* Mobile filter dialog */}
       <MobileFilterDrawer isOpen={mobileFiltersOpen} onClose={() => setMobileFiltersOpen(false)}>
         <div className="space-y-6">
@@ -240,7 +249,13 @@ export function InfraProvidersView() {
           )}
         </div>
 
-        {paginatedProviders.length > 0 ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <ModelCardSkeleton key={index} />
+            ))}
+          </div>
+        ) : paginatedProviders.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {paginatedProviders.map((provider) => (
               <ModelCard
@@ -281,77 +296,93 @@ export function InfraProvidersView() {
       {/* Right Column */}
       <div className="space-y-6 h-[calc(100vh-112px)] overflow-y-auto pr-4 -mr-4 pb-16 scrollbar-hide w-[280px]">
         {/* Search Input */}
-        <div className="relative">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
-            {selectedFilters.size > 0 && (
-              <button
-                onClick={clearFilters}
-                className="text-sm text-[#0284a5] hover:text-[#026d8a] flex items-center gap-1"
-              >
-                <span>Clear filters</span>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
-          </div>
-          <SearchInput
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)} 
-            placeholder="Search hardware..."
-            onClear={() => setSearchQuery('')}
-          />
-        </div>
-
-        {Object.entries(filteredHardwareTypes).map(([category, types]) => (
-          <div key={category} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
-            <div className="mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">{category}</h2>
+        {isLoading ? (
+          <>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <Skeleton className="w-20 h-6" />
+              </div>
+              <Skeleton className="w-full h-12 rounded-lg" />
             </div>
-            <div className="space-y-2">
-              {types.map((type) => (
-                <FilterButton
-                  key={type}
-                  label={type}
-                  icon={PROVIDER_ICONS[type as keyof typeof PROVIDER_ICONS].icon}
-                  color={PROVIDER_ICONS[type as keyof typeof PROVIDER_ICONS].color}
-                  isSelected={selectedFilters.has(type)}
-                  onSelect={() => handleFilterSelect(type)}
-                  onRemove={() => handleFilterSelect(type)}
-                />
-              ))}
-            </div>
-          </div>
-        ))}
-
-        {Object.entries(filteredRegions).map(([region, locations]) => (
-          <div key={region} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
-            <div className="mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">{region}</h2>
-            </div>
-            <div className="space-y-2">
-              {locations.map((location) => (
-                <button
-                  key={location}
-                  className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2"
-                >
-                  <div className="w-5 h-5 bg-gradient-to-br from-gray-500 to-gray-600 rounded flex items-center justify-center text-white">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth="1.5" 
-                        d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
-                      />
+            <FilterSkeleton itemCount={3} />
+            <FilterSkeleton itemCount={2} />
+            <FilterSkeleton itemCount={3} />
+          </>
+        ) : (
+          <>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
+                {selectedFilters.size > 0 && (
+                  <button
+                    onClick={clearFilters}
+                    className="text-sm text-[#0284a5] hover:text-[#026d8a] flex items-center gap-1"
+                  >
+                    <span>Clear filters</span>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                  </div>
-                  <span>{location}</span>
-                </button>
-              ))}
+                  </button>
+                )}
+              </div>
+              <SearchInput
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)} 
+                placeholder="Search hardware..."
+                onClear={() => setSearchQuery('')}
+              />
             </div>
-          </div>
-        ))}
+
+            {Object.entries(filteredHardwareTypes).map(([category, types]) => (
+              <div key={category} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
+                <div className="mb-4">
+                  <h2 className="text-lg font-semibold text-gray-900">{category}</h2>
+                </div>
+                <div className="space-y-2">
+                  {types.map((type) => (
+                    <FilterButton
+                      key={type}
+                      label={type}
+                      icon={PROVIDER_ICONS[type as keyof typeof PROVIDER_ICONS].icon}
+                      color={PROVIDER_ICONS[type as keyof typeof PROVIDER_ICONS].color}
+                      isSelected={selectedFilters.has(type)}
+                      onSelect={() => handleFilterSelect(type)}
+                      onRemove={() => handleFilterSelect(type)}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {Object.entries(filteredRegions).map(([region, locations]) => (
+              <div key={region} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
+                <div className="mb-4">
+                  <h2 className="text-lg font-semibold text-gray-900">{region}</h2>
+                </div>
+                <div className="space-y-2">
+                  {locations.map((location) => (
+                    <button
+                      key={location}
+                      className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2"
+                    >
+                      <div className="w-5 h-5 bg-gradient-to-br from-gray-500 to-gray-600 rounded flex items-center justify-center text-white">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            strokeWidth="1.5" 
+                            d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                          />
+                        </svg>
+                      </div>
+                      <span>{location}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </>
+        )}
       </div>
     </div>
   );

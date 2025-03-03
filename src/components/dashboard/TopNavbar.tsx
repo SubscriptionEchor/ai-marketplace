@@ -1,5 +1,4 @@
-import { useState, useRef, useCallback, Fragment } from 'react';
-import { useEffect } from 'react';
+import { useState, useRef, useCallback, Fragment, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Popover, Transition, Dialog } from '@headlessui/react';
 import { Modal } from '@/components/ui';
@@ -135,14 +134,12 @@ export function TopNavbar() {
   const location = useLocation();
   const { isAuthenticated, connectWallet, logout, connectedWallet } = useAuth();
 
-
   const focusSearchInput = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape' && isSearchFocused) {
       searchInputRef.current?.blur();
       setIsSearchFocused(false);
       return;
     }
-
     if (e.key === '/' && !e.ctrlKey && !e.metaKey && !isSearchFocused) {
       e.preventDefault();
       searchInputRef.current?.focus();
@@ -158,7 +155,6 @@ export function TopNavbar() {
     }
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', focusSearchInput);
-    
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', focusSearchInput);
@@ -202,7 +198,6 @@ export function TopNavbar() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                         </svg>
                       </button>
-                      
                       {isDropdownOpen && (
                         <div className="absolute top-full left-0 mt-1 w-48 bg-[#191919] rounded-lg shadow-popup border border-border py-1 z-50">
                           {SEARCH_OPTIONS.map((option) => (
@@ -227,7 +222,6 @@ export function TopNavbar() {
                         </div>
                       )}
                     </div>
-                    
                     <div className="relative flex-1">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -253,7 +247,7 @@ export function TopNavbar() {
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-6">
             {/* Mobile Profile Button */}
             {isAuthenticated && (
@@ -266,7 +260,6 @@ export function TopNavbar() {
                           J
                         </div>
                       </Popover.Button>
-
                       <Transition
                         show={open}
                         as={Fragment}
@@ -281,8 +274,11 @@ export function TopNavbar() {
                           {PROFILE_MENU_ITEMS.map((item) => (
                             <button
                               key={item.label}
-                              onClick={() => navigate(item.href)}
-                              className="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-background-tertiary flex items-center space-x-2"
+                              onClick={() => {
+                                navigate(item.href);
+                                setIsMobileMenuOpen(false);
+                              }} 
+                              className="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-background-tertiary flex items-center gap-2 text-white"
                             >
                               <svg className="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
@@ -290,7 +286,6 @@ export function TopNavbar() {
                               <span>{item.label}</span>
                             </button>
                           ))}
-                          
                           <div className="border-t border-border mt-1">
                             <button
                               onClick={() => {
@@ -311,18 +306,14 @@ export function TopNavbar() {
                 </Popover>
               </div>
             )}
-
             <button
               onClick={() => setShowWalletModal(true)}
-              className={`inline-flex items-center px-4 py-2 bg-[#0284a5] text-white text-sm font-medium rounded-lg hover:bg-[#026d8a] transition-colors ${
-                isAuthenticated ? 'hidden' : ''
-              }`}
+              className={`inline-flex items-center px-4 py-2 bg-[#0284a5] text-white text-sm font-medium rounded-lg hover:bg-[#026d8a] transition-colors ${isAuthenticated ? 'hidden' : ''}`}
             >
               <img src="https://learn.rubix.net//images/logo.png" alt="XELL" className="w-5 h-5 mr-2" />
               Connect Wallet
             </button>
-            
-            {/* Profile Menu */}
+            {/* Profile Menu for desktop */}
             <div className={`relative hidden xl:block ${!isAuthenticated ? 'hidden' : ''}`}>
               <Popover className="relative">
                 {({ open }) => (
@@ -332,7 +323,6 @@ export function TopNavbar() {
                         J
                       </div>
                     </Popover.Button>
-
                     <Transition
                       show={open}
                       as={Fragment}
@@ -356,7 +346,6 @@ export function TopNavbar() {
                             <span>{item.label}</span>
                           </button>
                         ))}
-                        
                         <div className="border-t border-border mt-1">
                           <button
                             onClick={() => {
@@ -379,6 +368,7 @@ export function TopNavbar() {
           </div>
         </div>
       </div>
+
       <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 hidden xl:block">
         <div className="flex justify-between items-center h-12">
           <nav className="flex space-x-8">
@@ -392,15 +382,9 @@ export function TopNavbar() {
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
-
                 <div className="absolute z-10 mt-1 w-screen max-w-xs px-2 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200">
                   <div className="overflow-hidden rounded-lg shadow-popup border border-border">
                     <div className="relative grid gap-1 bg-[#191919] p-2">
@@ -408,7 +392,6 @@ export function TopNavbar() {
                         <button
                           key={item}
                           onClick={() => {
-                            // Determine which page to navigate to based on the category
                             let targetView = 'models';
                             if (item.toLowerCase().includes('data') || item.includes('folder')) {
                               targetView = 'datasets';
@@ -437,7 +420,7 @@ export function TopNavbar() {
           </nav>
         </div>
       </div>
-      
+
       {/* Disconnect Confirmation Modal */}
       <Modal
         show={showDisconnectModal}

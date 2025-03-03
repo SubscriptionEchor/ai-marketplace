@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/hooks';
-import { Modal } from '@/components/ui';
+import { Modal, Skeleton } from '@/components/ui';
 
 const UPLOAD_OPTIONS = [
   {
@@ -34,9 +34,18 @@ const UPLOAD_OPTIONS = [
 export function DataProviderView() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState(true);
   const { isAuthenticated, login } = useAuth();
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [showAuthModal, setShowAuthModal] = useState(false);
+
+  // Simulate loading state
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     // Check if we're returning from a specific upload page
@@ -64,6 +73,10 @@ export function DataProviderView() {
       return;
     }
 
+    if (!selectedOption) {
+      return;
+    }
+
     switch (selectedOption) {
       case 'dataset':
         navigate('/dashboard/upload/dataset');
@@ -82,21 +95,44 @@ export function DataProviderView() {
       {/* Left Column - Image */}
       <div className="hidden lg:block">
         <div className="w-full h-full rounded-xl overflow-hidden">
-          <img 
-            src="https://cdn.midjourney.com/d8fdb597-0d88-467d-8637-8022fb31dc1e/0_0.png"
-            alt="AI Marketplace"
-            className="w-full h-full object-cover"
-          />
+          {isLoading ? (
+            <Skeleton className="w-full h-full rounded-xl" />
+          ) : (
+            <img 
+              src="https://cdn.midjourney.com/d8fdb597-0d88-467d-8637-8022fb31dc1e/0_0.png"
+              alt="AI Marketplace"
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
       </div>
       
       {/* Right Column - Upload Options */}
       <div className="max-w-xl mx-auto w-full">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4 tracking-tight">What would you like to add?</h1>
-        <p className="text-lg text-gray-600 mb-8">Choose what type of content you want to contribute to the marketplace.</p>
+        {isLoading ? (
+          <>
+            <Skeleton className="w-3/4 h-8 mb-4" />
+            <Skeleton className="w-full h-6 mb-8" />
+          </>
+        ) : (
+          <>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4 tracking-tight">What would you like to add?</h1>
+            <p className="text-lg text-gray-600 mb-8">Choose what type of content you want to contribute to the marketplace.</p>
+          </>
+        )}
 
         <div className="space-y-6">
-          {UPLOAD_OPTIONS.map((option) => (
+          {isLoading ? Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="w-full px-6 py-5 bg-white border-2 border-gray-200 rounded-2xl">
+              <div className="flex items-center gap-4">
+                <Skeleton className="w-12 h-12 rounded-lg" />
+                <div className="flex-1">
+                  <Skeleton className="w-48 h-6 mb-2" />
+                  <Skeleton className="w-full h-4" />
+                </div>
+              </div>
+            </div>
+          )) : UPLOAD_OPTIONS.map((option) => (
             <motion.div
               key={option.id}
               whileHover={{ scale: 1.02 }}
@@ -133,6 +169,7 @@ export function DataProviderView() {
         <div className="flex justify-end mt-10">
           <button
             onClick={handleNext}
+            disabled={!selectedOption}
             className="px-8 py-3 bg-[#0284a5] text-white text-sm font-medium rounded-xl hover:bg-[#026d8a] transition-all duration-200 shadow-sm hover:shadow-md"
           >
             NEXT

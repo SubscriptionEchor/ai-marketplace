@@ -19,7 +19,12 @@ export function NavItem({ item }: NavItemProps) {
     <motion.button
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      onClick={() => navigate(`/dashboard/${item.id}`)}
+      onClick={() => {
+        navigate(`/dashboard/${item.id}`);
+        // Close any open modals/menus
+        const event = new CustomEvent('closeModals');
+        window.dispatchEvent(event);
+      }}
       className={`flex items-center w-full px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 group ${
         isActive
           ? 'text-[#0284a5] bg-white shadow-sm border border-gray-100'

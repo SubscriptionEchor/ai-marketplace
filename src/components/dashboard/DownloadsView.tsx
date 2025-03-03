@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { EmptyState, Breadcrumbs } from '@/components/ui';
+import { EmptyState, Skeleton } from '@/components/ui';
 
 const ITEMS_PER_PAGE = 5;
 
@@ -128,6 +128,7 @@ const STATUS_STYLES = {
 
 export function DownloadsView() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Calculate pagination
   const totalItems = MOCK_PURCHASES.length;
@@ -148,6 +149,14 @@ export function DownloadsView() {
       window.open(asset.computeResources.url, '_blank');
     }
   };
+  
+  // Simulate loading state
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   if (MOCK_PURCHASES.length === 0) {
     return (
@@ -164,30 +173,37 @@ export function DownloadsView() {
   }
 
   return (
-    <div className="h-[calc(100vh-112px)] overflow-y-auto scrollbar-hide">
-      {/* Header Section */}
-      <div className="px-4 md:px-6 lg:px-8 py-4">
-        <div className="max-w-6xl mx-auto">
-          {/* Breadcrumbs */}
-          <div className="mb-6">
-            <Breadcrumbs
-              items={[
-                { label: 'Home', href: '/dashboard/all' },
-                { label: 'My Downloads' }
-              ]} 
-            />
-          </div>
-
-          {/* Header Content */}
-          <div className="bg-white rounded-xl border border-[#e1e3e5] p-6 mb-8">
-            <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center md:justify-between">
+    <div className="min-h-[calc(100vh-112px)] h-full overflow-y-auto scrollbar-hide">
+      <div className="max-w-6xl mx-auto">
+        {/* Content */}
+        <div className="bg-white rounded-xl border border-[#e1e3e5] p-6 mb-8 mx-4 md:mx-6 lg:mx-8 mt-8">
+          <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center md:justify-between">
+            {isLoading ? (
+              <div>
+                <Skeleton className="w-48 h-8 mb-2" />
+                <Skeleton className="w-96 h-4" />
+              </div>
+            ) : (
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">My Downloads</h1>
                 <p className="text-sm text-gray-500">
                   Access your purchased AI models, datasets, and infrastructure services
                 </p>
               </div>
+            )}
 
+            {isLoading ? (
+              <div className="flex items-center gap-8">
+                <div className="text-center">
+                  <Skeleton className="w-16 h-8 mb-1" />
+                  <Skeleton className="w-24 h-4" />
+                </div>
+                <div className="text-center">
+                  <Skeleton className="w-16 h-8 mb-1" />
+                  <Skeleton className="w-24 h-4" />
+                </div>
+              </div>
+            ) : (
               <div className="flex items-center gap-8">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gray-900">{totalItems}</div>
@@ -200,12 +216,51 @@ export function DownloadsView() {
                   <div className="text-sm text-gray-500">Active</div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
+        </div>
 
-          {/* Existing grid and pagination code */}
-          <div className="grid grid-cols-1 gap-8">
-            {paginatedPurchases.map((asset) => (
+        {/* Transactions Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-4 md:px-6 lg:px-8 mb-8">
+          {isLoading ? (
+            Array.from({ length: 3 }).map((_, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white rounded-xl border border-[#e1e3e5] overflow-hidden flex flex-col"
+              >
+                <div className="p-6 flex flex-col gap-4">
+                  {/* Asset Image */}
+                  <div className="w-full h-48 sm:h-32 rounded-lg overflow-hidden">
+                    <Skeleton className="w-full h-full" />
+                  </div>
+
+                  {/* Title and Labels */}
+                  <div>
+                    <Skeleton className="w-48 h-6 mb-2" />
+                    <div className="flex flex-wrap gap-2">
+                      <Skeleton className="w-24 h-6 rounded-full" />
+                      <Skeleton className="w-32 h-6 rounded-full" />
+                    </div>
+                  </div>
+
+                  {/* Creator Info */}
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="w-8 h-8 rounded-full" />
+                    <Skeleton className="w-32 h-4" />
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <Skeleton className="w-full h-4 mb-2" />
+                    <Skeleton className="w-3/4 h-4" />
+                  </div>
+                </div>
+              </motion.div>
+            ))
+          ) : (
+            paginatedPurchases.map((asset) => (
               <motion.div
                 key={asset.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -363,10 +418,7 @@ export function DownloadsView() {
                         <div className="text-sm text-gray-500 whitespace-nowrap">
                           Need help getting started?
                         </div>
-                        <a
-                          href={asset.documentation}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
                           className="inline-flex items-center gap-1 text-sm text-[#0284a5] hover:text-[#026d8a] whitespace-nowrap"
                         >
                           <span>View Documentation</span>
@@ -383,100 +435,100 @@ export function DownloadsView() {
                               d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                             />
                           </svg>
-                        </a>
+                        </button>
                       </div>
                     )}
                   </div>
                 </div>
               </motion.div>
-            ))}
-          </div>
+            ))
+          )}
+        </div>
 
-          {/* Pagination */}
-          <div className="mt-8 flex items-center justify-between bg-white rounded-xl border border-[#e1e3e5] px-6 py-4 shadow-sm">
-            <div className="flex flex-1 justify-between sm:hidden">
-              <button
-                onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
-                disabled={currentPage === 1}
-                className="relative inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                Previous
-              </button>
-              <button
-                onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
-                disabled={currentPage === totalPages}
-                className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-              </button>
+        {/* Pagination */}
+        <div className="mt-8 flex items-center justify-between bg-white rounded-xl border border-[#e1e3e5] px-6 py-4 shadow-sm">
+          <div className="flex flex-1 justify-between sm:hidden">
+            <button
+              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              disabled={currentPage === 1}
+              className="relative inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+              disabled={currentPage === totalPages}
+              className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+          </div>
+          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm text-gray-700">
+                Showing <span className="font-medium">{startIndex + 1}</span> to{' '}
+                <span className="font-medium">
+                  {Math.min(currentPage * ITEMS_PER_PAGE, totalItems)}
+                </span>{' '}
+                of <span className="font-medium">{totalItems}</span> results
+              </p>
             </div>
-            <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-              <div>
-                <p className="text-sm text-gray-700">
-                  Showing <span className="font-medium">{startIndex + 1}</span> to{' '}
-                  <span className="font-medium">
-                    {Math.min(currentPage * ITEMS_PER_PAGE, totalItems)}
-                  </span>{' '}
-                  of <span className="font-medium">{totalItems}</span> results
-                </p>
-              </div>
-              <div>
-                <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                  <button
-                    onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
-                    disabled={currentPage === 1}
-                    className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            <div>
+              <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                <button
+                  onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                  disabled={currentPage === 1}
+                  className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="sr-only">Previous</span>
+                  <svg
+                    className="h-5 w-5"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
                   >
-                    <span className="sr-only">Previous</span>
-                    <svg
-                      className="h-5 w-5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                        page === currentPage
-                          ? 'z-10 bg-[#0284a5] border-[#0284a5] text-white'
-                          : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
+                    <path
+                      fillRule="evenodd"
+                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                   <button
-                    onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
-                    disabled={currentPage === totalPages}
-                    className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                      page === currentPage
+                        ? 'z-10 bg-[#0284a5] border-[#0284a5] text-white'
+                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                    }`}
                   >
-                    <span className="sr-only">Next</span>
-                    <svg
-                      className="h-5 w-5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    {page}
                   </button>
-                </nav>
-              </div>
+                ))}
+                <button
+                  onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                  disabled={currentPage === totalPages}
+                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="sr-only">Next</span>
+                  <svg
+                    className="h-5 w-5"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </nav>
             </div>
           </div>
         </div>
