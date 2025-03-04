@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useAuth } from '@/hooks';
+// import { useAuth } from '@/hooks'; 
 import { Modal, Skeleton } from '@/components/ui';
 
 const UPLOAD_OPTIONS = [
@@ -35,9 +35,14 @@ export function DataProviderView() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
-  const { isAuthenticated, login } = useAuth();
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [showAuthModal, setShowAuthModal] = useState(false);
+
+  useEffect(() => {
+    const connect = localStorage.getItem('connect');
+    setIsWalletConnected(connect === 'true');
+  }, []);
 
   // Simulate loading state
   useEffect(() => {
@@ -60,7 +65,7 @@ export function DataProviderView() {
   }, [location]);
 
   const handleOptionClick = (optionId: string) => {
-    if (!isAuthenticated) {
+    if (!isWalletConnected) {
       setShowAuthModal(true);
       return;
     }
@@ -68,7 +73,7 @@ export function DataProviderView() {
   };
 
   const handleNext = () => {
-    if (!isAuthenticated) {
+    if (!isWalletConnected) {
       setShowAuthModal(true);
       return;
     }
@@ -190,7 +195,8 @@ export function DataProviderView() {
           <p className="text-gray-600 mb-6">Please connect your XELL wallet to add content to the marketplace</p>
           <button
             onClick={() => {
-              login();
+              localStorage.setItem('connect', 'true');
+              setIsWalletConnected(true);
               setShowAuthModal(false);
             }}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-[#0284a5] hover:bg-[#026d8a]"
