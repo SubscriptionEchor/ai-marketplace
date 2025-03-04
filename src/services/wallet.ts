@@ -38,22 +38,29 @@ export class WalletService {
   static async disconnect(type: WalletType = 'xell'): Promise<void> {
     try {
       if (!window.xell) {
-        throw new Error('XELL wallet extension not found');
+        // Silently return if wallet is not available - no need to throw error
+        return;
       }
       await window.xell.disconnect();
     } catch (error) {
-      console.error(`Failed to disconnect ${type} wallet:`, error);
+      // Only log actual errors, not user rejections or missing extension
+      if (error && typeof error === 'object' && 'code' in error && error.code !== 4001) {
+        console.error(`Failed to disconnect ${type} wallet:`, error);
+      }
     }
   }
 
   static async isConnected(type: WalletType = 'xell'): Promise<boolean> {
     try {
       if (!window.xell) {
-        return false;
+        return false; // Silently return false if extension not found
       }
       return await window.xell.isConnected();
     } catch (error) {
-      console.error(`Failed to check ${type} wallet connection:`, error);
+      // Only log actual errors, not expected states
+      if (error && typeof error === 'object' && 'code' in error && error.code !== 4001) {
+        console.error(`Failed to check ${type} wallet connection:`, error);
+      }
       return false;
     }
   }

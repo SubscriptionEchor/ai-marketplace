@@ -3,6 +3,7 @@ import { ModelCard, Pagination, ModelCardSkeleton, Skeleton } from '@/components
 import { useLikes } from '@/hooks';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Breadcrumbs } from '@/components/ui';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -83,6 +84,17 @@ export function CreatorProfileView() {
 
   return (
     <div className="px-4 md:px-6 lg:px-8 py-4 md:py-8">
+      {/* Breadcrumbs Navigation */}
+      <div className="mb-6 max-w-6xl mx-auto">
+        <Breadcrumbs
+          items={[
+            { label: 'Home', href: '/dashboard/all' },
+            { label: 'Creators', href: '/dashboard/all' },
+            { label: MOCK_CREATOR.name }
+          ]}
+        />
+      </div>
+
       <div className="max-w-6xl mx-auto">
         {/* Creator Profile Header - Mobile First Design */}
         <div className="bg-white rounded-xl border border-[#e1e3e5] p-4 md:p-8 mb-6 md:mb-8 animate-fadeIn">

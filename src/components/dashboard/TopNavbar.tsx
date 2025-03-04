@@ -338,9 +338,9 @@ export function TopNavbar() {
                           <button
                             key={item.label}
                             onClick={() => navigate(item.href)}
-                            className="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-background-tertiary flex items-center space-x-2"
+                            className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#333333] flex items-center space-x-2"
                           >
-                            <svg className="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5 text-gray-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
                             </svg>
                             <span>{item.label}</span>
@@ -351,7 +351,7 @@ export function TopNavbar() {
                             onClick={() => {
                               setShowDisconnectModal(true);
                             }}
-                            className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-background-tertiary flex items-center space-x-2"
+                            className="w-full text-left px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-[#333333] flex items-center space-x-2"
                           >
                             <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -377,7 +377,7 @@ export function TopNavbar() {
                 <div className="inline-flex items-center py-4 px-1 text-sm font-medium focus:outline-none rounded transition-colors text-text-secondary hover:text-text-primary cursor-pointer">
                   <span className={category === selectedCategory ? 'text-[#0284a5]' : ''}>{category}</span>
                   <svg
-                    className="ml-2 h-4 w-4 transition-transform group-hover:rotate-180"
+                    className="ml-2 h-4 w-4 transition-transform group-hover:rotate-180 text-gray-400 group-hover:text-white"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -387,7 +387,7 @@ export function TopNavbar() {
                 </div>
                 <div className="absolute z-10 mt-1 w-screen max-w-xs px-2 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200">
                   <div className="overflow-hidden rounded-lg shadow-popup border border-border">
-                    <div className="relative grid gap-1 bg-[#191919] p-2">
+                    <div className="relative grid gap-1 bg-[#191919] p-2 divide-y divide-border">
                       {items.map((item) => (
                         <button
                           key={item}
@@ -401,7 +401,7 @@ export function TopNavbar() {
                             navigate(`/dashboard/${targetView}?category=${encodeURIComponent(item)}`);
                             setSelectedCategory(category);
                           }}
-                          className="flex items-center rounded-lg px-4 py-2.5 transition duration-150 ease-in-out hover:bg-background-tertiary focus:outline-none w-full text-text-primary"
+                          className="flex items-center rounded-lg px-4 py-2.5 transition duration-150 ease-in-out hover:bg-[#333333] focus:outline-none w-full text-gray-300 hover:text-white"
                         >
                           <div>
                             <p className={`text-sm font-medium ${
