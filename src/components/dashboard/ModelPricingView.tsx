@@ -8,6 +8,7 @@ interface PricingFormData {
   pricingModel: string;
   price: string;
   currency: string;
+  billingPeriod: string;
   customLicense: string;
   licenseTerms: string[];
 }
@@ -32,6 +33,7 @@ export function ModelPricingView() {
     pricingModel: '',
     price: '',
     currency: 'USD',
+    billingPeriod: 'monthly',
     customLicense: '',
     licenseTerms: []
   });
@@ -89,24 +91,25 @@ export function ModelPricingView() {
                 <div
                   key={option.id}
                   onClick={() => handlePricingModelChange(option.id)}
-                  className={`relative flex items-center p-4 cursor-pointer rounded-lg border-2 ${
+                  className={`relative flex items-center p-4 cursor-pointer rounded-lg border-2 transition-all ${
                     formData.pricingModel === option.id
                       ? 'border-[#0284a5] bg-[#0284a5]/5'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
-                  <div className="flex items-center h-5">
+                  <div className="flex items-center h-5 pointer-events-none">
                     <input
                       type="radio"
+                      name="pricingModel"
                       checked={formData.pricingModel === option.id}
-                      onChange={() => handlePricingModelChange(option.id)}
-                      className="h-4 w-4 text-[#0284a5] border-gray-300 focus:ring-[#0284a5]"
+                      readOnly
+                      className="h-4 w-4 text-[#0284a5] border-gray-300"
                     />
                   </div>
-                  <div className="ml-4">
-                    <label className="text-sm font-medium text-gray-900">
+                  <div className="ml-4 pointer-events-none">
+                    <div className="text-sm font-medium text-gray-900">
                       {option.label}
-                    </label>
+                    </div>
                     <p className="text-sm text-gray-500">{option.description}</p>
                   </div>
                 </div>
@@ -120,30 +123,57 @@ export function ModelPricingView() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Set Price
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm max-w-xs">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="text-gray-500 sm:text-sm">$</span>
-                </div>
-                <input
-                  type="text"
-                  value={formData.price}
-                  onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
-                  className="focus:ring-[#0284a5] focus:border-[#0284a5] block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md text-gray-900"
-                  placeholder={formData.pricingModel === 'pay-per-use' ? '0.001' : '99.99'}
-                />
-                <div className="absolute inset-y-0 right-0 flex items-center">
+              <div className="relative max-w-xs">
+                <div className="relative flex items-center">
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                    <span className="text-gray-500 sm:text-sm">$</span>
+                  </span>
+                  <input
+                    type="text"
+                    value={formData.price}
+                    onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
+                    className="block w-full pl-6 pr-20 py-2.5 text-gray-900 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-[#0284a5] focus:border-[#0284a5] hover:border-gray-400 transition-colors text-base font-medium bg-white shadow-sm"
+                    placeholder={formData.pricingModel === 'pay-per-use' ? '0.001' : '99.99'}
+                  />
                   <select
                     value={formData.currency}
                     onChange={(e) => setFormData(prev => ({ ...prev, currency: e.target.value }))}
-                    className="focus:ring-[#0284a5] focus:border-[#0284a5] h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
+                    className="absolute right-0 h-full py-0 pl-3 pr-8 border-l border-gray-300 bg-white text-gray-600 font-medium text-sm rounded-r-lg focus:ring-2 focus:ring-[#0284a5] focus:border-[#0284a5] hover:border-gray-400 transition-colors appearance-none"
                   >
                     <option>USD</option>
                     <option>EUR</option>
                     <option>GBP</option>
                   </select>
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
               </div>
-              <p className="mt-2 text-sm text-gray-500">
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Billing Period
+                </label>
+                <div className="relative max-w-xs">
+                  <select
+                    value={formData.billingPeriod}
+                    onChange={(e) => setFormData(prev => ({ ...prev, billingPeriod: e.target.value }))}
+                    className="block w-full pl-3 pr-10 py-2.5 text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0284a5] focus:border-[#0284a5] text-base font-medium appearance-none"
+                  >
+                    <option value="hourly">Per Hour</option>
+                    <option value="daily">Per Day</option>
+                    <option value="monthly">Per Month</option>
+                    <option value="yearly">Per Year</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <p className="mt-2 text-sm text-gray-600">
                 {formData.pricingModel === 'pay-per-use'
                   ? 'Price per API call'
                   : formData.pricingModel === 'subscription'
@@ -185,16 +215,22 @@ export function ModelPricingView() {
 
           {/* Custom License */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-lg font-medium text-gray-900 mb-4">
               Custom License Terms (Optional)
             </label>
+            <p className="text-sm text-gray-600 mb-3">
+              Add any additional terms or conditions that apply to your model
+            </p>
             <textarea
               rows={4}
-              value={formData.customLicense}
-              onChange={(e) => setFormData(prev => ({ ...prev, customLicense: e.target.value }))}
-              className="shadow-sm focus:ring-[#0284a5] focus:border-[#0284a5] block w-full sm:text-sm border-gray-300 rounded-md text-gray-900"
-              placeholder="Enter any additional license terms or conditions..."
+              value={formData.customLicense} 
+              onChange={(e) => setFormData(prev => ({ ...prev, customLicense: e.target.value }))} 
+              className="block w-full px-4 py-3 text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[#0284a5] focus:border-[#0284a5] hover:border-gray-400 transition-all duration-200 resize-none text-base leading-relaxed shadow-sm"
+              placeholder="Enter any additional license terms or conditions..." 
             />
+            <p className="mt-2 text-xs text-gray-500">
+              These terms will be displayed to users alongside the standard license terms
+            </p>
           </div>
 
           {/* Actions */}

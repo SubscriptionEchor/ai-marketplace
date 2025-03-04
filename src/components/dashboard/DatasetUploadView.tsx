@@ -434,9 +434,9 @@ export function DatasetUploadView() {
           {currentTab === 'pricing' && (
             <div className="space-y-8">
               <div>
-                <label className="block text-lg font-medium text-gray-900 mb-4">
+                <h2 className="text-xl font-semibold text-gray-900 mb-6">
                   Choose Pricing Model
-                </label>
+                </h2>
                 <div className="space-y-4">
                   {[
                     { id: 'free', label: 'Free', description: 'Make your dataset freely available' },
@@ -445,26 +445,35 @@ export function DatasetUploadView() {
                   ].map((option) => (
                     <div
                       key={option.id}
-                      onClick={() => handleInputChange({ target: { name: 'pricing.model', value: option.id } } as any)}
-                      className={`relative flex items-center p-4 cursor-pointer rounded-lg border-2 ${
+                      onClick={() => {
+                        setFormData(prev => ({
+                          ...prev,
+                          pricing: {
+                            ...prev.pricing,
+                            model: option.id
+                          }
+                        }));
+                      }}
+                      className={`relative flex items-center p-6 cursor-pointer rounded-xl border-2 transition-all duration-200 hover:shadow-md ${
                         formData.pricing.model === option.id
-                          ? 'border-[#0284a5] bg-[#0284a5]/5'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-[#0284a5] bg-[#0284a5]/5 shadow-sm'
+                          : 'border-gray-200 hover:border-[#0284a5]/50 hover:bg-[#0284a5]/5'
                       }`}
                     >
                       <div className="flex items-center h-5">
                         <input
                           type="radio"
+                          name="pricingModel"
                           checked={formData.pricing.model === option.id}
-                          onChange={() => handleInputChange({ target: { name: 'pricing.model', value: option.id } } as any)}
-                          className="h-4 w-4 text-[#0284a5] border-gray-300 focus:ring-[#0284a5]"
+                          readOnly
+                          className="h-5 w-5 text-[#0284a5] border-2 border-gray-300 focus:ring-[#0284a5] focus:ring-offset-0 rounded-full transition-all duration-200"
                         />
                       </div>
                       <div className="ml-4">
-                        <label className="text-sm font-medium text-gray-900">
+                        <label className="text-base font-medium text-gray-900">
                           {option.label}
                         </label>
-                        <p className="text-sm text-gray-500">{option.description}</p>
+                        <p className="mt-1 text-sm text-gray-600">{option.description}</p>
                       </div>
                     </div>
                   ))}
@@ -473,35 +482,49 @@ export function DatasetUploadView() {
 
               {formData.pricing.model !== 'free' && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-6">
                     Set Price
-                  </label>
-                  <div className="mt-1 relative rounded-md shadow-sm max-w-xs">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <span className="text-gray-500 sm:text-sm">$</span>
-                    </div>
-                    <input
-                      type="text"
-                      name="pricing.price"
-                      value={formData.pricing.price}
-                      onChange={handleInputChange}
-                      className="focus:ring-[#0284a5] focus:border-[#0284a5] block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
-                      placeholder={formData.pricing.model === 'subscription' ? '9.99' : '49.99'}
-                    />
-                    <div className="absolute inset-y-0 right-0 flex items-center">
+                  </h3>
+                  <div className="relative max-w-xs">
+                    <div className="relative flex items-center">
+                      <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span className="text-gray-600 sm:text-sm font-medium">$</span>
+                      </span>
+                      <input
+                        type="text"
+                        name="pricing.price"
+                        value={formData.pricing.price}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9.]/g, '');
+                          setFormData(prev => ({
+                            ...prev,
+                            pricing: {
+                              ...prev.pricing,
+                              price: value
+                            }
+                          }));
+                        }}
+                        className="block w-full pl-6 pr-20 py-2.5 text-gray-900 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-[#0284a5] focus:border-[#0284a5] hover:border-gray-400 transition-colors text-base font-medium bg-white shadow-sm"
+                        placeholder={formData.pricing.model === 'subscription' ? '9.99' : '49.99'}
+                      />
                       <select
                         name="pricing.currency"
                         value={formData.pricing.currency}
                         onChange={handleInputChange}
-                        className="focus:ring-[#0284a5] focus:border-[#0284a5] h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
+                        className="absolute right-0 h-full py-0 pl-3 pr-8 border-l border-gray-300 bg-white text-gray-600 font-medium text-sm rounded-r-lg focus:ring-2 focus:ring-[#0284a5] focus:border-[#0284a5] hover:border-gray-400 transition-colors appearance-none"
                       >
                         <option>USD</option>
                         <option>EUR</option>
                         <option>GBP</option>
                       </select>
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
                     </div>
                   </div>
-                  <p className="mt-2 text-sm text-gray-500">
+                  <p className="mt-3 text-sm text-gray-600">
                     {formData.pricing.model === 'subscription'
                       ? 'Monthly subscription fee'
                       : 'One-time purchase price'}

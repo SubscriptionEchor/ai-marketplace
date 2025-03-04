@@ -30,11 +30,7 @@ export function ModelCard({ model, isLiked, likeCount, onLike }: ModelCardProps)
   const navigate = useNavigate();
   if (!model) return null;
   
-  const handleCardClick = (e: React.MouseEvent) => {
-    // Prevent navigation if clicking the like button
-    if ((e.target as HTMLElement).closest('.like-button')) {
-      return;
-    }
+  const handleCardClick = () => {
     // Default to 'model' type if not specified
     const type = model.type || 'model';
     navigate(`/dashboard/${type}/${model.id}`);
@@ -57,11 +53,11 @@ export function ModelCard({ model, isLiked, likeCount, onLike }: ModelCardProps)
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <div className="absolute top-3 right-3">
           <LikeButton
-            className="like-button"
+            className="like-button relative z-50"
             isLiked={isLiked}
             likes={likeCount?.toString() || model.likes}
-            onLike={(e: React.MouseEvent) => {
-              e.stopPropagation();
+            onLike={() => {
+              event?.stopPropagation();
               onLike(model.id, model.likes);
             }}
           />

@@ -10,24 +10,27 @@ export function useLikes(): UseLikesResult {
   const [likedItems, setLikedItems] = useState<Record<string, boolean>>({});
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
 
-  const handleLike = (itemId: string, currentLikes: string) => {
+  const handleLike = (itemId: string, currentLikes: string): void => {
     // Initialize like count if not already set
     if (!likeCounts[itemId]) {
       setLikeCounts(prev => ({
         ...prev,
-        [itemId]: parseInt(currentLikes.replace(/,/g, ''), 10) || 0
+        [itemId]: parseInt(currentLikes.replace(/[^0-9]/g, ''), 10) || 0
       }));
     }
 
     setLikedItems(prev => {
       const wasLiked = prev[itemId];
-      return { ...prev, [itemId]: !wasLiked };
+      const newLikedItems = { ...prev, [itemId]: !wasLiked };
+      
+      // Update counts after state update
+      setLikeCounts(prevCounts => ({
+        ...prevCounts,
+        [itemId]: (prevCounts[itemId] || 0) + (!wasLiked ? 1 : -1)
+      }));
+      
+      return newLikedItems;
     });
-
-    setLikeCounts(prev => ({
-      ...prev,
-      [itemId]: prev[itemId] + (likedItems[itemId] ? -1 : 1)
-    }));
   };
 
   return { likedItems, likeCounts, handleLike };

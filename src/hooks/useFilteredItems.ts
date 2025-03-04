@@ -18,7 +18,9 @@ export function useFilteredItems<T extends { categories: string[] }>(
   const filteredItems = useMemo(() => {
     if (!items || selectedFilters.size === 0) return items || [];
     return items.filter(item => 
-      item.categories?.some(category => selectedFilters.has(category)) || false
+      item.categories?.some(category =>
+        Array.from(selectedFilters).includes(category)
+      )
     );
   }, [items, selectedFilters]); 
 

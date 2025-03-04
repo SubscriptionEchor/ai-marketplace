@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, Fragment, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Popover, Transition, Dialog } from '@headlessui/react';
+import { MODEL_CATEGORIES } from '@/constants/categories';
 // import { useAuth } from '@/hooks';
 
 interface ModalProps {
@@ -130,42 +131,6 @@ const DISCONNECT_WARNING = {
   cancelLabel: 'Cancel'
 };
 
-const CATEGORIES = {
-  'Multi-model': [
-    'Audio-Text-to-Text', 'Image-Text-to-Text', 'Visual Question Answering',
-    'Document Question Answering', 'Video-Text-to-Text', 'Visual Document Retrieval',
-    'Any-to-Any'
-  ],
-  'Computer Vision': [
-    'Depth Estimation', 'Image Classification', 'Object Detection',
-    'Image Segmentation', 'Text-to-Image', 'Image-to-Text',
-    'Image-to-Image', 'Image-to-Video', 'Unconditional Image Generation',
-    'Video Classification', 'Text-to-Video', 'Zero-Shot Image Classification',
-    'Mask Generation', 'Zero-Shot Object Detection', 'Text-to-3D',
-    'Image-to-3D', 'Image Feature Extraction', 'Keypoint Detection'
-  ],
-  'Natural Language Processing': [
-    'Text Classification', 'Token Classification', 'Table Question Answering',
-    'Question Answering', 'Zero-Shot Classification', 'Translation',
-    'Summarization', 'Feature Extraction', 'Text Generation',
-    'Text2Text Generation', 'Fill-Mask', 'Sentence Similarity'
-  ],
-  'Audio': [
-    'Text-to-Speech', 'Text-to-Audio', 'Automatic Speech Recognition',
-    'Audio-to-Audio', 'Audio Classification', 'Voice Activity Detection'
-  ],
-  'Tabular': [
-    'Tabular Classification', 'Tabular Regression', 'Time Series Forecasting'
-  ],
-  'Reinforcement Learning': [
-    'Reinforcement Learning',
-    'Robotics'
-  ],
-  'Other': [
-    'Graph Machine Learning'
-  ]
-};
-
 const PROFILE_MENU_ITEMS = [
   { label: 'Home', href: '/dashboard/home', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
   { label: 'My Downloads', href: '/dashboard/downloads', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4' },
@@ -192,28 +157,35 @@ export function TopNavbar() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, logout, } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const [isWalletConnected, setIsWalletConnected] = useState(false);
+
+  // Parse the category query parameter for exact comparison
+  const activeCategory = new URLSearchParams(location.search).get('category');
+
   useEffect(() => {
-    let connect=localStorage.getItem('connect') as string
-    connect=JSON.parse(connect);
-    if(connect){
+    let connect = localStorage.getItem('connect') as string;
+    connect = JSON.parse(connect);
+    if (connect) {
       setIsWalletConnected(true);
     }
-  },[])
+  }, []);
 
-  const focusSearchInput = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Escape' && isSearchFocused) {
-      searchInputRef.current?.blur();
-      setIsSearchFocused(false);
-      return;
-    }
-    if (e.key === '/' && !e.ctrlKey && !e.metaKey && !isSearchFocused) {
-      e.preventDefault();
-      searchInputRef.current?.focus();
-      setIsSearchFocused(true);
-    }
-  }, [isSearchFocused]);
+  const focusSearchInput = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isSearchFocused) {
+        searchInputRef.current?.blur();
+        setIsSearchFocused(false);
+        return;
+      }
+      if (e.key === '/' && !e.ctrlKey && !e.metaKey && !isSearchFocused) {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        setIsSearchFocused(true);
+      }
+    },
+    [isSearchFocused]
+  );
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -232,8 +204,7 @@ export function TopNavbar() {
   const onHandleConnectWallet = () => {
     localStorage.setItem('connect', JSON.stringify(true));
     setIsWalletConnected(true);
-
-  }
+  };
 
   return (
     <nav className="fixed top-0 right-0 left-0 z-20 bg-[#191919] border-b border-border">
@@ -355,7 +326,7 @@ export function TopNavbar() {
                               className="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-background-tertiary flex items-center gap-2 text-white"
                             >
                               <svg className="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={item.icon} />
                               </svg>
                               <span>{item.label}</span>
                             </button>
@@ -368,7 +339,7 @@ export function TopNavbar() {
                               className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-background-tertiary flex items-center space-x-2"
                             >
                               <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                               </svg>
                               <span>Disconnect Wallet</span>
                             </button>
@@ -381,89 +352,93 @@ export function TopNavbar() {
               </div>
             )}
 
-            {!isWalletConnected?<button
-              onClick={() => onHandleConnectWallet()}
-              className={`inline-flex items-center px-4 py-2 bg-[#0284a5] text-white text-sm font-medium rounded-lg hover:bg-[#026d8a] transition-colors ${
-                isAuthenticated ? 'hidden' : ''
-              }`}
-            >
-              <img src="https://learn.rubix.net//images/logo.png" alt="XELL" className="w-5 h-5 mr-2" />
-              Connect Wallet
-            </button>:null}
+            {!isWalletConnected ? (
+              <button
+                onClick={() => onHandleConnectWallet()}
+                className={`inline-flex items-center px-4 py-2 bg-[#0284a5] text-white text-sm font-medium rounded-lg hover:bg-[#026d8a] transition-colors ${
+                  isAuthenticated ? 'hidden' : ''
+                }`}
+              >
+                <img src="https://learn.rubix.net//images/logo.png" alt="XELL" className="w-5 h-5 mr-2" />
+                Connect Wallet
+              </button>
+            ) : null}
             
             {/* Profile Menu */}
-            {isWalletConnected?<div className={`relative hidden xl:block ${!isAuthenticated ? 'hidden' : ''}`}>
-              <Popover className="relative">
-                {({ open }) => (
-                  <>
-                    <Popover.Button className="flex items-center space-x-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors focus:outline-none">
-                      <div className="w-8 h-8 bg-[#0284a5] rounded-full flex items-center justify-center text-white font-medium">
-                        J
-                      </div>
-                    </Popover.Button>
-                    <Transition
-                      show={open}
-                      as={Fragment}
-                      enter="transition ease-out duration-200"
-                      enterFrom="opacity-0 scale-95"
-                      enterTo="opacity-100 scale-100"
-                      leave="transition ease-in duration-150"
-                      leaveFrom="opacity-100 scale-100"
-                      leaveTo="opacity-0 scale-95"
-                    >
-                      <Popover.Panel className="absolute right-0 mt-2 w-56 bg-[#191919] rounded-lg shadow-popup border border-border py-1 z-50">
-                        {PROFILE_MENU_ITEMS.map((item) => (
-                          <button
-                            key={item.label}
-                            onClick={() => navigate(item.href)}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#333333] flex items-center space-x-2"
-                          >
-                            <svg className="w-5 h-5 text-gray-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
-                            </svg>
-                            <span>{item.label}</span>
-                          </button>
-                        ))}
-                        <div className="border-t border-border mt-1">
-                          <button
-                            onClick={() => {
-                              setShowDisconnectModal(true);
-                            }}
-                            className="w-full text-left px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-[#333333] flex items-center space-x-2"
-                          >
-                            <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                            <span>Disconnect Wallet</span>
-                          </button>
+            {isWalletConnected ? (
+              <div className={`relative hidden xl:block ${!isAuthenticated ? 'hidden' : ''}`}>
+                <Popover className="relative">
+                  {({ open }) => (
+                    <>
+                      <Popover.Button className="flex items-center space-x-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors focus:outline-none">
+                        <div className="w-8 h-8 bg-[#0284a5] rounded-full flex items-center justify-center text-white font-medium">
+                          J
                         </div>
-                      </Popover.Panel>
-                    </Transition>
-                  </>
-                )}
-              </Popover>
-            </div>:null}
+                      </Popover.Button>
+                      <Transition
+                        show={open}
+                        as={Fragment}
+                        enter="transition ease-out duration-200"
+                        enterFrom="opacity-0 scale-95"
+                        enterTo="opacity-100 scale-100"
+                        leave="transition ease-in duration-150"
+                        leaveFrom="opacity-100 scale-100"
+                        leaveTo="opacity-0 scale-95"
+                      >
+                        <Popover.Panel className="absolute right-0 mt-2 w-56 bg-[#191919] rounded-lg shadow-popup border border-border py-1 z-50">
+                          {PROFILE_MENU_ITEMS.map((item) => (
+                            <button
+                              key={item.label}
+                              onClick={() => navigate(item.href)}
+                              className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#333333] flex items-center space-x-2"
+                            >
+                              <svg className="w-5 h-5 text-gray-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={item.icon} />
+                              </svg>
+                              <span>{item.label}</span>
+                            </button>
+                          ))}
+                          <div className="border-t border-border mt-1">
+                            <button
+                              onClick={() => {
+                                logout();
+                                setShowDisconnectModal(false);
+                                localStorage.setItem('connect', JSON.stringify(false));
+                                setIsWalletConnected(false);
+                                navigate('/');
+                              }}
+                              className="w-full text-left px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-[#333333] flex items-center space-x-2"
+                            >
+                              <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                              </svg>
+                              <span>Disconnect Wallet</span>
+                            </button>
+                          </div>
+                        </Popover.Panel>
+                      </Transition>
+                    </>
+                  )}
+                </Popover>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
 
+      {/* Desktop Categories Navigation with Dropdowns */}
       <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 hidden xl:block">
         <div className="flex justify-between items-center h-12">
           <nav className="flex space-x-8">
-            {Object.entries(CATEGORIES).map(([category, items]) => (
+            {Object.entries(MODEL_CATEGORIES).map(([category, items]) => (
               <div key={category} className="relative group">
                 <div className="inline-flex items-center py-4 px-1 text-sm font-medium focus:outline-none rounded transition-colors text-text-secondary hover:text-text-primary cursor-pointer">
                   <span className={category === selectedCategory ? 'text-[#0284a5]' : ''}>{category}</span>
-                  <svg
-                    className="ml-2 h-4 w-4 transition-transform group-hover:rotate-180 text-gray-400 group-hover:text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
+                  <svg className="ml-2 h-4 w-4 transition-transform group-hover:rotate-180 text-gray-400 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
-                <div className="absolute z-10 mt-1 w-screen max-w-xs px-2 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200">
+                <div className="absolute z-10 mt-1 w-screen max-w-xs px-2 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 max-h-[calc(100vh-4rem)] overflow-y-auto">
                   <div className="overflow-hidden rounded-lg shadow-popup border border-border">
                     <div className="relative grid gap-1 bg-[#191919] p-2 divide-y divide-border">
                       {items.map((item) => (
@@ -482,9 +457,7 @@ export function TopNavbar() {
                           className="flex items-center rounded-lg px-4 py-2.5 transition duration-150 ease-in-out hover:bg-[#333333] focus:outline-none w-full text-gray-300 hover:text-white"
                         >
                           <div>
-                            <p className={`text-sm font-medium ${
-                              location.search.includes(encodeURIComponent(item)) ? 'text-[#0284a5]' : ''
-                            }`}>
+                            <p className={`text-sm font-medium ${activeCategory === item ? 'text-[#0284a5]' : ''}`}>
                               {item}
                             </p>
                           </div>
@@ -523,7 +496,7 @@ export function TopNavbar() {
               onClick={() => {
                 logout();
                 setShowDisconnectModal(false);
-                localStorage.setItem('connect',JSON.stringify(false));
+                localStorage.setItem('connect', JSON.stringify(false));
                 setIsWalletConnected(false);
                 navigate('/');
               }}

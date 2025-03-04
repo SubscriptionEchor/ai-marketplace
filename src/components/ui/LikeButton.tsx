@@ -27,9 +27,10 @@ export function LikeButton({ isLiked, likes, onLike, className = '' }: LikeButto
         e.stopPropagation();
         onLike(e);
       }}
-      className={`p-2 sm:p-2.5 bg-white rounded-full shadow-sm hover:scale-105 transition-transform flex items-center gap-1.5 sm:gap-2 group ${className}`}
+      className={`p-2 sm:p-2.5 bg-white rounded-full shadow-sm hover:scale-105 transition-all duration-200 flex items-center gap-1.5 sm:gap-2 group z-10 relative isolate ${className}`}
       whileTap={{ scale: 0.9 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      aria-label={isLiked ? 'Unlike' : 'Like'}
     >
       <div className="relative w-4 h-4 sm:w-5 sm:h-5">
         <AnimatePresence mode="wait">
@@ -43,7 +44,7 @@ export function LikeButton({ isLiked, likes, onLike, className = '' }: LikeButto
               className="absolute inset-0 flex items-center justify-center"
             >
               <svg
-                className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 group-hover:scale-110 transition-transform"
+                className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 group-hover:scale-110 transition-transform duration-200"
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >
@@ -60,7 +61,7 @@ export function LikeButton({ isLiked, likes, onLike, className = '' }: LikeButto
               className="absolute inset-0 flex items-center justify-center"
             >
               <svg
-                className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 group-hover:text-red-500 group-hover:scale-110 transition-all"
+                className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 group-hover:text-red-500 group-hover:scale-110 transition-all duration-200"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -76,7 +77,9 @@ export function LikeButton({ isLiked, likes, onLike, className = '' }: LikeButto
           )}
         </AnimatePresence>
       </div>
-      <span className="text-xs sm:text-sm font-medium text-gray-700">{formatNumber(likes)}</span>
+      <span className="text-xs sm:text-sm font-medium text-gray-700 select-none pointer-events-none">
+        {formatNumber(likes)}
+      </span>
     </motion.button>
   );
 }

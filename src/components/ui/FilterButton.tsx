@@ -15,7 +15,7 @@ export function FilterButton({ label, icon, color = 'bg-gradient-to-br from-gray
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onSelect} 
-      className={`w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg transition-all duration-200 flex items-center gap-2 group relative cursor-pointer ${
+      className={`w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg transition-all duration-200 flex items-center gap-2 group relative cursor-pointer min-h-[40px] ${
         isSelected ? 'bg-[#0284a5]/5 hover:bg-[#0284a5]/10' : 'hover:bg-gray-50'
       }`}
     >
