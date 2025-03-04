@@ -57,10 +57,10 @@ function Modal({ show, onClose, title, children }: ModalProps) {
 function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const connectWallet = useCallback(async (type: 'xell') => {
-    setIsAuthenticated(true);
-    return true;
-  }, []);
+  // const connectWallet = useCallback(async (type: 'xell') => {
+  //   setIsAuthenticated(true);
+  //   return true;
+  // }, []);
 
   const logout = useCallback(async () => {
     setIsAuthenticated(false);
@@ -69,7 +69,7 @@ function useAuth() {
 
   return {
     isAuthenticated,
-    connectWallet,
+    // connectWallet,
     logout
   };
 }
