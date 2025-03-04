@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/hooks';
 import { Skeleton } from '@/components/ui';
 
 interface NotificationPreference {
@@ -27,7 +26,8 @@ const NOTIFICATION_PREFERENCES: NotificationPreference[] = [
 ];
 
 export function SettingsView() {
-  const { isAuthenticated, connectWallet, connectedWallet } = useAuth();
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
+  const [walletAddress] = useState('0x1234...5678');
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,6 +36,11 @@ export function SettingsView() {
     priceAlerts: true,
     securityAlerts: true
   });
+
+  useEffect(() => {
+    const connect = localStorage.getItem('connect');
+    setIsWalletConnected(connect === 'true');
+  }, []);
 
   // Simulate loading state
   useEffect(() => {
@@ -51,7 +56,7 @@ export function SettingsView() {
     }
   };
 
-  if (!isAuthenticated) {
+  if (!isWalletConnected) {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-112px)]">
         <div className="text-center">
@@ -61,7 +66,10 @@ export function SettingsView() {
           <h3 className="text-xl font-semibold text-gray-900 mb-2">Connect Your Wallet</h3>
           <p className="text-gray-600 mb-6">Please connect your XELL wallet to access settings</p>
           <button
-            onClick={() => connectWallet('xell')}
+            onClick={() => {
+              localStorage.setItem('connect', 'true');
+              setIsWalletConnected(true);
+            }}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-[#0284a5] hover:bg-[#026d8a]"
           >
             Connect XELL Wallet
@@ -116,7 +124,7 @@ export function SettingsView() {
                 
                 {/* XELL Wallet */}
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
-                  onClick={() => connectWallet('xell')}>
+                  onClick={() => setIsWalletConnected(true)}>
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-white rounded-full p-2 shadow-sm">
                       <img src="https://learn.rubix.net//images/logo.png" alt="XELL" className="w-full h-full object-contain" />
@@ -126,7 +134,7 @@ export function SettingsView() {
                       <p className="text-xs text-gray-500">Recommended wallet for TRIE AI Marketplace</p>
                     </div>
                   </div>
-                  {connectedWallet?.type === 'xell' ? (
+                  {isWalletConnected ? (
                     <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">Connected</span>
                   ) : (
                     <span className="text-xs font-medium text-gray-600">Connect</span>
@@ -134,12 +142,12 @@ export function SettingsView() {
                 </div>
               </div>
 
-              {connectedWallet && (
+              {isWalletConnected && (
                 <div className="border-t border-gray-100 pt-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-900">Connected Address</p>
-                      <p className="text-xs font-mono text-gray-500">{connectedWallet.address}</p>
+                      <p className="text-xs font-mono text-gray-500">{walletAddress}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="flex w-2 h-2 bg-green-500 rounded-full"></span>
