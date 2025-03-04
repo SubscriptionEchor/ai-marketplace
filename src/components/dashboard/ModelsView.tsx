@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { ModelCard, SearchInput, EmptyState, FilterButton, Pagination, MobileFilterDrawer } from '@/components/ui';
+import { ModelCard, SearchInput, EmptyState, FilterButton, Pagination, MobileFilterDrawer, ModelCardSkeleton, Skeleton } from '@/components/ui';
 import { useFilteredItems, useLikes } from '@/hooks';
 import { useEffect } from 'react';
 
@@ -116,25 +116,50 @@ export function ModelsView() {
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const { likedItems, likeCounts, handleLike } = useLikes();
-  const [userModels, setUserModels] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchParams] = useSearchParams();
   const categoryFromUrl = searchParams.get('category');
-  const [isLoading, setIsLoading] = useState(true);
 
+  const MODELS = [
+    {
+      id: 'gpt-4',
+      creator: {
+        name: 'OpenAI',
+        avatar: 'O'
+      },
+      type: 'model',
+      image: 'https://cdn.midjourney.com/d8fdb597-0d88-467d-8637-8022fb31dc1e/0_0.png',
+      name: 'GPT-4',
+      categories: ['Natural Language Processing', 'Text Generation'],
+      description: 'State-of-the-art language model for text generation and understanding.',
+      updatedAt: '1 day ago',
+      downloads: '2.5M',
+      likes: '450K'
+    },
+    ...Array.from({ length: 24 }, (_, i) => ({
+      id: `model-${i + 2}`,
+      creator: {
+        name: `Creator ${i + 2}`,
+        avatar: `C${i + 2}`
+      },
+      type: 'model',
+      image: 'https://cdn.midjourney.com/d8fdb597-0d88-467d-8637-8022fb31dc1e/0_0.png',
+      name: `AI Model ${i + 2}`,
+      categories: Object.keys(TASK_CATEGORIES).slice(0, Math.floor(Math.random() * 2) + 2),
+      description: 'Advanced AI model for various tasks and applications.',
+      updatedAt: `${Math.floor(Math.random() * 30) + 1} days ago`,
+      downloads: `${(Math.random() * 1000000).toFixed(0)}`,
+      likes: `${(Math.random() * 10000).toFixed(0)}`
+    }))
+  ];
+
+  // Simulate loading state
   useEffect(() => {
-    // Load user's models from localStorage
-    try {
-      const storedModels = JSON.parse(localStorage.getItem('user_models') || '[]');
-      setUserModels(storedModels);
-    } catch (error) {
-      console.error('Failed to load models:', error);
-      setUserModels([]);
-    } finally {
+    const timer = setTimeout(() => {
       setIsLoading(false);
-    }
+    }, 1500);
+    return () => clearTimeout(timer);
   }, []);
-
-  const MODELS = userModels;
 
   const {
     filteredItems: paginatedModels,
@@ -175,7 +200,7 @@ export function ModelsView() {
   }, [searchQuery]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-112px)] pt-6 pb-16">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-112px)] pt-6 pb-16 lg:px-8">
       {/* Mobile filter dialog */}
       <MobileFilterDrawer isOpen={mobileFiltersOpen} onClose={() => setMobileFiltersOpen(false)}>
         <div className="space-y-6">
@@ -214,30 +239,38 @@ export function ModelsView() {
 
       <div className="lg:col-span-3 h-[calc(100vh-112px)] overflow-y-auto pb-16 scrollbar-hide">
         {/* Mobile filter button */}
-        <div className="flex items-center justify-between mb-4 lg:hidden px-4">
-          <button
-            type="button"
-            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-            onClick={() => setMobileFiltersOpen(true)}
-          >
-            <svg className="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-            </svg>
-            Filters
-          </button>
-          {selectedFilters.size > 0 && (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#0284a5] text-white">
-              {selectedFilters.size} selected
-            </span>
+        <div className="flex items-center justify-between mb-4 lg:hidden">
+          {isLoading ? (
+            <Skeleton className="w-24 h-10 rounded-md" />
+          ) : (
+            <>
+              <button
+                type="button"
+                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                onClick={() => setMobileFiltersOpen(true)}
+              >
+                <svg className="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+                Filters
+              </button>
+              {selectedFilters.size > 0 && (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#0284a5] text-white">
+                  {selectedFilters.size} selected
+                </span>
+              )}
+            </>
           )}
         </div>
 
         {isLoading ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0284a5]"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 lg:px-0">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <ModelCardSkeleton key={index} />
+            ))}
           </div>
         ) : paginatedModels.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 lg:px-0">
             {paginatedModels.map((model) => (
               <ModelCard
                 key={model.id}
@@ -278,49 +311,75 @@ export function ModelsView() {
       {/* Right Column */}
       <div className="hidden lg:block space-y-6 h-[calc(100vh-112px)] overflow-y-auto pr-4 -mr-4 pb-16 scrollbar-hide w-[280px]">
         {/* Search Input */}
-        <div className="relative">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
-            {selectedFilters.size > 0 && (
-              <button
-                onClick={clearFilters}
-                className="text-sm text-[#0284a5] hover:text-[#026d8a] flex items-center gap-1"
-              >
-                <span>Clear filters</span>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
-          </div>
-          <SearchInput
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)} 
-            placeholder="Search tasks..."
-            onClear={() => setSearchQuery('')}
-          />
-        </div>
+        {isLoading ? (
+          <>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <Skeleton className="w-20 h-6" />
+              </div>
+              <Skeleton className="w-full h-12 rounded-lg" />
+            </div>
+            {/* Skeleton filters */}
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
+                <div className="mb-4">
+                  <Skeleton className="w-32 h-6" />
+                </div>
+                <div className="space-y-2">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <Skeleton key={i} className="w-full h-10 rounded-lg" />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </>
+        ) : (
+          <>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
+                {selectedFilters.size > 0 && (
+                  <button
+                    onClick={clearFilters}
+                    className="text-sm text-[#0284a5] hover:text-[#026d8a] flex items-center gap-1"
+                  >
+                    <span>Clear filters</span>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+              <SearchInput
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)} 
+                placeholder="Search tasks..."
+                onClear={() => setSearchQuery('')}
+              />
+            </div>
 
-        {Object.entries(filteredCategories).map(([category, tasks]) => (
-          <div key={category} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
-            <div className="mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">{category}</h2>
-            </div>
-            <div className="space-y-2">
-              {tasks.map((task) => (
-                <FilterButton
-                  key={task}
-                  label={task}
-                  icon={category === 'Multimodal' && CATEGORY_ICONS.Multimodal.taskIcons[task as keyof typeof CATEGORY_ICONS['Multimodal']['taskIcons']] || CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS].icon}
-                  color={CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS].color}
-                  isSelected={selectedFilters.has(task)}
-                  onSelect={() => handleFilterSelect(task)}
-                  onRemove={() => handleFilterSelect(task)}
-                />
-              ))}
-            </div>
-          </div>
-        ))}
+            {Object.entries(filteredCategories).map(([category, tasks]) => (
+              <div key={category} className="bg-white rounded-xl shadow-sm border border-[#e1e3e5] p-6">
+                <div className="mb-4">
+                  <h2 className="text-lg font-semibold text-gray-900">{category}</h2>
+                </div>
+                <div className="space-y-2">
+                  {tasks.map((task) => (
+                    <FilterButton
+                      key={task}
+                      label={task}
+                      icon={category === 'Multimodal' && CATEGORY_ICONS.Multimodal.taskIcons[task as keyof typeof CATEGORY_ICONS['Multimodal']['taskIcons']] || CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS].icon}
+                      color={CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS].color}
+                      isSelected={selectedFilters.has(task)}
+                      onSelect={() => handleFilterSelect(task)}
+                      onRemove={() => handleFilterSelect(task)}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </>
+        )}
       </div>
     </div>
   );

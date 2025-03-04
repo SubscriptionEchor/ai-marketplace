@@ -34,6 +34,12 @@ export const router = createBrowserRouter([
           {
             path: ':view',
             element: <DashboardContainer />,
+            children: [
+              {
+                path: 'downloads',
+                element: <DownloadsView />
+              }
+            ]
           },
           {
             path: 'model/:id',
@@ -50,14 +56,6 @@ export const router = createBrowserRouter([
           {
             path: 'creator/:creatorId',
             element: <CreatorProfileView />
-          },
-          {
-            path: 'creator/:creatorId',
-            element: <CreatorProfileView />
-          },
-          {
-            path: 'downloads',
-            element: <DownloadsView />,
           },
           {
             path: 'upload/model',
@@ -101,6 +99,6 @@ export const router = createBrowserRouter([
           }
         ]
       }
-    ],
-  },
+    ]
+  }
 ]);

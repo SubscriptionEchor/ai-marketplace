@@ -1,7 +1,9 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { ModelCard, Pagination } from '@/components/ui';
+import { useParams } from 'react-router-dom';
+import { ModelCard, Pagination, ModelCardSkeleton, Skeleton } from '@/components/ui';
 import { useLikes } from '@/hooks';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Breadcrumbs } from '@/components/ui';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -54,10 +56,10 @@ const MOCK_CONTENT = {
 
 export function CreatorProfileView() {
   const { creatorId: _ } = useParams(); // Ignore unused param
-  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const { likedItems, likeCounts, handleLike } = useLikes();
   const [activeTab, setActiveTab] = useState('models');
+  const [isLoading, setIsLoading] = useState(true);
 
   // Calculate pagination
   const currentContent = MOCK_CONTENT[activeTab as keyof typeof MOCK_CONTENT];
@@ -72,35 +74,64 @@ export function CreatorProfileView() {
     setCurrentPage(1);
   };
 
-  return (
-    <div className="px-4 md:px-6 lg:px-8 py-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Back Button */}
-        <button
-          onClick={() => navigate(-1)}
-          className="mb-6 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors inline-flex items-center gap-2"
-        >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          <span>Back</span>
-        </button>
+  // Simulate loading state
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
-        {/* Creator Profile Header */}
-        <div className="bg-white rounded-xl border border-[#e1e3e5] p-8 mb-8">
-          <div className="flex items-start gap-6">
+  return (
+    <div className="px-4 md:px-6 lg:px-8 py-4 md:py-8">
+      {/* Breadcrumbs Navigation */}
+      <div className="mb-6 max-w-6xl mx-auto">
+        <Breadcrumbs
+          items={[
+            { label: 'Home', href: '/dashboard/all' },
+            { label: 'Creators', href: '/dashboard/all' },
+            { label: MOCK_CREATOR.name }
+          ]}
+        />
+      </div>
+
+      <div className="max-w-6xl mx-auto">
+        {/* Creator Profile Header - Mobile First Design */}
+        <div className="bg-white rounded-xl border border-[#e1e3e5] p-4 md:p-8 mb-6 md:mb-8 animate-fadeIn">
+          {isLoading ? (
+            <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-6">
+              <Skeleton variant="rectangular" className="w-20 h-20 md:w-24 md:h-24 rounded-xl" />
+              <div className="flex-1">
+                <Skeleton className="w-48 h-6 mb-2" />
+                <Skeleton className="w-96 h-4 mb-4" />
+                <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <Skeleton className="w-32 h-4" />
+                  <Skeleton className="w-48 h-4" />
+                </div>
+                <div className="grid grid-cols-4 gap-6 mt-6 pt-6 border-t border-gray-100">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i}>
+                      <Skeleton className="w-16 h-6 mb-1" />
+                      <Skeleton className="w-24 h-4" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+          <div className="flex flex-col md:flex-row md:items-start gap-6 md:gap-8">
             {/* Avatar */}
-            <div className="w-24 h-24 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-4xl font-semibold">
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-3xl md:text-4xl font-semibold">
               {MOCK_CREATOR.avatar}
             </div>
             
             {/* Info */}
             <div className="flex-1">
-              <div className="flex items-start justify-between">
+              <div className="flex flex-col gap-4">
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-2">{MOCK_CREATOR.name}</h1>
-                  <p className="text-gray-600 mb-4">{MOCK_CREATOR.bio}</p>
-                  <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{MOCK_CREATOR.name}</h1>
+                  <p className="text-gray-600 mb-4 text-base leading-relaxed">{MOCK_CREATOR.bio}</p>
+                  <div className="flex flex-col sm:flex-row gap-3 text-sm text-gray-500">
                     {MOCK_CREATOR.location && (
                       <div className="flex items-center gap-1">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -111,17 +142,14 @@ export function CreatorProfileView() {
                       </div>
                     )}
                     {MOCK_CREATOR.website && (
-                      <a 
-                        href={MOCK_CREATOR.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <span
                         className="flex items-center gap-1 text-[#0284a5] hover:text-[#026d8a]"
                       >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                         </svg>
                         <span>{new URL(MOCK_CREATOR.website).hostname}</span>
-                      </a>
+                      </span>
                     )}
                     <div className="flex items-center gap-1">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -133,14 +161,13 @@ export function CreatorProfileView() {
                 </div>
                 
                 {/* Social Links */}
-                <div className="flex items-center gap-3">
-                  {Object.entries(MOCK_CREATOR.socialLinks).map(([platform, url]) => (
-                    <a
+                <div className="flex items-center gap-3 mt-2 md:mt-0">
+                  {Object.entries(MOCK_CREATOR.socialLinks).map(([platform]) => (
+                    <motion.button
                       key={platform}
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
                     >
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                         {platform === 'twitter' && (
@@ -153,42 +180,35 @@ export function CreatorProfileView() {
                           <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z M2 9h4v12H2z M4 6a2 2 0 1 1-2 2 2 2 0 0 1 2-2z" />
                         )}
                       </svg>
-                    </a>
+                    </motion.button>
                   ))}
                 </div>
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-4 gap-6 mt-6 pt-6 border-t border-gray-100">
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">{MOCK_CREATOR.stats.models}</div>
-                  <div className="text-sm text-gray-500">Models</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">{MOCK_CREATOR.stats.datasets}</div>
-                  <div className="text-sm text-gray-500">Datasets</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">{MOCK_CREATOR.stats.downloads}</div>
-                  <div className="text-sm text-gray-500">Downloads</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">{MOCK_CREATOR.stats.likes}</div>
-                  <div className="text-sm text-gray-500">Likes</div>
-                </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6 mt-6 pt-6 border-t border-gray-100">
+                {Object.entries(MOCK_CREATOR.stats).map(([key, value]) => (
+                  <motion.div key={key} whileHover={{ y: -2 }} className="bg-gray-50 p-4 rounded-lg">
+                    <div className="text-2xl font-bold text-gray-900">{value}</div>
+                    <div className="text-sm text-gray-500 capitalize">
+                      {key.replace(/([A-Z])/g, ' $1').trim()}
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             </div>
           </div>
+          )}
         </div>
 
         {/* Content Tabs */}
-        <div className="mb-8">
+        <div className="mb-8 animate-fadeIn">
           <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
+            <nav className="-mb-px flex space-x-4 md:space-x-8 overflow-x-auto scrollbar-hide">
               <button
                 onClick={() => handleTabChange('models')}
                 className={`
-                  px-1 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
+                  px-3 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap flex-shrink-0
                   ${activeTab === 'models'
                     ? 'border-[#0284a5] text-[#0284a5]'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -200,7 +220,7 @@ export function CreatorProfileView() {
               <button
                 onClick={() => handleTabChange('datasets')}
                 className={`
-                  px-1 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
+                  px-3 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap flex-shrink-0
                   ${activeTab === 'datasets'
                     ? 'border-[#0284a5] text-[#0284a5]'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -214,16 +234,28 @@ export function CreatorProfileView() {
         </div>
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {paginatedContent.map((item) => (
-            <ModelCard
-              key={item.id}
-              model={item}
-              isLiked={likedItems[item.id]}
-              likeCount={likeCounts[item.id]}
-              onLike={(id, likes) => handleLike(id, likes)}
-            />
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 animate-fadeIn">
+          {isLoading ? (
+            Array.from({ length: 6 }).map((_, index) => 
+              <ModelCardSkeleton key={index} />
+            )
+          ) : (
+            paginatedContent.map((item, index) => 
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+              >
+                <ModelCard
+                model={item}
+                isLiked={likedItems[item.id]}
+                likeCount={likeCounts[item.id]}
+                onLike={(id, likes) => handleLike(id, likes)}
+                />
+              </motion.div>
+            )
+          )}
         </div>
         
         {/* Pagination */}

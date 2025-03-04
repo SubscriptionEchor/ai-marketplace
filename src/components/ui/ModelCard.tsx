@@ -45,16 +45,16 @@ export function ModelCard({ model, isLiked, likeCount, onLike }: ModelCardProps)
       whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
       onClick={handleCardClick}
-      className="group bg-white rounded-xl border border-[#e1e3e5] hover:border-gray-300 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col cursor-pointer h-[420px]"
+      className="group bg-white rounded-xl border border-[#e1e3e5] hover:border-[#0284a5] hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col cursor-pointer h-[420px] relative"
     >
       {/* Image Container */}
-      <div className="relative h-[200px] overflow-hidden bg-gray-50 flex-shrink-0">
+      <div className="relative h-[200px] overflow-hidden bg-gray-50 flex-shrink-0 group-hover:after:absolute group-hover:after:inset-0 group-hover:after:bg-black/10 group-hover:after:transition-opacity">
         <img 
           src={model.image} 
           alt="AI Model Visualization"
-          className="w-full h-full object-cover transform group-hover:scale-105 transition-all duration-500 ease-out"
+          className="w-full h-full object-cover transform group-hover:scale-105 transition-all duration-700 ease-out"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <div className="absolute top-3 right-3">
           <LikeButton
             className="like-button"

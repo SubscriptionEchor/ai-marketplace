@@ -14,8 +14,10 @@ export function FilterButton({ label, icon, color = 'bg-gradient-to-br from-gray
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      onClick={onSelect}
-      className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2 group relative cursor-pointer"
+      onClick={onSelect} 
+      className={`w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg transition-all duration-200 flex items-center gap-2 group relative cursor-pointer ${
+        isSelected ? 'bg-[#0284a5]/5 hover:bg-[#0284a5]/10' : 'hover:bg-gray-50'
+      }`}
     >
       <div className={`w-5 h-5 ${color} rounded flex items-center justify-center text-white`}>
         {icon && (
@@ -36,7 +38,7 @@ export function FilterButton({ label, icon, color = 'bg-gradient-to-br from-gray
             e.stopPropagation();
             onRemove();
           }}
-          className="ml-auto p-1 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+          className="ml-auto p-1 rounded-full hover:bg-[#0284a5]/20 transition-colors cursor-pointer"
         >
           <svg className="w-4 h-4 text-gray-400 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />

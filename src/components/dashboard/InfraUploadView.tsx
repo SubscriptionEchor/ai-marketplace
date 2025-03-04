@@ -48,6 +48,7 @@ export function InfraUploadView() {
             { label: 'Pricing', href: '/dashboard/upload/infra/pricing' },
             { label: 'Review' }
           ]}
+          showSteps={true}
           currentStep={2}
           totalSteps={4}
         />

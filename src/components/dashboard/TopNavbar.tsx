@@ -1,9 +1,78 @@
-import { useState, useRef, useCallback, Fragment } from 'react';
-import { useEffect } from 'react';
+import { useState, useRef, useCallback, Fragment, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Popover, Transition, Dialog } from '@headlessui/react';
-import { Modal } from '@/components/ui';
-import { useAuth } from '@/hooks';
+// import { useAuth } from '@/hooks';
+
+interface ModalProps {
+  show: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}
+
+function Modal({ show, onClose, title, children }: ModalProps) {
+  return (
+    <Transition appear show={show} as={Fragment}>
+      <Dialog as="div" className="relative z-50" onClose={onClose}>
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black bg-opacity-25" />
+        </Transition.Child>
+
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-gray-900"
+                >
+                  {title}
+                </Dialog.Title>
+                {children}
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </div>
+      </Dialog>
+    </Transition>
+  );
+}
+
+function useAuth() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const connectWallet = useCallback(async (type: 'xell') => {
+    setIsAuthenticated(true);
+    return true;
+  }, []);
+
+  const logout = useCallback(async () => {
+    setIsAuthenticated(false);
+    return true;
+  }, []);
+
+  return {
+    isAuthenticated,
+    connectWallet,
+    logout
+  };
+}
 
 const MAIN_NAVIGATION = [
   { 
@@ -139,7 +208,6 @@ export function TopNavbar() {
       setIsSearchFocused(false);
       return;
     }
-
     if (e.key === '/' && !e.ctrlKey && !e.metaKey && !isSearchFocused) {
       e.preventDefault();
       searchInputRef.current?.focus();
@@ -155,7 +223,6 @@ export function TopNavbar() {
     }
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', focusSearchInput);
-    
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', focusSearchInput);
@@ -205,7 +272,6 @@ export function TopNavbar() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                         </svg>
                       </button>
-                      
                       {isDropdownOpen && (
                         <div className="absolute top-full left-0 mt-1 w-48 bg-[#191919] rounded-lg shadow-popup border border-border py-1 z-50">
                           {SEARCH_OPTIONS.map((option) => (
@@ -230,7 +296,6 @@ export function TopNavbar() {
                         </div>
                       )}
                     </div>
-                    
                     <div className="relative flex-1">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -256,7 +321,7 @@ export function TopNavbar() {
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-6">
             {/* Mobile Profile Button */}
             {isAuthenticated && (
@@ -269,7 +334,6 @@ export function TopNavbar() {
                           J
                         </div>
                       </Popover.Button>
-
                       <Transition
                         show={open}
                         as={Fragment}
@@ -284,8 +348,11 @@ export function TopNavbar() {
                           {PROFILE_MENU_ITEMS.map((item) => (
                             <button
                               key={item.label}
-                              onClick={() => navigate(item.href)}
-                              className="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-background-tertiary flex items-center space-x-2"
+                              onClick={() => {
+                                navigate(item.href);
+                                setIsMobileMenuOpen(false);
+                              }} 
+                              className="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-background-tertiary flex items-center gap-2 text-white"
                             >
                               <svg className="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
@@ -293,7 +360,6 @@ export function TopNavbar() {
                               <span>{item.label}</span>
                             </button>
                           ))}
-                          
                           <div className="border-t border-border mt-1">
                             <button
                               onClick={() => {
@@ -335,7 +401,6 @@ export function TopNavbar() {
                         J
                       </div>
                     </Popover.Button>
-
                     <Transition
                       show={open}
                       as={Fragment}
@@ -351,21 +416,20 @@ export function TopNavbar() {
                           <button
                             key={item.label}
                             onClick={() => navigate(item.href)}
-                            className="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-background-tertiary flex items-center space-x-2"
+                            className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#333333] flex items-center space-x-2"
                           >
-                            <svg className="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5 text-gray-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
                             </svg>
                             <span>{item.label}</span>
                           </button>
                         ))}
-                        
                         <div className="border-t border-border mt-1">
                           <button
                             onClick={() => {
                               setShowDisconnectModal(true);
                             }}
-                            className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-background-tertiary flex items-center space-x-2"
+                            className="w-full text-left px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-[#333333] flex items-center space-x-2"
                           >
                             <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -382,6 +446,7 @@ export function TopNavbar() {
           </div>
         </div>
       </div>
+
       <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 hidden xl:block">
         <div className="flex justify-between items-center h-12">
           <nav className="flex space-x-8">
@@ -390,23 +455,17 @@ export function TopNavbar() {
                 <div className="inline-flex items-center py-4 px-1 text-sm font-medium focus:outline-none rounded transition-colors text-text-secondary hover:text-text-primary cursor-pointer">
                   <span className={category === selectedCategory ? 'text-[#0284a5]' : ''}>{category}</span>
                   <svg
-                    className="ml-2 h-4 w-4 transition-transform group-hover:rotate-180"
+                    className="ml-2 h-4 w-4 transition-transform group-hover:rotate-180 text-gray-400 group-hover:text-white"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
-
                 <div className="absolute z-10 mt-1 w-screen max-w-xs px-2 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200">
                   <div className="overflow-hidden rounded-lg shadow-popup border border-border">
-                    <div className="relative grid gap-1 bg-[#191919] p-2">
+                    <div className="relative grid gap-1 bg-[#191919] p-2 divide-y divide-border">
                       {items.map((item) => (
                         <button
                           key={item}
@@ -420,7 +479,7 @@ export function TopNavbar() {
                             navigate(`/dashboard/${targetView}?category=${encodeURIComponent(item)}`);
                             setSelectedCategory(category);
                           }}
-                          className="flex items-center rounded-lg px-4 py-2.5 transition duration-150 ease-in-out hover:bg-background-tertiary focus:outline-none w-full text-text-primary"
+                          className="flex items-center rounded-lg px-4 py-2.5 transition duration-150 ease-in-out hover:bg-[#333333] focus:outline-none w-full text-gray-300 hover:text-white"
                         >
                           <div>
                             <p className={`text-sm font-medium ${
@@ -439,7 +498,7 @@ export function TopNavbar() {
           </nav>
         </div>
       </div>
-      
+
       {/* Disconnect Confirmation Modal */}
       <Modal
         show={showDisconnectModal}
