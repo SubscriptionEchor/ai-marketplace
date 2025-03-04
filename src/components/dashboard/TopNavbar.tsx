@@ -54,21 +54,6 @@ const CREATOR_NAVIGATION = [
   }
 ];
 
-const WALLET_OPTIONS = [
-  {
-    id: 'xell',
-    name: 'XELL Wallet',
-    description: 'Recommended wallet for TRIE AI Marketplace',
-    icon: 'https://learn.rubix.net//images/logo.png'
-  },
-  {
-    id: 'metamask',
-    name: 'MetaMask',
-    description: 'Connect with MetaMask wallet',
-    icon: 'https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg'
-  }
-];
-
 const DISCONNECT_WARNING = {
   title: 'Disconnect Wallet',
   message: 'Are you sure you want to disconnect your wallet? This action will remove access to your account and is irreversible.',
@@ -130,7 +115,6 @@ export function TopNavbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showWalletModal, setShowWalletModal] = useState(false);
   const [showDisconnectModal, setShowDisconnectModal] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [selectedOption, setSelectedOption] = useState(SEARCH_OPTIONS[0]);
@@ -139,8 +123,15 @@ export function TopNavbar() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, connectWallet, logout, connectedWallet } = useAuth();
-
+  const { isAuthenticated, logout, } = useAuth();
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
+  useEffect(() => {
+    let connect=localStorage.getItem('connect') as string
+    connect=JSON.parse(connect);
+    if(connect){
+      setIsWalletConnected(true);
+    }
+  },[])
 
   const focusSearchInput = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape' && isSearchFocused) {
@@ -170,6 +161,12 @@ export function TopNavbar() {
       document.removeEventListener('keydown', focusSearchInput);
     };
   }, [focusSearchInput]);
+
+  const onHandleConnectWallet = () => {
+    localStorage.setItem('connect', JSON.stringify(true));
+    setIsWalletConnected(true);
+
+  }
 
   return (
     <nav className="fixed top-0 right-0 left-0 z-20 bg-[#191919] border-b border-border">
@@ -318,18 +315,18 @@ export function TopNavbar() {
               </div>
             )}
 
-            <button
-              onClick={() => setShowWalletModal(true)}
+            {!isWalletConnected?<button
+              onClick={() => onHandleConnectWallet()}
               className={`inline-flex items-center px-4 py-2 bg-[#0284a5] text-white text-sm font-medium rounded-lg hover:bg-[#026d8a] transition-colors ${
                 isAuthenticated ? 'hidden' : ''
               }`}
             >
               <img src="https://learn.rubix.net//images/logo.png" alt="XELL" className="w-5 h-5 mr-2" />
               Connect Wallet
-            </button>
+            </button>:null}
             
             {/* Profile Menu */}
-            <div className={`relative hidden xl:block ${!isAuthenticated ? 'hidden' : ''}`}>
+            {isWalletConnected?<div className={`relative hidden xl:block ${!isAuthenticated ? 'hidden' : ''}`}>
               <Popover className="relative">
                 {({ open }) => (
                   <>
@@ -381,7 +378,7 @@ export function TopNavbar() {
                   </>
                 )}
               </Popover>
-            </div>
+            </div>:null}
           </div>
         </div>
       </div>
@@ -414,7 +411,6 @@ export function TopNavbar() {
                         <button
                           key={item}
                           onClick={() => {
-                            // Determine which page to navigate to based on the category
                             let targetView = 'models';
                             if (item.toLowerCase().includes('data') || item.includes('folder')) {
                               targetView = 'datasets';
@@ -468,49 +464,14 @@ export function TopNavbar() {
               onClick={() => {
                 logout();
                 setShowDisconnectModal(false);
+                localStorage.setItem('connect',JSON.stringify(false));
+                setIsWalletConnected(false);
                 navigate('/');
               }}
               className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700"
             >
               {DISCONNECT_WARNING.confirmLabel}
             </button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* Wallet Selection Modal */}
-      <Modal
-        show={showWalletModal}
-        onClose={() => setShowWalletModal(false)}
-        title="Connect Wallet"
-      >
-        <div className="p-6">
-          <div className="space-y-4">
-            {WALLET_OPTIONS.map((wallet) => (
-              <button
-                key={wallet.id}
-                onClick={async () => {
-                  setShowWalletModal(false);
-                  await connectWallet(wallet.id as 'xell' | 'metamask');
-                }}
-                className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white rounded-full p-2 shadow-sm">
-                    <img src={wallet.icon} alt={wallet.name} className="w-full h-full object-contain" />
-                  </div>
-                  <div className="text-left">
-                    <h3 className="text-sm font-medium text-gray-900">{wallet.name}</h3>
-                    <p className="text-xs text-gray-500">{wallet.description}</p>
-                  </div>
-                </div>
-                {connectedWallet?.type === wallet.id ? (
-                  <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">Connected</span>
-                ) : (
-                  <span className="text-xs font-medium text-gray-600">Connect</span>
-                )}
-              </button>
-            ))}
           </div>
         </div>
       </Modal>
@@ -566,9 +527,6 @@ export function TopNavbar() {
                   )}
                 </div>
 
-                {/* Mobile Profile Menu */}
-
-                {/* Categories Navigation */}
                 <div className="px-4 py-6">
                   <div className="flow-root">
                     <div className="space-y-8">
