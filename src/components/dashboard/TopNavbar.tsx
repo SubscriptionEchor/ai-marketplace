@@ -254,7 +254,7 @@ export function TopNavbar() {
 
             <div className="flex items-center space-x-6">
               <img
-                src="https://trie.network/images/logo.png"
+                src="/trie-nav-logo@4x.png"
                 alt="TRIE AI"
                 className="h-8 w-auto cursor-pointer hover:opacity-90 transition-opacity"
                 onClick={() => navigate('/')}
@@ -324,7 +324,7 @@ export function TopNavbar() {
 
           <div className="flex items-center space-x-6">
             {/* Mobile Profile Button */}
-            {isAuthenticated && (
+            {isWalletConnected && (
               <div className="relative xl:hidden">
                 <Popover>
                   {({ open }) => (
@@ -573,7 +573,7 @@ export function TopNavbar() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
-                  {isAuthenticated && (
+                  {isWalletConnected && (
                     <div className="flex items-center gap-4">
                       <div className="w-8 h-8 bg-[#0284a5] rounded-full flex items-center justify-center text-white font-medium">
                         J
